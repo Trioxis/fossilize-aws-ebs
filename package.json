@@ -1,0 +1,28 @@
+{
+  "name": "aws-backup-manager",
+  "version": "0.1.0",
+  "description": "Automatically back up EBS volumes using tags",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Trioxis/aws-backup-manager.git"
+  },
+  "keywords": [
+    "aws",
+    "ebs",
+    "snapshot",
+    "backup"
+  ],
+  "author": "Trioxis",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Trioxis/aws-backup-manager/issues"
+  },
+  "homepage": "https://github.com/Trioxis/aws-backup-manager#readme"
+}
