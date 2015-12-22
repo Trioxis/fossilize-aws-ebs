@@ -1,4 +1,4 @@
-import expect from 'expect';
+import expect from 'expect.js';
 
 import {getSnapshots} from '../src/GetFromEC2';
 
