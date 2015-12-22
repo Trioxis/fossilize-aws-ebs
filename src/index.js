@@ -1,4 +1,5 @@
 import EC2Store from './EC2Store';
+import {findDeadSnapshots} from './SnapshotAnalyser';
 
 export default function () {
 	let ec2 = new EC2Store();
@@ -20,8 +21,8 @@ export default function () {
 					.then(ebsList => listBackupActionsNeeded(ebsList, snapList))
 			};
 
-			return Promise.all([cleanupActions(snapList), creationActions(snapList)])
+			return new Promise.all([cleanupActions(snapList), creationActions(snapList)])
 				.then(actionsArray => actionsArray[0].concat(actionsArray[1]))
 				.then(action => doActions(actions));
-	});
+	}).catch(err => console.log(err));
 };
