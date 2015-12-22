@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha --compilers js:babel-register",
     "build": "babel src -d build --source-maps"
   },
   "repository": {
