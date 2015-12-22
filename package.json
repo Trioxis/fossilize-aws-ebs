@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-register",
+    "test": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
+    "lint": "node ./node_modules/eslint/bin/eslint.js index.js src/** test/**",
     "build": "babel src -d build --source-maps",
     "start": "node index.js"
   },
@@ -31,6 +32,7 @@
     "babel-cli": "^6.3.17",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.3.13",
+    "eslint": "^1.10.3",
     "expect.js": "^0.3.1",
     "mocha": "^2.3.4"
   }

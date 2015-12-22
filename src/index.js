@@ -12,7 +12,7 @@ export default function () {
 
 				return generateCleanupActions(deadSnaps => {
 					deadSnaps.map(snap => cleanUpAction(snap))
-				})
+				});
 			};
 
 			let creationActions = snapList => {
