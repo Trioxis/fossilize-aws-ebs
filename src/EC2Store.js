@@ -4,13 +4,12 @@ class EC2Store {
 	}
 
 	listSnapshots () {
-		return false;
+		return Promise.resolve([]);
 	};
 
 	listEBS () {
-		return false;
+		return new Promise((res, rej) => {res([])});
 	}
-
 }
 
 
