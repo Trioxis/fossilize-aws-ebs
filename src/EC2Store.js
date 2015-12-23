@@ -5,10 +5,10 @@ class EC2Store {
 
 	listSnapshots () {
 		return Promise.resolve([]);
-	};
+	}
 
 	listEBS () {
-		return new Promise((res, rej) => {res([])});
+		return new Promise((res) => {res([]);});
 	}
 }
 

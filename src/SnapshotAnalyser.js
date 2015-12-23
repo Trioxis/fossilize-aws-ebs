@@ -1,9 +1,9 @@
 let findDeadSnapshots = (snapshotList) => {
-	return [];
+	return [snapshotList];
 };
 
 let snapshotIsDead = (snapshot) => {
-	return false;
-}
+	return snapshot;
+};
 
 export {findDeadSnapshots, snapshotIsDead};
