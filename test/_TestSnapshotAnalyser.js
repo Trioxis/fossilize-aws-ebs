@@ -4,7 +4,7 @@ import SnapshotAnalyser from '../src/SnapshotAnalyser';
 
 describe('SnapshotAnalyser', () => {
 	describe('findDeadSnapshots', () => {
-		it('should remove snapshots still within their expiry from the given list');
+		it('should remove snapshots that are still within their expiry from the given list');
 	});
 
 	describe('snapshotIsDead', () => {

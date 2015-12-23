@@ -1,5 +1,6 @@
 import EC2Store from './EC2Store';
 import {findDeadSnapshots} from './SnapshotAnalyser';
+import {makeDeleteAction} from './ActionCreator';
 
 export default function () {
 	let ec2 = new EC2Store();
@@ -7,12 +8,10 @@ export default function () {
 	return ec2.listSnapshots()
 		.then(snapList => {
 			let cleanupActions = snapList => {
-				let deadSnaps = function filterDeadSnaps (snapList) {
-					return snapList.filter(snap => isDead(snap));
-				};
+				let deadSnaps = findDeadSnapshots(snapList);
 
 				return generateCleanupActions(deadSnaps => {
-					deadSnaps.map(snap => cleanUpAction(snap))
+					deadSnaps.map(snap => makeDeleteAction(snap));
 				});
 			};
 
