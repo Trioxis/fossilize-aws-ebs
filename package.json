@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
-    "lint": "node ./node_modules/eslint/bin/eslint.js index.js src/** test/**",
+    "lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
     "build": "babel src -d build --source-maps",
     "start": "node index.js"
   },
