@@ -1,6 +1,7 @@
 import EC2Store from './EC2Store';
 import {findDeadSnapshots} from './SnapshotAnalyser';
-import {makeDeleteAction} from './ActionCreator';
+import {makeDeleteAction, makeCreationActions} from './ActionCreator';
+import {doActions} from './Actioner';
 
 export default function () {
 	let ec2 = new EC2Store();
@@ -10,18 +11,19 @@ export default function () {
 			let cleanupActions = snapList => {
 				let deadSnaps = findDeadSnapshots(snapList);
 
-				return generateCleanupActions(deadSnaps => {
-					deadSnaps.map(snap => makeDeleteAction(snap));
-				});
+				// Convert list of dead snapshots to list of cleanup actions
+				return deadSnaps.map(snap => makeDeleteAction(snap));
 			};
 
 			let creationActions = snapList => {
 				return ec2.listEBS()
-					.then(ebsList => listBackupActionsNeeded(ebsList, snapList))
+					.then(ebsList => {
+						return ebsList.map(volume => makeCreationActions(volume, snapList));
+					});
 			};
 
 			return new Promise.all([cleanupActions(snapList), creationActions(snapList)])
 				.then(actionsArray => actionsArray[0].concat(actionsArray[1]))
-				.then(action => doActions(actions));
-	}).catch(err => console.log(err));
-};
+				.then(action => doActions(action));
+		}).catch(err => console.log(err));
+}

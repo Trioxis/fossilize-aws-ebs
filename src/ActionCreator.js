@@ -1,9 +1,9 @@
 let makeDeleteAction = (snap) => {
-	return {};
+	return {snap};
 };
 
-let makeCreateAction = (volume) => {
-	return {};
+let makeCreateAction = (volume, snapList) => {
+	return {volume, snapList};
 };
 
 export {makeDeleteAction, makeCreateAction};
