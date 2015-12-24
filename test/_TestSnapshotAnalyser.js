@@ -1,6 +1,6 @@
 import expect from 'expect.js';
 
-import SnapshotAnalyser from '../src/SnapshotAnalyser';
+import {findDeadSnapshots, snapshotIsDead} from '../src/SnapshotAnalyser';
 
 describe('SnapshotAnalyser', () => {
 	describe('findDeadSnapshots', () => {
