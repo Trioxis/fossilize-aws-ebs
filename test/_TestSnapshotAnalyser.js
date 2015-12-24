@@ -10,5 +10,5 @@ describe('SnapshotAnalyser', () => {
 	describe('snapshotIsDead', () => {
 		it('should return true if the snapshot is past its expiry date');
 		it('should return false if the snapshot is still within its expiry date');
-	})
-})
+	});
+});

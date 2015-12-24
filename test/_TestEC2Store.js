@@ -11,5 +11,5 @@ describe('EC2Store', () => {
 	describe('listEBS', () => {
 		it('should ask AWS EC2 for a list of all EBS volumes');
 		it('should return a Promise that resolves to an arrat of EBS volumes');
-	})
+	});
 });
