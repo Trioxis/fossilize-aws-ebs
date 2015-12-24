@@ -8,22 +8,16 @@ export default function () {
 
 	return ec2.listSnapshots()
 		.then(snapList => {
-			let cleanupActions = snapList => {
-				let deadSnaps = findDeadSnapshots(snapList);
+			let deadSnaps = findDeadSnapshots(snapList);
+			let cleanupActions = deadSnaps.map(snap => makeDeleteAction(snap));
 
-				// Convert list of dead snapshots to list of cleanup actions
-				return deadSnaps.map(snap => makeDeleteAction(snap));
-			};
+			let creationActions = ec2.listEBS()
+				.then(ebsList => {
+					return ebsList.map(volume => makeCreationActions(volume, snapList));
+				});
 
-			let creationActions = snapList => {
-				return ec2.listEBS()
-					.then(ebsList => {
-						return ebsList.map(volume => makeCreationActions(volume, snapList));
-					});
-			};
-
-			return new Promise.all([cleanupActions(snapList), creationActions(snapList)])
+			return Promise.all([cleanupActions, creationActions])
 				.then(actionsArray => actionsArray[0].concat(actionsArray[1]))
 				.then(action => doActions(action));
-		}).catch(err => console.log(err));
+		}).catch(err => console.error(err));
 }
