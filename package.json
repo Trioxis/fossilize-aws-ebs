@@ -34,6 +34,10 @@
     "babel-register": "^6.3.13",
     "eslint": "^1.10.3",
     "expect.js": "^0.3.1",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.2.26"
   }
 }
