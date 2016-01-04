@@ -59,7 +59,7 @@ describe('EC2Store', () => {
 				});
 		});
 		it.skip('should return a Promise that resolves to an array of EC2 snapshots');
-		it.skip('should filter snapshots so that only snapshots owned by us ... something')
+		it.skip('should exclusively return snapshots owned by current account')
 	});
 
 	describe('listEBS', () => {
