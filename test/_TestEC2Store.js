@@ -58,12 +58,12 @@ describe('EC2Store', () => {
 					return;
 				});
 		});
-		it('should return a Promise that resolves to an array of EC2 snapshots');
-		it('should filter snapshots so that only snapshots owned by us ... something')
+		it.skip('should return a Promise that resolves to an array of EC2 snapshots');
+		it.skip('should filter snapshots so that only snapshots owned by us ... something')
 	});
 
 	describe('listEBS', () => {
-		it('should ask AWS EC2 for a list of all EBS volumes');
-		it('should return a Promise that resolves to an arrat of EBS volumes');
+		it.skip('should ask AWS EC2 for a list of all EBS volumes');
+		it.skip('should return a Promise that resolves to an arrat of EBS volumes');
 	});
 });
