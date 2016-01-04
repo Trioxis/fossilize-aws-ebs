@@ -59,7 +59,11 @@ To actually run the app, run
 npm start
 ```
 
-This runs the `index.js` file, which uses the built code from the previous step. In the beginning this won't do anything useful since most of the code hasn't been written yet. Running may change later once the code is closer to production stage. 
+This runs the [`index.js`](index.js) file, which uses the built code from the previous step. In the beginning this won't do anything useful since most of the code hasn't been written yet. Running may change later once the code is closer to production stage.
+
+## Backup Runner API
+
+The function exported by [`src/index.js`](src/index.js) should run the entire backup process (described in 'What does this do?' section above) using the APIs provided by the modules in `src/`. For detail on these APIs, see the [API doc](docs/API.md)
 
 ## Backup Tag API
 
