@@ -39,6 +39,28 @@ If you only want to lint the code, run
 npm run lint
 ```
 
+## Building
+
+This app is written using [ES6 features](https://github.com/lukehoban/es6features) such as arrow functions and modules. These features are not yet fully implemented in the Node.js engine that runs the app, so it is necessary to compile the code (using [Babel](https://babeljs.io/)) down to ES5.
+
+To build the code, run
+
+```
+npm run build
+```
+
+The built code appears in the `build/` directory. Don't forget the `run` part of the command, `npm build` does nothing.
+
+## Running
+
+To actually run the app, run
+
+```
+npm start
+```
+
+This runs the `index.js` file, which uses the built code from the previous step. In the beginning this won't do anything useful since most of the code hasn't been written yet. Running may change later once the code is closer to production stage. 
+
 ## Backup Tag API
 
 _To be finialised_

@@ -1,4 +1,5 @@
 var BackupRunner = require('./build/');
 
-console.log(BackupRunner.default);
+console.log('Runnning the backup script in ./build/');
 BackupRunner.default();
+console.log('Done, exiting');
