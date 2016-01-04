@@ -25,3 +25,10 @@ where `params` is an object that configures how the class will contact EC2 (thin
 
 - `ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 owned by the current user.
 - `ec2.listEBS` - returns a Promise that resolves to an array of all the EBS volumes in EC2.
+
+## SnapshotAnalyser
+
+[`SnapshotAnalyser.js`](../src/SnapshotAnalyser.js) exports two named functions that examine whether or not snapshots should continue to exist.
+
+- `findDeadSnapshots(snapshotList)` - accepts an array of snapshot objects and returns an array of snapshots that have expired.
+- `snapshotIsDead(snapshot)` - given a snapshot object, returns true if the snapshot has expired. It determines this based on tags that represent things like expiry dates. If the snapshot is still valid, the function returns false. 
