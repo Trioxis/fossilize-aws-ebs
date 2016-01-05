@@ -1,7 +1,7 @@
 # aws-backup-manager
 Automatically back up EBS volumes using tags
 
-[![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager)
+[![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager) [![Coverage Status](https://coveralls.io/repos/Trioxis/aws-backup-manager/badge.svg?branch=master&service=github)](https://coveralls.io/github/Trioxis/aws-backup-manager?branch=master)
 
 ## What does this do?
 
