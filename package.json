@@ -7,13 +7,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm run mocha && npm run coveralls",
-    "mocha": "npm run lint && node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
-    "lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
+    "test": "npm run _lint && npm run _mocha",
+    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html --report lcov node_modules/mocha/bin/_mocha -- --reporter dot",
+    "_lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
+    "_mocha": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
+    "_send_to_coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "build": "babel src -d build --source-maps",
-    "start": "node index.js",
-    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html node_modules/mocha/bin/_mocha -- --reporter dot",
-    "coveralls": "babel-node node_modules/isparta/bin/isparta cover --report lcovonly node_modules/mocha/bin/_mocha -- --reporter mocha-lcov-reporter && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
