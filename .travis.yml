@@ -6,3 +6,4 @@ script:
   - npm test
   - npm run cover
   - npm run _send_to_coveralls
+  - npm run _send_to_codeclimate
