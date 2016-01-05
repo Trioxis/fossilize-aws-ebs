@@ -7,11 +7,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm run lint && node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
+    "test": "npm run mocha && npm run coveralls",
+    "mocha": "npm run lint && node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
     "lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
     "build": "babel src -d build --source-maps",
     "start": "node index.js",
-    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html node_modules/mocha/bin/_mocha -- --reporter dot"
+    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html node_modules/mocha/bin/_mocha -- --reporter dot",
+    "coveralls": "babel-node node_modules/isparta/bin/isparta cover --report lcovonly node_modules/mocha/bin/_mocha -- --reporter mocha-lcov-reporter && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
     "babel-cli": "^6.3.17",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.3.13",
+    "coveralls": "^2.11.6",
     "eslint": "^1.10.3",
     "expect.js": "^0.3.1",
     "isparta": "^4.0.0",
