@@ -30,8 +30,21 @@ This will lint the code then run [mocha](http://mochajs.org/). Mocha finds test 
 
 If you only want to lint the code, run
 ```
-npm run lint
+npm run _lint
 ```
+
+### Code Coverage
+
+Code coverage is checked using [isparta](https://github.com/douglasduteil/isparta) by running
+```
+npm run cover
+```
+This outputs a html report in `coverage/` that can be perused in a web browser. It also outputs results to console and in lcov format to send to third party coverage services (see section below)
+
+### Continuous Integration
+
+We're using [Travis CI](https://travis-ci.org/Trioxis/aws-backup-manager) for continuous integration. It runs all tests and sends code coverage information to [Coveralls](https://coveralls.io/github/Trioxis/aws-backup-manager) and [CodeClimate](https://codeclimate.com/github/Trioxis/aws-backup-manager). Check [`.travis.yml`](.travis.yml) for the tasks that are run in CI. 
+
 ## Building
 
 This app is written using [ES6 features](https://github.com/lukehoban/es6features) such as [arrow functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions), [modules](https://hacks.mozilla.org/2015/08/es6-in-depth-modules/) and [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise). These features are not yet fully implemented in the Node.js engine that runs the app, so it is necessary to compile the code (using [Babel](https://babeljs.io/)) down to ES5.
