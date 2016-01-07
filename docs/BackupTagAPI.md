@@ -17,12 +17,26 @@ A tuple takes the form **`[x|y]`**
 
 For example, the tuple `[1,12]` means the EBS should be backed up once an hour and these backups should be kept for twelve hours before they are deleted.
 
-Aliases for these tuples to make the list more human-readable and can be substituted in the list for tuples. The aliases are:
+Aliases for these tuples to make the list more human-readable and can be substituted in the list for tuples. The aliases and their outcomes are:
 
-* `Hourly` = `[1|24]` - one backup an hour for 24 hours
-* `Daily` = `[24|168]` - one backup a day for 7 days
-* `Weekly` = `[168|672]` - one backup a week for 4 weeks
-* `Monthly` = `[672|8760]` - one backup a month for 12 months
-* `Yearly` = `[8064|61320]` - one backup a year for 7 years
+* `**Hourly**` = `[1|24]` - one backup an hour for 24 hours
+* `**Daily**` = `[24|168]` - one backup a day for 7 days
+* `**Weekly**` = `[168|672]` - one backup a week for 4 weeks
+* `**Monthly**` = `[672|8760]` - one backup a month for 12 months
+* `**Yearly**` = `[8064|61320]` - one backup a year for 7 years
+
+As an example: Say you wanted to back up an EBS in the following way:
+
+* A backup every three hours for 5 days
+* A backup once a week for 4 weeks
+* A backup every 24 hours for 3 weeks
+
+You would use the following value for `backups:config-v1`
+
+```
+[3|120],Weekly,[24|504]
+```
+
+
 
 ## Tag API for Snapshots
