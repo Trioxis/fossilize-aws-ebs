@@ -8,11 +8,11 @@ An EC2 object that should be backed up by `aws-backup-manager` will have a tag w
 
 ## Tag API for EBS volumes
 
-The value of the **`backups:config-v1`** tag defines how often the EBS volume should be backed up and how long these backups are to be retained. It is in the format of a comma delimited list of tuples and aliases.
+The value of the `backups:config-v1` tag defines how often the EBS volume should be backed up and how long these backups are to be retained. It is in the format of a comma delimited list of tuples and aliases.
 
 A tuple takes the form **`[x|y]`**
 
-* **x** is an integer denoting the number of hours between backups
+* **x** is an integer denoting the number of hours between successive backups
 * **y** is an integer denoting the time to live (TTL) for the backup in hours
 
 For example, the tuple `[1,12]` means the EBS should be backed up once an hour and these backups should be kept for twelve hours before they are deleted.
@@ -32,11 +32,17 @@ As an example: Say you wanted to back up an EBS in the following way:
 * A backup every 24 hours for 3 weeks
 
 You would use the following value for `backups:config-v1`
-
 ```
 [3|120],Weekly,[24|504]
 ```
 
-
-
 ## Tag API for Snapshots
+
+The value of the `backups:config-v1` tag defines conditions that must be met for the snapshot to be deleted. Currently the only condition is the expiry date of the snapshot. The value is in the form of a comma delimited list of conditions.
+
+The **ExpiryDate** condition the date after which a snapshot should be deleted. The date value is in the format `YYYYMMddHHmmss` (these are the [same tokens as used in moment.js](http://momentjs.com/docs/#/parsing/string-format/)).
+
+To delete a snapshot after 11:25:13 PM on the 5th of June 2015, you would use this value for `backups:config-v1`:
+```
+ExpiryDate:20150605232513
+```
