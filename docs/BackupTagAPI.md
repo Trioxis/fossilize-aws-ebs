@@ -19,11 +19,13 @@ For example, the tuple `[1,12]` means the EBS should be backed up once an hour a
 
 Aliases for these tuples exist to make the list more human-readable and can be substituted in the list in place of tuples. The aliases and their equivalent tuples are:
 
-* **`Hourly`** = `[1|24]` - one backup an hour for 24 hours
-* **`Daily`** = `[24|168]` - one backup a day for 7 days
-* **`Weekly`** = `[168|672]` - one backup a week for 4 weeks
-* **`Monthly`** = `[672|8760]` - one backup a month for 12 months
-* **`Yearly`** = `[8064|61320]` - one backup a year for 7 years
+* **`Hourly`** = `[1|24]` - keeps at most 24 Hourly backups at a time
+* **`Daily`** = `[24|168]` - keeps at most 7 Daily backups at a time
+* **`Weekly`** = `[168|672]` - keeps at most 4 Weekly backups at a time
+* **`Monthly`** = `[672|8760]` - keeps at most 12 Monthly backups at a time
+* **`Yearly`** = `[8064|61320]` - keeps at most 7 yearly backups at a time
+
+(Note that the names of these aliases are not entirely accurate. They don't take in to account leap years for example)
 
 As an example, say you wanted to back up an EBS according to this schema:
 
