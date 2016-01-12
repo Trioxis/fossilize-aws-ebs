@@ -9,7 +9,8 @@ let ec2Responses = {
 			OwnerId: '791606823516',
 			Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
 			VolumeSize: 50,
-			Tags: [],
+			Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
+				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201601271120' } ],
 			Encrypted: false
 		}, {
 			SnapshotId: 'snap-d9d374d7',
@@ -20,8 +21,8 @@ let ec2Responses = {
 			OwnerId: '791606823516',
 			Description: 'Daily backup of frg-web-xvdf',
 			VolumeSize: 20,
-			Tags: [ { Key: 'Name', Value: 'frg-web-xvdf-backup-2015-05-27-11-20' },
-				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201505271120' } ],
+			Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' },
+				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201605271120' } ],
 			Encrypted: false
 		}]
 	},

@@ -56,6 +56,7 @@ describe('EC2Store', () => {
 
 			return ec2Store.listSnapshots()
 				.then(snapList => {
+					expect(snapList.length).to.be(1);
 					snapList.map((snapshot) => {
 						expect(snapshot).to.only.have.keys([
 							'SnapshotId', 'StartTime', 'Name', 'ExpiryDate'
@@ -88,6 +89,7 @@ describe('EC2Store', () => {
 			expect(volListPromise).to.be.a(Promise);
 			return volListPromise.then(volList => {
 				expect(volList).to.be.an(Array);
+				expect(volList.length).to.not.be(0);
 				return;
 			})
 		});
@@ -102,6 +104,7 @@ describe('EC2Store', () => {
 
 			return ec2Store.listEBS()
 				.then(volList => {
+					expect(volList.length).to.be(1);
 					volList.map((volume) => {
 						expect(volume).to.only.have.keys([
 							'VolumeId', 'Name', 'BackupConfig'
