@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "npm run _lint && npm run _mocha",
+    "watch": "npm run _mocha -- --watch --reporter min",
     "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html --report lcov node_modules/mocha/bin/_mocha -- --reporter dot",
     "_lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
     "_mocha": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
