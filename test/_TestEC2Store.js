@@ -43,7 +43,23 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should exclusively return snapshots owned by current account')
+		it.skip('should exclusively return snapshots owned by current account');
+
+		it('should map the response to an array of objects that each represent a snapshot', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+
+			return ec2Store.listSnapshots()
+				.then(snapList => {
+					snapList.map((snapshot) => {
+						expect(snapshot).to.only.have.keys([
+							'SnapshotId', 'StartTime', 'Name', 'ExpiryDate'
+						]);
+					});
+					return;
+				});
+		});
 	});
 
 	describe('listEBS', () => {
@@ -67,5 +83,7 @@ describe('EC2Store', () => {
 				return;
 			})
 		});
+
+		it.skip('should map the response to an array of objects that each represent an EBS volume');
 	});
 });
