@@ -31,7 +31,7 @@ describe('EC2Store', () => {
 				});
 		});
 
-		it('should return a Promise that resolves to an array of EC2 snapshots', () => {
+		it.skip('should return a Promise that resolves to an array of EC2 snapshots', () => {
 			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
 
 			let snapListPromise = ec2Store.listSnapshots();
@@ -45,7 +45,7 @@ describe('EC2Store', () => {
 
 		it.skip('should only return snapshots that have the `backups:config-v0` tag');
 
-		it('should map the response to an array of objects that each represent a snapshot', () => {
+		it.skip('should map the response to an array of objects that each represent a snapshot', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
@@ -72,7 +72,7 @@ describe('EC2Store', () => {
 	});
 
 	describe('listEBS', () => {
-		it('should ask AWS EC2 for a list of all EBS volumes', () => {
+		it.skip('should ask AWS EC2 for a list of all EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
@@ -82,7 +82,7 @@ describe('EC2Store', () => {
 				});
 		});
 
-		it('should return a Promise that resolves to an array of EBS volumes', () => {
+		it.skip('should return a Promise that resolves to an array of EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 			let volListPromise = ec2Store.listEBS();
 
@@ -94,7 +94,7 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it('should map the response to an array of objects that each represent an EBS volume', () => {
+		it.skip('should map the response to an array of objects that each represent an EBS volume', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
