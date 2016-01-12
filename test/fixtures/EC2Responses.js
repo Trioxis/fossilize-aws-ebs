@@ -21,8 +21,7 @@ let ec2Responses = {
 			Description: 'Daily backup of frg-web-xvdf',
 			VolumeSize: 20,
 			Tags: [ { Key: 'Name', Value: 'frg-web-xvdf-backup-2015-05-27-11-20' },
-			{ Key: 'BackupTime', Value: '2015-05-27-11-20' },
-			{ Key: 'BackupType', Value: 'Monthly' } ],
+				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201505271120' } ],
 			Encrypted: false
 		}]
 	},
