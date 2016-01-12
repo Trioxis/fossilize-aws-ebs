@@ -84,6 +84,20 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should map the response to an array of objects that each represent an EBS volume');
+		it('should map the response to an array of objects that each represent an EBS volume', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+			// sandbox.restore();
+			return ec2Store.listEBS()
+				.then(volList => {
+					volList.map((volume) => {
+						expect(volume).to.only.have.keys([
+							'VolumeId', 'Name', 'BackupConfig'
+						]);
+					});
+					return;
+				});
+		});
 	});
 });
