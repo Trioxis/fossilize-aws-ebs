@@ -43,7 +43,7 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should exclusively return snapshots owned by current account');
+		it.skip('should only return snapshots owned by current account');
 
 		it('should map the response to an array of objects that each represent a snapshot', () => {
 			// This means converting the Name and backups:config tags to properties
@@ -88,7 +88,6 @@ describe('EC2Store', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
-			// sandbox.restore();
 			return ec2Store.listEBS()
 				.then(volList => {
 					volList.map((volume) => {
