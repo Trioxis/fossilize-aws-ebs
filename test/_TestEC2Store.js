@@ -37,7 +37,6 @@ describe('EC2Store', () => {
 			let snapListPromise = ec2Store.listSnapshots();
 
 			expect(snapListPromise).to.be.a(Promise);
-
 			return snapListPromise.then(snapList => {
 				expect(snapList).to.be.an(Array);
 				return;
@@ -49,18 +48,17 @@ describe('EC2Store', () => {
 
 	describe('listEBS', () => {
 		it('should ask AWS EC2 for a list of all EBS volumes', () => {
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.snapshots1);
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
 				.then(volumeList => {
-					volumeList.Volumes.map((vol) => { console.log(vol);})
 					expect(mockEC2.describeVolumes.called).to.be.ok();
 					return;
 				});
 		});
 
 		it('should return a Promise that resolves to an array of EBS volumes', () => {
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.snapshots1);
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 			let volListPromise = ec2Store.listEBS();
 
 			expect(volListPromise).to.be.a(Promise);
