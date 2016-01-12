@@ -30,12 +30,44 @@ describe('EC2Store', () => {
 					return;
 				});
 		});
-		it.skip('should return a Promise that resolves to an array of EC2 snapshots');
+
+		it('should return a Promise that resolves to an array of EC2 snapshots', () => {
+			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+
+			let snapListPromise = ec2Store.listSnapshots();
+
+			expect(snapListPromise).to.be.a(Promise);
+
+			return snapListPromise.then(snapList => {
+				expect(snapList).to.be.an(Array);
+				return;
+			})
+		});
+
 		it.skip('should exclusively return snapshots owned by current account')
 	});
 
 	describe('listEBS', () => {
-		it.skip('should ask AWS EC2 for a list of all EBS volumes');
-		it.skip('should return a Promise that resolves to an arrat of EBS volumes');
+		it('should ask AWS EC2 for a list of all EBS volumes', () => {
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.snapshots1);
+
+			return ec2Store.listEBS()
+				.then(volumeList => {
+					volumeList.Volumes.map((vol) => { console.log(vol);})
+					expect(mockEC2.describeVolumes.called).to.be.ok();
+					return;
+				});
+		});
+
+		it('should return a Promise that resolves to an array of EBS volumes', () => {
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.snapshots1);
+			let volListPromise = ec2Store.listEBS();
+
+			expect(volListPromise).to.be.a(Promise);
+			return volListPromise.then(volList => {
+				expect(volList).to.be.an(Array);
+				return;
+			})
+		});
 	});
 });
