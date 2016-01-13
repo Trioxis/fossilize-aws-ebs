@@ -61,7 +61,7 @@ If you only want to lint the code, run
 npm run _lint
 ```
 
-You can set tests to automatically with
+You can set tests to run automatically with
 ```
 npm run watch
 ```
