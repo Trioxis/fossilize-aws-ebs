@@ -4,38 +4,10 @@ import sinon from 'sinon';
 import EC2Store from '../src/EC2Store';
 import AWS from 'aws-sdk';
 
+import ec2Responses from './fixtures/EC2Responses';
+
 describe('EC2Store', () => {
 	let sandbox, ec2Store, mockEC2, mockAWS;
-
-	let ec2Responses = {
-		snapshots1: {
-			Snapshots: [{
-				SnapshotId: 'snap-6c9f5062',
-				VolumeId: 'vol-b77cff7d',
-				State: 'completed',
-				StartTime: 'Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)',
-				Progress: '100%',
-				OwnerId: '791606823516',
-				Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
-				VolumeSize: 50,
-				Tags: [],
-				Encrypted: false
-			}, {
-				SnapshotId: 'snap-d9d374d7',
-				VolumeId: 'vol-0a8631c0',
-				State: 'completed',
-				StartTime: 'Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)',
-				Progress: '100%',
-				OwnerId: '791606823516',
-				Description: 'Daily backup of frg-web-xvdf',
-				VolumeSize: 20,
-				Tags: [ { Key: 'Name', Value: 'frg-web-xvdf-backup-2015-05-27-11-20' },
-				{ Key: 'BackupTime', Value: '2015-05-27-11-20' },
-				{ Key: 'BackupType', Value: 'Monthly' } ],
-				Encrypted: false
-			}]
-		}
-	};
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
@@ -58,12 +30,94 @@ describe('EC2Store', () => {
 					return;
 				});
 		});
-		it.skip('should return a Promise that resolves to an array of EC2 snapshots');
-		it.skip('should exclusively return snapshots owned by current account')
+
+		it.skip('should return a Promise that resolves to an array of EC2 snapshots', () => {
+			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+
+			let snapListPromise = ec2Store.listSnapshots();
+
+			expect(snapListPromise).to.be.a(Promise);
+			return snapListPromise.then(snapList => {
+				expect(snapList).to.be.an(Array);
+				return;
+			})
+		});
+
+		it.skip('should only return snapshots that have the `backups:config-v0` tag');
+
+		it.skip('should map the response to an array of objects that each represent a snapshot', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+
+			// Response contains one snapshot so we can easily check that mapping is correct
+			let singleSnap = ec2Responses.snapshots1.Snapshots[1];
+			mockEC2.describeSnapshots = sinon.stub().yields(null, {Snapshots: [ singleSnap ]});
+
+			return ec2Store.listSnapshots()
+				.then(snapList => {
+					expect(snapList.length).to.be(1);
+					snapList.map((snapshot) => {
+						expect(snapshot).to.eql({
+							SnapshotId: singleSnap.SnapshotId,
+							StartTime: singleSnap.StartTime,
+							Name: singleSnap.Tags[0].Value,
+							ExpiryDate: 201505271120
+						});
+					});
+					return;
+				});
+		});
 	});
 
 	describe('listEBS', () => {
-		it.skip('should ask AWS EC2 for a list of all EBS volumes');
-		it.skip('should return a Promise that resolves to an arrat of EBS volumes');
+		it.skip('should ask AWS EC2 for a list of all EBS volumes', () => {
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+
+			return ec2Store.listEBS()
+				.then(volumeList => {
+					expect(mockEC2.describeVolumes.called).to.be.ok();
+					return;
+				});
+		});
+
+		it.skip('should return a Promise that resolves to an array of EBS volumes', () => {
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+			let volListPromise = ec2Store.listEBS();
+
+			expect(volListPromise).to.be.a(Promise);
+			return volListPromise.then(volList => {
+				expect(volList).to.be.an(Array);
+				expect(volList.length).to.not.be(0);
+				return;
+			})
+		});
+
+		it.skip('should map the response to an array of objects that each represent an EBS volume', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+
+			// Response contains one snapshot so we can easily check that mapping is correct
+			let singleVol = ec2Responses.volumes1.Volumes[1];
+			mockEC2.describeVolumes = sinon.stub().yields(null, {Volumes: [singleVol]});
+
+			return ec2Store.listEBS()
+				.then(volList => {
+					expect(volList.length).to.be(1);
+					volList.map((volume) => {
+						expect(volume).to.eql({
+							VolumeId: singleVol.VolumeId,
+							Name: singleVol.Tags[1].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 1, Expiry: 12 },
+									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Frequency: 48, Expiry: 144 }
+								]
+							}
+						});
+					});
+					return;
+				});
+		});
 	});
 });

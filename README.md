@@ -61,6 +61,12 @@ If you only want to lint the code, run
 npm run _lint
 ```
 
+You can set tests to automatically with
+```
+npm run watch
+```
+Your terminal will display updated test status as soon as save your code.
+
 #### Code Coverage
 
 Code coverage is checked using [isparta](https://github.com/douglasduteil/isparta) by running
