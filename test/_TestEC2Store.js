@@ -31,7 +31,7 @@ describe('EC2Store', () => {
 				});
 		});
 
-		it.skip('should return a Promise that resolves to an array of EC2 snapshots', () => {
+		it('should return a Promise that resolves to an array of EC2 snapshots', () => {
 			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
 
 			let snapListPromise = ec2Store.listSnapshots();

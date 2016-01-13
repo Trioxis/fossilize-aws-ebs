@@ -22,7 +22,7 @@ class EC2Store {
 			let ec2 = new AWS.EC2();
 			ec2.describeSnapshots({}, function (err, response) {
 				if (err) reject(err);
-				else resolve(response);
+				else resolve(response.Snapshots);
 			});
 		});
 	}
