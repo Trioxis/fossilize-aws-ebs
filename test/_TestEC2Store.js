@@ -53,18 +53,16 @@ describe('EC2Store', () => {
 			let singleSnap = ec2Responses.snapshots1.Snapshots[1];
 			mockEC2.describeSnapshots = sinon.stub().yields(null, {Snapshots: [ singleSnap ]});
 
-
 			return ec2Store.listSnapshots()
 				.then(snapList => {
 					expect(snapList.length).to.be(1);
 					snapList.map((snapshot) => {
-						expect(snapshot).to.only.have.keys([
-							'SnapshotId', 'StartTime', 'Name', 'ExpiryDate'
-						]);
-						expect(snapshot.SnapshotId).to.be(singleSnap.SnapshotId);
-						expect(snapshot.StartTime).to.be(singleSnap.StartTime);
-						expect(snapshot.Name).to.be(singleSnap.Tags[0].Value);
-						expect(snapshot.ExpiryDate).to.be(201505271120);
+						expect(snapshot).to.eql({
+							SnapshotId: singleSnap.SnapshotId,
+							StartTime: singleSnap.StartTime,
+							Name: singleSnap.Tags[0].Value,
+							ExpiryDate: 201505271120
+						});
 					});
 					return;
 				});
@@ -106,12 +104,17 @@ describe('EC2Store', () => {
 				.then(volList => {
 					expect(volList.length).to.be(1);
 					volList.map((volume) => {
-						expect(volume).to.only.have.keys([
-							'VolumeId', 'Name', 'BackupConfig'
-						]);
-						expect(volume.VolumeId).to.be(singleVol.VolumeId);
-						expect(volume.Name).to.be(singleVol.Tags[1].Value);
-						// expect(volume.BackupConfig).to.be(singleVol.Tags[0]) // Haven't figured out what this object will look like yet
+						expect(volume).to.eql({
+							VolumeId: singleVol.VolumeId,
+							Name: singleVol.Tags[1].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 1, Expiry: 12 },
+									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Frequency: 48, Expiry: 144 }
+								]
+							}
+						});
 					});
 					return;
 				});
