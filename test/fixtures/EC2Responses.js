@@ -1,6 +1,8 @@
 let ec2Responses = {
 	snapshots1: {
-		Snapshots: [{
+		Snapshots: [
+
+			{
 			SnapshotId: 'snap-6c9f5062',
 			VolumeId: 'vol-b77cff7d',
 			State: 'completed',
@@ -12,7 +14,9 @@ let ec2Responses = {
 			Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
 				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201601271120' } ],
 			Encrypted: false
-		}, {
+			},
+
+			{
 			SnapshotId: 'snap-d9d374d7',
 			VolumeId: 'vol-0a8631c0',
 			State: 'completed',
@@ -24,7 +28,9 @@ let ec2Responses = {
 			Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' },
 				{ Key: 'backups:config-v0', Value: 'ExpiryDate:201605271120' } ],
 			Encrypted: false
-		}]
+			}
+
+			]
 	},
 
 	volumes1: {

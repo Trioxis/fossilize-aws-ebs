@@ -43,9 +43,9 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should only return snapshots that have the `backups:config-v0` tag');
+		it('should only return snapshots that have the `backups:config-v0` tag');
 
-		it.skip('should map the response to an array of objects that each represent a snapshot', () => {
+		it('should map the response to an array of objects that each represent a snapshot', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
