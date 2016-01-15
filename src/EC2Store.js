@@ -25,7 +25,9 @@ class EC2Store {
 				else resolve(response.Snapshots.map(function(obj){
 					var obj2 = {
 						SnapshotId: obj.SnapshotId,
-						StartTime: obj.StartTime
+						StartTime: obj.StartTime,
+						Name: obj.Tags[0].Value,
+    				ExpiryDate: parseInt(obj.Tags[1].Value.slice(11,23))
 					};
 					return obj2;
 				})

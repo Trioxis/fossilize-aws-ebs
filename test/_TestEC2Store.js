@@ -61,7 +61,7 @@ describe('EC2Store', () => {
 							SnapshotId: singleSnap.SnapshotId,
 							StartTime: singleSnap.StartTime,
 							Name: singleSnap.Tags[0].Value,
-							ExpiryDate: 201505271120
+							ExpiryDate: 201605271120
 						});
 					});
 					return;
