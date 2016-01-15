@@ -1,5 +1,7 @@
 import expect from 'expect.js';
 
+import MetricManager from '../../src/metrics';
+
 describe('MetricManager', () => {
 	describe('log', () => {
 		it.skip('should log to a logging handler that is added to the manager');
