@@ -27,7 +27,7 @@ class EC2Store {
 						SnapshotId: obj.SnapshotId,
 						StartTime: obj.StartTime,
 						Name: obj.Tags[0].Value,
-    				ExpiryDate: parseInt(obj.Tags[1].Value.slice(11,23))
+						ExpiryDate: parseInt(obj.Tags[1].Value.slice(11,23))
 					};
 					return obj2;
 				})
