@@ -1,0 +1,3 @@
+let log;
+
+export {log};
