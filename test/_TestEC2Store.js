@@ -50,20 +50,25 @@ describe('EC2Store', () => {
 			// and removing all other unnecessary properties
 
 			// Response contains one snapshot so we can easily check that mapping is correct
-			let singleSnap = ec2Responses.snapshots1.Snapshots[1];
-			mockEC2.describeSnapshots = sinon.stub().yields(null, {Snapshots: [ singleSnap ]});
+			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
 
 			return ec2Store.listSnapshots()
 				.then(snapList => {
-					expect(snapList.length).to.be(1);
-					snapList.map((snapshot) => {
-						expect(snapshot).to.eql({
-							SnapshotId: singleSnap.SnapshotId,
-							StartTime: singleSnap.StartTime,
-							Name: singleSnap.Tags[0].Value,
-							ExpiryDate: 201605271120
-						});
-					});
+					expect(snapList.length).to.be(2);
+					expect(snapList).to.eql([
+						{
+						  ExpiryDate: 201601271120,
+						  Name: "web-xvdf-backup-2015-12-27-00-19",
+						  SnapshotId: "snap-6c9f5062",
+						  StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)"
+						},
+						{
+						  ExpiryDate: 201605271121,
+						  Name: "web-xvdf-backup-2016-01-02-06-58",
+						  SnapshotId: "snap-d9d374d7",
+						  StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)"
+						}
+					]);
 					return;
 				});
 		});
