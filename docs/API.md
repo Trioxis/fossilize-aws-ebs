@@ -39,6 +39,4 @@ There is a metric manager available at `./metrics`. By giving this manager an ob
 
 ## Metric Manager
 
-- `use(handler)` - Pass in an object that has a `log` and/or `pushMetric` function. Any time the manger is told to log, this handler object will be used.
-- `log(message)` - Calls each object that has been added with `use()` and has a `log()` function. Useful for logging information about whats happening in the backup process.
-- `pushMetric(metric)` - Calls each object that has been added with `use()` and has a `pushMetric()` function. Useful for logging important statistical information such as number of backups successfully made, failures encountered etc.
+- `log(message)` - Currently logs to console.
