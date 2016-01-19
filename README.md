@@ -13,7 +13,7 @@ Automatically back up EBS volumes using tags
 
 ## Quickstart
 
-Make sure you have your AWS credentials set up. See the section ['Setting AWS Credentials'](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Setting_AWS_Credentials) of the AWS docs.
+Make sure you have your AWS credentials set up. Set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables or see the section ['Setting AWS Credentials'](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Setting_AWS_Credentials) of the AWS docs.
 
 ### Tag your EBS volumes
 
@@ -61,7 +61,7 @@ If you only want to lint the code, run
 npm run _lint
 ```
 
-You can set tests to automatically with
+You can set tests to run automatically with
 ```
 npm run watch
 ```
