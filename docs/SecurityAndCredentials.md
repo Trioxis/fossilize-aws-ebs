@@ -4,7 +4,7 @@ Some things to consider when using the backup manager
 
 ## Connecting to AWS using Access Keys
 
-This project uses the AWS Node SDK which automatically configures itself based on a shared credential file and environment variables.
+This project uses the AWS Node SDK which automatically configures itself based on a shared credential file and environment variables. To get up and running quickly, set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to your IAM account's access keys. Alternatively you can run the script on an EC2 instance or configure the shared credentials file, see the [instructions in AWS Node SDK Developer Guide](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html) for details
 
 ## IAM Roles for backup management
 
