@@ -16,7 +16,6 @@ The following IAM policy allows the script to run unimpeded. It is not specific 
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "Stmt1452822522000",
             "Effect": "Allow",
             "Action": [
                 "ec2:DescribeSnapshotAttribute",
