@@ -32,3 +32,11 @@ where `params` is an object that configures how the class will contact EC2 (thin
 
 - `findDeadSnapshots(snapshotList)` - accepts an array of snapshot objects and returns an array of snapshots that have expired.
 - `snapshotIsDead(snapshot)` - given a snapshot object, returns true if the snapshot has expired. It determines this based on tags that represent things like expiry dates. If the snapshot is still valid, the function returns false.
+
+# Logging and Metrics
+
+There is a metric manager available at `./metrics`. By giving this manager an object that exposes `log` and/or `pushMetric` functions, you can log to multiple locations easily throughout the code.
+
+## Metric Manager
+
+- `log(message)` - Currently logs to console.
