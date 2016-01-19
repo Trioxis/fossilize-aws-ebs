@@ -21,7 +21,7 @@
 import EC2Store from './EC2Store';
 let ec2 = new EC2Store(params);
 ```
-where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../tests/_TestEC2Store)).
+where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
 - `ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 owned by the current user.
 - `ec2.listEBS` - returns a Promise that resolves to an array of all the EBS volumes in EC2.
