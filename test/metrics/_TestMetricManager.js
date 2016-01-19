@@ -1,15 +1,30 @@
 import expect from 'expect.js';
+import sinon from 'sinon';
+import winston from 'winston';
 
-import MetricManager from '../../src/metrics';
+import * as metrics from '../../src/metrics';
 
 describe('MetricManager', () => {
 	describe('log', () => {
-		it.skip('should log to a logging handler that is added to the manager');
-	});
+		let sandbox, mocks;
 
-	describe('pushMetric', () => {
-		it.skip('should push metrics to a metric handler that is added to the manager');
-	});
+		beforeEach(() => {
+			sandbox = sinon.sandbox.create();
+			mocks = {};
+		});
 
-	it.skip('should be able to deal with handlers that expose both log and pushMetric functions')
+		afterEach(() => {
+			sandbox.restore();
+		});
+
+		it('should log with winston', () => {
+			mocks.winston = sandbox.stub(winston, 'log');
+			let message = 'lol';
+
+			metrics.log(message);
+
+			expect(mocks.winston.called).to.be.ok();
+			expect(mocks.winston.args[0]).to.contain(message);
+		});
+	});
 });
