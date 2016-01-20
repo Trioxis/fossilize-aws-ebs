@@ -8,3 +8,4 @@ script:
 after_success:
   - npm run _send_to_coveralls
   - npm run _send_to_codeclimate
+  - npm run _send_to_codecov
