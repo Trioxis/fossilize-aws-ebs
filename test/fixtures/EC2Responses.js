@@ -24,24 +24,24 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'ExpiryDate:201605271121' },
+				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk, ExpiryDate:201605271121' },
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
 
 			{
-			SnapshotId: 'snap-e6f154m2',
-			VolumeId: 'vol-0a8631c0',
+				SnapshotId: 'snap-e6f154m2',
+				VolumeId: 'vol-0a8631c0',
 
-			StartTime: 'Tue Jan 19 2016 09:37:23 GMT+1100 (AEDT)',
-			Progress: '100%',
-			OwnerId: '791606823516',
-			Description: 'Daily backup of frg-web-xvdf',
-			VolumeSize: 20,
-			Tags: [ { Key: 'not-a-backup', Value: 'ExpiryDate:201605271120'},
-				{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
-			Encrypted: false
-		},
+				StartTime: 'Tue Jan 19 2016 09:37:23 GMT+1100 (AEDT)',
+				Progress: '100%',
+				OwnerId: '791606823516',
+				Description: 'Daily backup of frg-web-xvdf',
+				VolumeSize: 20,
+				Tags: [ { Key: 'not-a-backup', Value: 'ExpiryDate:201605271120'},
+					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
+				Encrypted: false
+			},
 		],
 	},
 

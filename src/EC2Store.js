@@ -58,9 +58,13 @@ class EC2Store {
 							}
 						});
 
-						var splitDateString = filteredDateString[0].Value.split(', ');
+						if (filteredDateString.length === 1) {
+							filteredDateString = filteredDateString[0].Value.split(', ');
+						} else {
+							throw new Error('expected to receive an array with a single tag for expiry date but length > 1');
+						}
 
-						var filteredDateOnly = splitDateString.filter(function(string){
+						var filteredDateOnly = filteredDateString.filter(function(string){
 							var expiryDate = 'ExpiryDate';
 							if (string.indexOf(expiryDate) > -1) {
 								return true;
@@ -72,7 +76,7 @@ class EC2Store {
 						if (filteredDateOnly.length === 1) {
 							filteredDateOnly = parseInt(filteredDateOnly[0].slice(11,23));
 						} else {
-							throw new Error('expected to receive snapshot with a single value for expiry date but length > 1');
+							throw new Error('expected to receive an array with a single value for expiry date but length > 1');
 						}
 
 						var finalSnapshot = {
