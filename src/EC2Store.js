@@ -24,19 +24,19 @@ class EC2Store {
 				if (err) reject(err);
 
 				else {
-					var taggedForBackup = response.Snapshots.filter(function(obj){
-						for (var i=0; i<obj.Tags.length; i++) {
-							if (obj.Tags[i].Key === 'backups:config-v0') {
+					var snapshotsForBackup = response.Snapshots.filter(function(snap){
+						for (var i=0; i<snap.Tags.length; i++) {
+							if (snap.Tags[i].Key === 'backups:config-v0') {
 								return true;
 							}
 						}
 						return false;
 					});
 
-					resolve(taggedForBackup.map(function(obj){
+					resolve(snapshotsForBackup.map(function(snap){
 
-						var filteredForName = obj.Tags.filter(function(obj){
-							if (obj.Key === 'Name'){
+						var filteredForName = snap.Tags.filter(function(tag){
+							if (tag.Key === 'Name'){
 								return true;
 							} else {
 								return false;
@@ -49,8 +49,8 @@ class EC2Store {
 							throw new Error('expected to receive snapshot with a single value for name but length > 1');
 						}
 
-						var filteredForDate = obj.Tags.filter(function(obj){
-							if (obj.Value.slice(0,10) === 'ExpiryDate'){
+						var filteredForDate = snap.Tags.filter(function(tag){
+							if (tag.Value.slice(0,10) === 'ExpiryDate'){
 								return true;
 							} else {
 								return false;
@@ -63,17 +63,15 @@ class EC2Store {
 							throw new Error('expected to receive snapshot with a single value for expiry date but length > 1');
 						}
 
-						var obj2 = {
-							SnapshotId: obj.SnapshotId,
-							StartTime: obj.StartTime,
-							[filteredForName.Key]: filteredForName.Value,
+						var finalSnapshot = {
+							SnapshotId: snap.SnapshotId,
+							StartTime: snap.StartTime,
+							Name: filteredForName.Value,
 							ExpiryDate: filteredForDate
 						};
 
-						console.log(obj2);
-						return obj2;
-					})
-			);
+						return finalSnapshot;
+					}));
 				}
 			});
 		});
