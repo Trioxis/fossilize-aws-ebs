@@ -49,16 +49,28 @@ class EC2Store {
 							throw new Error('expected to receive snapshot with a single value for name but length > 1');
 						}
 
-						var filteredForDate = snap.Tags.filter(function(tag){
-							if (tag.Value.slice(0,10) === 'ExpiryDate'){
+						var filteredDateString = snap.Tags.filter(function(tag){
+							var expiryDate = 'ExpiryDate';
+							if (tag.Value.indexOf(expiryDate) > -1) {
 								return true;
 							} else {
 								return false;
 							}
 						});
 
-						if (filteredForDate.length === 1) {
-							filteredForDate = parseInt(filteredForDate[0].Value.slice(11,23));
+						var splitDateString = filteredDateString[0].Value.split(', ');
+
+						var filteredDateOnly = splitDateString.filter(function(string){
+							var expiryDate = 'ExpiryDate';
+							if (string.indexOf(expiryDate) > -1) {
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+						if (filteredDateOnly.length === 1) {
+							filteredDateOnly = parseInt(filteredDateOnly[0].slice(11,23));
 						} else {
 							throw new Error('expected to receive snapshot with a single value for expiry date but length > 1');
 						}
@@ -67,7 +79,7 @@ class EC2Store {
 							SnapshotId: snap.SnapshotId,
 							StartTime: snap.StartTime,
 							Name: filteredForName.Value,
-							ExpiryDate: filteredForDate
+							ExpiryDate: filteredDateOnly
 						};
 
 						return finalSnapshot;
