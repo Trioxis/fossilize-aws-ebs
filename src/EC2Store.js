@@ -37,18 +37,15 @@ class EC2Store {
 				if (err) {
 					reject(err);
 				} else {
-					resolve(response.map(function(obj){
-
-					var finalEBSVolume = {
-						// SnapshotId: snap.SnapshotId,
-						// StartTime: snap.StartTime,
-						// Name: filteredForName.Value,
-						// ExpiryDate: filteredDateOnly
-					};
-
-					return finalEBSVolume;
-			}))
-		};
+					resolve(response.Volumes.map(function(obj){
+						var obj2 = {
+							VolumeId: '',
+							Name: '',
+							BackupConfig: '',
+						};
+						return obj2;
+					}))
+				};
 			});
 		});
 
