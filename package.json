@@ -4,14 +4,14 @@
   "description": "Automatically back up EBS volumes using tags",
   "main": "index.js",
   "directories": {
-    "test": "tests"
+    "test": "test"
   },
   "scripts": {
     "test": "npm run _lint && npm run _mocha",
     "watch": "npm run _mocha -- --watch --reporter min",
-    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html --report lcov node_modules/mocha/bin/_mocha -- --reporter dot",
+    "cover": "babel-node node_modules/isparta/bin/isparta cover --report text --report html --report lcov node_modules/mocha/bin/_mocha -- --reporter dot --recursive",
     "_lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
-    "_mocha": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register",
+    "_mocha": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register --recursive",
     "_send_to_coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "_send_to_codeclimate": "cat ./coverage/lcov.info | node ./node_modules/codeclimate-test-reporter/bin/codeclimate.js",
     "build": "babel src -d build --source-maps",
@@ -44,7 +44,8 @@
     "isparta": "^4.0.0",
     "mocha": "^2.3.4",
     "mocha-lcov-reporter": "^1.0.0",
-    "sinon": "^1.17.2"
+    "sinon": "^1.17.2",
+    "winston": "^2.1.1"
   },
   "dependencies": {
     "aws-sdk": "^2.2.26"

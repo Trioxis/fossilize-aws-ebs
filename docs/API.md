@@ -21,7 +21,7 @@
 import EC2Store from './EC2Store';
 let ec2 = new EC2Store(params);
 ```
-where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../tests/_TestEC2Store)).
+where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
 - `ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 owned by the current user.
 - `ec2.listEBS` - returns a Promise that resolves to an array of all the EBS volumes in EC2.
@@ -32,3 +32,11 @@ where `params` is an object that configures how the class will contact EC2 (thin
 
 - `findDeadSnapshots(snapshotList)` - accepts an array of snapshot objects and returns an array of snapshots that have expired.
 - `snapshotIsDead(snapshot)` - given a snapshot object, returns true if the snapshot has expired. It determines this based on tags that represent things like expiry dates. If the snapshot is still valid, the function returns false.
+
+# Logging and Metrics
+
+There is a metric manager available at `./metrics`. By giving this manager an object that exposes `log` and/or `pushMetric` functions, you can log to multiple locations easily throughout the code.
+
+## Metric Manager
+
+- `log(message)` - Currently logs to console.
