@@ -34,8 +34,21 @@ class EC2Store {
 		return new Promise((res) => {res([]);
 			let ec2 = new AWS.EC2();
 			ec2.describeVolumes({}, function (err, response) {
-				if (err) reject(err);
-				else resolve(response);
+				if (err) {
+					reject(err);
+				} else {
+					resolve(response.map(function(obj){
+
+					var finalEBSVolume = {
+						// SnapshotId: snap.SnapshotId,
+						// StartTime: snap.StartTime,
+						// Name: filteredForName.Value,
+						// ExpiryDate: filteredDateOnly
+					};
+
+					return finalEBSVolume;
+			}))
+		};
 			});
 		});
 
