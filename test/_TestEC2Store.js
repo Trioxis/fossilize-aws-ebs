@@ -70,7 +70,7 @@ describe('EC2Store', () => {
 	});
 
 	describe('listEBS', () => {
-		it.skip('should ask AWS EC2 for a list of all EBS volumes', () => {
+		it('should ask AWS EC2 for a list of all EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
@@ -80,7 +80,7 @@ describe('EC2Store', () => {
 				});
 		});
 
-		it.skip('should return a Promise that resolves to an array of EBS volumes', () => {
+		it('should return a Promise that resolves to an array of EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 			let volListPromise = ec2Store.listEBS();
 
@@ -92,7 +92,7 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should map the response to an array of objects that each represent an EBS volume', () => {
+		it('should map the response to an array of objects that each represent an EBS volume', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 

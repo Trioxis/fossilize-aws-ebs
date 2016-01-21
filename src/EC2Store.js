@@ -31,7 +31,14 @@ class EC2Store {
 	// Should be mapped to a format we expect. i.e.:
 	// { VolumeId, Name, BackupConfig }
 	listEBS () {
-		return new Promise((res) => {res([]);});
+		return new Promise((res) => {res([]);
+			let ec2 = new AWS.EC2();
+			ec2.describeVolumes({}, function (err, response) {
+				if (err) reject(err);
+				else resolve(response);
+			});
+		});
+
 	}
 }
 
