@@ -49,7 +49,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 18 2015 11:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: '[1,12],Weekly,[48,144]' },
+			 [ { Key: 'backups:config-v0', Value: '[1|12],Weekly,[48|144]' },
 				 { Key: 'Name', Value: 'sql-blank-mbr' } ],
 			VolumeType: 'gp2',
 			Iops: 240,

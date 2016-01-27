@@ -39,7 +39,18 @@ class EC2Store {
 				if (error) {
 					reject(error);
 				} else {
-					resolve(response.Volumes.map(function(volumes){
+
+					var volumesForBackup = response.Volumes.filter(function(volumes){
+						for (var i=0; i<volumes.Tags.length; i++) {
+							if (volumes.Tags[i].Key === 'backups:config-v0') {
+								return true;
+							} else {
+								return false;
+							}
+						}
+					});
+
+					resolve(volumesForBackup.map(function(volumes){
 
 						var filteredForName = volumes.Tags.filter(function(tag){
 							if (tag.Key === 'Name') {
@@ -52,23 +63,67 @@ class EC2Store {
 						if (filteredForName.length === 1) {
 							filteredForName = filteredForName[0].Value;
 						} else {
-							throw new Error ('expected to receive volume with single value for name but length > 1')
+							throw new Error ('expected to receive volume with single value for name but length > 1');
 						}
 
-						var filteredForBackup = volumes.Tags.filter(function(tag){
-							if (tag.Key === 'backups:config-v0') {
+						var backupTag = volumes.Tags.filter(function(tag){
+							if ((/[[\d\|\d\]]/g).test(tag.Value) === true){
 								return true;
 							} else {
 								return false;
 							}
 						});
 
+						if (backupTag.length === 1) {
+							backupTag = backupTag[0];
+						} else {
+							throw new Error ('expected to receive volume with single tag for backup instructions, however length > 1');
+						}
 
+						var tagOnly = backupTag.Value.replace(/[\s]/g,'');
+						var tagSplit = tagOnly.split(/,/);
+
+						var aliasArray = {
+							Hourly: [1, 24],
+							Daily: [24, 168],
+							Weekly: [168, 672],
+							Monthly: [672, 8760],
+							Yearly: [8064, 61320]
+						};
+
+						var finalBackupTag = tagSplit.map(function(tag){
+							if ((/[\d]/).test(tag) === true){
+
+								var tupleObj = {
+									Expiry: parseInt(tag.split('|')[1].replace(/[[\]]/g,'')),
+									Frequency: parseInt(tag.split('|')[0].replace(/[[\]]/g,''))
+								};
+
+								return tupleObj; //I've assumed that the tuple will always have two values and be in the correct order, I could write it so that it tests which value is larger to guarantee the larger one becomes Expiry
+
+							} else if ((/[\w]/).test(tag) === true) {
+
+								var alias = tag.replace(/[,]/g,'');
+
+								var aliasObj = {
+									Alias: alias,
+									Expiry: aliasArray[alias][1],
+									Frequency: aliasArray[alias][0]
+								};
+
+								return aliasObj;
+
+							} else {
+								throw new Error ('expected tag to contain either letters or numbers, tag found that does not contain either');
+							}
+						});
 
 						var finalVolSnap = {
 							VolumeId: volumes.VolumeId,
 							Name: filteredForName,
-							BackupConfig: filteredForBackup
+							BackupConfig: {
+								BackupTypes: finalBackupTag
+							}
 						};
 
 						return finalVolSnap;
