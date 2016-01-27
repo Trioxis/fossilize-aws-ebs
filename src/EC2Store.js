@@ -31,21 +31,48 @@ class EC2Store {
 	// Should be mapped to a format we expect. i.e.:
 	// { VolumeId, Name, BackupConfig }
 	listEBS () {
-		return new Promise(function (resolve, reject) {
+		return new Promise(function(resolve, reject){
 
 			let ec2 = new AWS.EC2();
 
-			ec2.describeVolumes({}, function (error, response){
+			ec2.describeVolumes({}, function(error, response){
 				if (error) {
 					reject(error);
 				} else {
 					resolve(response.Volumes.map(function(volumes){
-						var obj = {
-							VolumeId: '',
-							Name: '',
-							BackupConfig: ''
+
+						var filteredForName = volumes.Tags.filter(function(tag){
+							if (tag.Key === 'Name') {
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+						if (filteredForName.length === 1) {
+							filteredForName = filteredForName[0].Value;
+						} else {
+							throw new Error ('expected to receive volume with single value for name but length > 1')
+						}
+
+						var filteredForBackup = volumes.Tags.filter(function(tag){
+							if (tag.Key === 'backups:config-v0') {
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+
+
+						var finalVolSnap = {
+							VolumeId: volumes.VolumeId,
+							Name: filteredForName,
+							BackupConfig: filteredForBackup
 						};
-						return obj;
+
+						return finalVolSnap;
+
 					}));
 				}
 
