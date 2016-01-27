@@ -111,7 +111,7 @@ class EC2Store {
 									Frequency: aliasArray[alias][0]
 								};
 
-								return aliasObj;
+								return aliasObj; //I've assumed that the alias in the tag will always match the API tags
 
 							} else {
 								throw new Error ('expected tag to contain either letters or numbers, tag found that does not contain either');
