@@ -73,6 +73,34 @@ let ec2Responses = {
 			Iops: 240,
 			Encrypted: false
 		}, {
+			VolumeId: 'vol-6b75ada1',
+			Size: 80,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Fri Dec 18 2015 12:15:59 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags:
+			 [ { Key: 'Name', Value: 'where-is-name-lol' },
+		 		 { Key: 'backups:config-v0', Value: 'Daily,Weekly,[48|144]' } ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}, {
+			VolumeId: 'vol-6dd5ada1',
+			Size: 80,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Fri Dec 20 2015 12:15:59 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags:
+			 [ { Key: 'backups:config-v0', Value: 'Daily,Weekly,Hourly' },
+		 		 { Key: 'Name', Value: 'very-important-data' }, ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}, {
 			VolumeId: 'vol-bd7cfb77',
 			Size: 80,
 			SnapshotId: 'snap-1c612f10',
