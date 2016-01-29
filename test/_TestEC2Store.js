@@ -109,7 +109,6 @@ describe('EC2Store', () => {
 
 			return ec2Store.listEBS()
 				.then(volList => {
-					console.log(volList);
 					expect(volList.length).to.be(3);
 					expect(volList).to.be.eql([
 						{
