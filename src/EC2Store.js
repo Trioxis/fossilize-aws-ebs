@@ -22,7 +22,73 @@ class EC2Store {
 			let ec2 = new AWS.EC2();
 			ec2.describeSnapshots({}, function (err, response) {
 				if (err) reject(err);
-				else resolve(response);
+
+				else {
+					var snapshotsForBackup = response.Snapshots.filter(function(snap){
+						for (var i=0; i<snap.Tags.length; i++) {
+							if (snap.Tags[i].Key === 'backups:config-v0') {
+								return true;
+							}
+						}
+						return false;
+					});
+
+					resolve(snapshotsForBackup.map(function(snap){
+
+						var filteredForName = snap.Tags.filter(function(tag){
+							if (tag.Key === 'Name'){
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+						if (filteredForName.length === 1) {
+							filteredForName = filteredForName[0];
+						} else {
+							throw new Error('expected to receive snapshot with a single value for name but length > 1');
+						}
+
+						var filteredDateString = snap.Tags.filter(function(tag){
+							var expiryDate = 'ExpiryDate';
+							if (tag.Value.indexOf(expiryDate) > -1) {
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+						if (filteredDateString.length === 1) {
+							filteredDateString = filteredDateString[0].Value.split(', ');
+						} else {
+							throw new Error('expected to receive an array with a single tag for expiry date but length > 1');
+						}
+
+						var filteredDateOnly = filteredDateString.filter(function(string){
+							var expiryDate = 'ExpiryDate';
+							if (string.indexOf(expiryDate) > -1) {
+								return true;
+							} else {
+								return false;
+							}
+						});
+
+						if (filteredDateOnly.length === 1) {
+							filteredDateOnly = parseInt(filteredDateOnly[0].slice(11,23));
+						} else {
+							throw new Error('expected to receive an array with a single value for expiry date but length > 1');
+						}
+
+						var finalSnapshot = {
+							SnapshotId: snap.SnapshotId,
+							StartTime: snap.StartTime,
+							Name: filteredForName.Value,
+							ExpiryDate: filteredDateOnly
+						};
+
+						return finalSnapshot;
+					}));
+				}
 			});
 		});
 	}
