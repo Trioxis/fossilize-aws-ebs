@@ -3,7 +3,7 @@ Automatically back up EBS volumes using tags
 
 **This project is under active development; implementation is incomplete**
 
-[![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager) [![Coverage Status](https://coveralls.io/repos/Trioxis/aws-backup-manager/badge.svg?branch=master&service=github)](https://coveralls.io/github/Trioxis/aws-backup-manager?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/aws-backup-manager/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/aws-backup-manager)
+[![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager) [![codecov.io](https://codecov.io/github/Trioxis/aws-backup-manager/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/aws-backup-manager?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/aws-backup-manager/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/aws-backup-manager)
 
 ## What does this do?
 
