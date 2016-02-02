@@ -29,21 +29,23 @@ class EC2Store {
 					let snapshots = response.Snapshots.map(snapResponse => {
 						let snap = {};
 						snap.Tags = {};
+
+						// Use snapshot id if a Name tag does not exist
 						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
 						snap.StartTime = snapResponse.StartTime;
+
+						// Map EC2 tags to easy to use Tag object
 						snapResponse.Tags.map(tag => {
 							snap.Tags[tag.Key] = tag.Value;
 							if (tag.Key === 'Name') snap.Name = tag.Value;
 						});
+
 						return snap;
-					}).filter(snap => {
-						if (snap.Tags['backups:config-v0']) {
-							return true;
-						} else {
-							return false;
-						}
-					}).map(snap => {
+						// remove snapshots that have no backups:config-v0 tag
+					}).filter(snap => snap.Tags.hasOwnProperty('backups:config-v0')
+					).map(snap => {
+						// map the backups:config-v0 tag on to the snapshot object
 						let backupConfig = snap.Tags['backups:config-v0'].split(',');
 						backupConfig.map(backupParam => {
 							let [key, value] = backupParam.split(':');
