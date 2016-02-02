@@ -10,6 +10,14 @@ let ALIASES = {
 	Yearly: [8064, 61320]
 };
 
+let prettyPrintVol = (vol) => {
+	return '(' + vol.VolumeId +') \'' + vol.Name +'\'';
+};
+
+let prettyPrintSnap = (snap) => {
+	return '(' + snap.SnapshotId +') \'' + snap.Name +'\'';
+};
+
 // Class that gets information from AWS using the AWS Node API.
 class EC2Store {
 	// TODO: Decide if/where credentials are passed in to the class. Usually they're
@@ -77,9 +85,6 @@ class EC2Store {
 		return new Promise( (resolve, reject) => {
 
 			let ec2 = new AWS.EC2();
-			let prettyPrintVol = (vol) => {
-				return '(' + vol.VolumeId +') \'' + vol.Name +'\'';
-			};
 
 			ec2.describeVolumes({}, (error, response) => {
 				if (error) {
