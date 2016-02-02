@@ -111,7 +111,7 @@ class EC2Store {
 			let ec2 = new AWS.EC2();
 			let prettyPrintVol = (vol) => {
 				return '(' + vol.VolumeId +') \'' + vol.Name +'\'';
-			}
+			};
 
 			ec2.describeVolumes({}, (error, response) => {
 				if (error) {
