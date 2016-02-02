@@ -37,7 +37,6 @@ class EC2Store {
 
 					let snapshots = response.Snapshots.map(snapResponse => {
 						let snap = {};
-						snap.Tags = {};
 
 						// Use snapshot id if a Name tag does not exist
 						snap.Name = snapResponse.SnapshotId;
@@ -45,6 +44,7 @@ class EC2Store {
 						snap.StartTime = snapResponse.StartTime;
 
 						// Map EC2 tags to easy to use Tag object
+						snap.Tags = {};
 						snapResponse.Tags.map(tag => {
 							snap.Tags[tag.Key] = tag.Value;
 							if (tag.Key === 'Name') snap.Name = tag.Value;
@@ -92,6 +92,7 @@ class EC2Store {
 
 						// If the volume has no Name tag, use its id as the name instead
 						volume.Name = volumeResponse.VolumeId;
+						volume.VolumeId = volumeResponse.VolumeId;
 
 						// Convert tags to properties on volume object
 						volume.Tags = {};
@@ -100,7 +101,6 @@ class EC2Store {
 							if (tag.Key === 'Name') volume.Name = tag.Value;
 						});
 
-						volume.VolumeId = volumeResponse.VolumeId;
 						return volume;
 
 						// only return volumes with the backup tag
