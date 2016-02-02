@@ -60,14 +60,21 @@ describe('EC2Store', () => {
 							ExpiryDate: "201601271120",
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
-							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)"
+							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2015-12-27-00-19",
+								"backups:config-v0": "ExpiryDate:201601271120"
+							}
 						},
 						{
 							ExpiryDate: "201605271121",
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
 							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
-							OtherMetadata: "some_random_junk"
+							Tags: {
+								Name: "web-xvdf-backup-2016-01-02-06-58",
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:201605271121"
+							}
 						}
 					]);
 					return;

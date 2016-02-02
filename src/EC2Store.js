@@ -28,23 +28,28 @@ class EC2Store {
 
 					let snapshots = response.Snapshots.map(snapResponse => {
 						let snap = {};
-						snapResponse.Tags.map(tag => {
-							snap[tag.Key] = tag.Value;
-						});
+						snap.Tags = {};
+						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
 						snap.StartTime = snapResponse.StartTime;
+						snapResponse.Tags.map(tag => {
+							snap.Tags[tag.Key] = tag.Value;
+							if (tag.Key === 'Name') snap.Name = tag.Value;
+						});
 						return snap;
 					}).filter(snap => {
-						if (snap['backups:config-v0']) {
+						if (snap.Tags['backups:config-v0']) {
 							return true;
 						} else {
 							return false;
 						}
 					}).map(snap => {
-						let backupConfig = snap['backups:config-v0'].split(',');
+						let backupConfig = snap.Tags['backups:config-v0'].split(',');
 						backupConfig.map(backupParam => {
 							let [key, value] = backupParam.split(':');
-							snap[key] = value;
+							if (key === 'ExpiryDate') {
+								snap.ExpiryDate = value;
+							}
 						});
 						delete snap['backups:config-v0'];
 						return snap;
