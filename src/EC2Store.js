@@ -1,6 +1,8 @@
 import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
 
+import moment from 'moment';
+
 let BACKUP_API_TAG = 'backups:config-v0';
 let ALIASES = {
 	Hourly: [1, 24],
@@ -59,15 +61,27 @@ class EC2Store {
 						});
 
 						return snap;
+
 						// remove snapshots that have no backups:config-v0 tag
 					}).filter(snap => snap.Tags.hasOwnProperty(BACKUP_API_TAG)
 					).map(snap => {
 						// map the backups:config-v0 tag on to the snapshot object
 						let backupConfig = snap.Tags[BACKUP_API_TAG].split(',');
+
 						backupConfig.map(backupParam => {
 							let [key, value] = backupParam.split(':');
+
+							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
 							if (key === 'ExpiryDate') {
-								snap.ExpiryDate = parseInt(value);
+								if (/^\d{14}$/.test(value)) {
+									if (moment(value, "YYYYMMDDHHmmss").isValid()) {
+										snap.ExpiryDate = parseInt(value);
+									} else {
+										console.warn('AWSBM WARN: Snapshot ' + prettyPrintSnap(snap) + ': Value for ExpiryDate \'' + value + '\' is not a valid date (in YYYYMMDDHHmmss format). Check the \'' + BACKUP_API_TAG + '\' tag is valid');
+									}
+								} else {
+									console.warn('AWSBM WARN: Snapshot ' + prettyPrintSnap(snap) + ': Found invalid value \'' + value + '\' for ExpiryDate. Check the \'' + BACKUP_API_TAG + '\' is valid and ExpiryDate is in YYYYMMDDHHmmss format');
+								}
 							}
 						});
 						return snap;
