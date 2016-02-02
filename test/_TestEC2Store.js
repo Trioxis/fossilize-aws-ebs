@@ -120,6 +120,10 @@ describe('EC2Store', () => {
 									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
 									{ Frequency: 48, Expiry: 144 }
 								]
+							},
+							Tags: {
+								Name: firstVol.Tags[1].Value,
+								"backups:config-v0": "[1|12],Weekly,[48|144]"
 							}
 						},
 						{
@@ -131,6 +135,10 @@ describe('EC2Store', () => {
 									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
 									{ Frequency: 48, Expiry: 144 }
 								]
+							},
+							Tags: {
+								Name: secondVol.Tags[0].Value,
+								"backups:config-v0": "Daily,Weekly,[48|144]"
 							}
 						},
 						{
@@ -142,6 +150,10 @@ describe('EC2Store', () => {
 									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
 									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
+							},
+							Tags: {
+								Name: thirdVol.Tags[1].Value,
+								"backups:config-v0": "Daily,Weekly,Hourly"
 							}
 						}
 					])
@@ -170,6 +182,10 @@ describe('EC2Store', () => {
 								BackupTypes: [
 									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
 								]
+							},
+							Tags: {
+								Name: secondVol.Tags[0].Value,
+								"backups:config-v0": "Daily,Weeeeeeeeekly,[2,144]"
 							}
 						},
 						{
@@ -180,6 +196,9 @@ describe('EC2Store', () => {
 									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
 									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
+							},
+							Tags: {
+								"backups:config-v0": "Daily,Beakly,Hourly"
 							}
 						}
 					])
