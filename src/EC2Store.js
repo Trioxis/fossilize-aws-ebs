@@ -109,6 +109,9 @@ class EC2Store {
 		return new Promise( (resolve, reject) => {
 
 			let ec2 = new AWS.EC2();
+			let prettyPrintVol = (vol) => {
+				return '(' + vol.VolumeId +') \'' + vol.Name +'\'';
+			}
 
 			ec2.describeVolumes({}, (error, response) => {
 				if (error) {
@@ -146,18 +149,40 @@ class EC2Store {
 										Frequency: tuple[1],
 										Expiry: tuple[2]
 									});
-								} else {
+								} else if (ALIASES.hasOwnProperty(backupType)) {
 									volume.BackupConfig.BackupTypes.push({
 										Alias: backupType,
 										Frequency: ALIASES[backupType][0],
 										Expiry: ALIASES[backupType][1]
 									});
+								} else {
+									console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Could not interpret backup type \'' + backupType + '\'');
 								}
 							});
 							delete volume[BACKUP_API_TAG];
 							return volume;
 						}
-					);
+					).filter(volume => {
+						// sanitise array of failed mappings
+						if (!volume || !volume.VolumeId || !volume.Name) {
+							console.warn('AWSBM WARN: Volume response from AWS could not be interpreted properly. It was mapped to:');
+							console.warn(volume);
+							return false;
+						} else if (!volume.BackupConfig || !volume.BackupConfig.BackupTypes || volume.BackupConfig.BackupTypes.length === 0) {
+							console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Ignoring volume because its \'' + BACKUP_API_TAG + '\' tag could not be intepreted. Please check it is in a valid format.');
+							return false;
+						}
+
+						volume.BackupConfig.BackupTypes = volume.BackupConfig.BackupTypes.filter(type => {
+							if (!type.Frequency || !type.Expiry) {
+								console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Ignoring backup type \'' + type +'\'. Please check the volume\'s \'' + BACKUP_API_TAG + '\' tag is valid');
+								return false;
+							}
+							return true;
+						});
+
+						return true;
+					});
 					resolve(volumes);
 				}
 			});
