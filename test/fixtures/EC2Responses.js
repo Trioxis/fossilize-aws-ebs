@@ -24,7 +24,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk, ExpiryDate:201605271121' },
+				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:201605271121' },
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
