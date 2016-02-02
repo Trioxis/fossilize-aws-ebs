@@ -57,23 +57,23 @@ describe('EC2Store', () => {
 					expect(snapList.length).to.be(2);
 					expect(snapList).to.eql([
 						{
-							ExpiryDate: "201601271120",
+							ExpiryDate: "20160127112018",
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
 							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
-								"backups:config-v0": "ExpiryDate:201601271120"
+								"backups:config-v0": "ExpiryDate:20160127112018"
 							}
 						},
 						{
-							ExpiryDate: "201605271121",
+							ExpiryDate: "20160527112111",
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
 							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
-								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:201605271121"
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111"
 							}
 						}
 					]);
