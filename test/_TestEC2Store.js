@@ -174,11 +174,10 @@ describe('EC2Store', () => {
 						},
 						{
 							VolumeId: thirdVol.VolumeId,
-							Name: thirdVol.Tags[1].Value,
+							Name: thirdVol.VolumeId,
 							BackupConfig: {
 								BackupTypes: [
 									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
 									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
 							}

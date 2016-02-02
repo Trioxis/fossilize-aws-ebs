@@ -162,7 +162,7 @@ let ec2Responses = {
 			Attachments: [],
 			Tags:
 			 [ { Key: 'Name', Value: 'where-is-name-lol' },
-		 		 { Key: 'backups:config-v0', Value: 'Daily,Weeeeeeeeekly,[2|23|144]' } ],
+		 		 { Key: 'backups:config-v0', Value: 'Daily,Weeeeeeeeekly,[2,144]' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
 			Encrypted: false
@@ -175,8 +175,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 20 2015 12:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: 'Daily,Weekly,Hourly' },
-		 		 { Key: 'Name', Value: 'very-important-data' }, ],
+			 [ { Key: 'backups:config-v0', Value: 'Daily,Beakly,Hourly' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
 			Encrypted: false
