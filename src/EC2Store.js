@@ -1,6 +1,15 @@
 import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
 
+let BACKUP_API_TAG = 'backups:config-v0';
+var ALIASES = {
+	Hourly: [1, 24],
+	Daily: [24, 168],
+	Weekly: [168, 672],
+	Monthly: [672, 8760],
+	Yearly: [8064, 61320]
+};
+
 // Class that gets information from AWS using the AWS Node API.
 class EC2Store {
 	// TODO: Decide if/where credentials are passed in to the class. Usually they're
@@ -26,7 +35,7 @@ class EC2Store {
 				else {
 					var snapshotsForBackup = response.Snapshots.filter(function(snap){
 						for (var i=0; i<snap.Tags.length; i++) {
-							if (snap.Tags[i].Key === 'backups:config-v0') {
+							if (snap.Tags[i].Key === BACKUP_API_TAG) {
 								return true;
 							}
 						}
