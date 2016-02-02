@@ -148,5 +148,44 @@ describe('EC2Store', () => {
 					return;
 				});
 		});
+
+		it('should gracefully handle errors in tags', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+
+			// Response contains one snapshot so we can easily check that mapping is correct
+			let firstVol = ec2Responses.volumes2.Volumes[1];
+			let secondVol = ec2Responses.volumes2.Volumes[2];
+			let thirdVol = ec2Responses.volumes2.Volumes[3];
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes2);
+
+			return ec2Store.listEBS()
+				.then(volList => {
+					expect(volList.length).to.be(2);
+					expect(volList).to.be.eql([
+						{
+							VolumeId: secondVol.VolumeId,
+							Name: secondVol.Tags[0].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+								]
+							}
+						},
+						{
+							VolumeId: thirdVol.VolumeId,
+							Name: thirdVol.Tags[1].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+								]
+							}
+						}
+					])
+					return;
+				});
+			});
 	});
 });

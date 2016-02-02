@@ -124,7 +124,88 @@ let ec2Responses = {
 			Iops: 240,
 			Encrypted: false
 		}]
+	},
+	volumes2: {
+		Volumes: [{
+			VolumeId: 'vol-7290edb8',
+			Size: 20,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Mon Dec 07 2015 11:05:56 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags: [],
+			VolumeType: 'gp2',
+			Iops: 60,
+			Encrypted: false
+		}, {
+			VolumeId: 'vol-6b75a6a1',
+			Size: 80,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Fri Dec 18 2015 11:15:59 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags:
+			 [ { Key: 'backups:config-v0', Value: '@#$%^&*,87*(#YHIKSDF|)' },
+				 { Key: 'Name', Value: 'sql-blank-mbr' } ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}, {
+			VolumeId: 'vol-6b75ada1',
+			Size: 80,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Fri Dec 18 2015 12:15:59 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags:
+			 [ { Key: 'Name', Value: 'where-is-name-lol' },
+		 		 { Key: 'backups:config-v0', Value: 'Daily,Weeeeeeeeekly,[2|23|144]' } ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}, {
+			VolumeId: 'vol-6dd5ada1',
+			Size: 80,
+			SnapshotId: '',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'available',
+			CreateTime: "Fri Dec 20 2015 12:15:59 GMT+1100 (AEDT)",
+			Attachments: [],
+			Tags:
+			 [ { Key: 'backups:config-v0', Value: 'Daily,Weekly,Hourly' },
+		 		 { Key: 'Name', Value: 'very-important-data' }, ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}, {
+			VolumeId: 'vol-bd7cfb77',
+			Size: 80,
+			SnapshotId: 'snap-1c612f10',
+			AvailabilityZone: 'ap-southeast-2a',
+			State: 'in-use',
+			CreateTime: "Fri Dec 18 2015 11:50:25 GMT+1100 (AEDT)",
+			Attachments:
+			 [ { VolumeId: 'vol-bd7cfb77',
+					 InstanceId: 'i-aad1ce75',
+					 Device: 'xvdd',
+					 State: 'attached',
+					 AttachTime: "Fri Dec 18 2015 11:51:58 GMT+1100 (AEDT)",
+					 DeleteOnTermination: false } ],
+			Tags:
+			 [ { Key: 'aws:cloudformation:stack-id',
+					 Value: 'arn:aws:cloudformation:ap-southeast-2:791016823516:stack/PROD-SqlStack-1MBILJJXSW63V/4e8bb270-a521-11e5-ba6c-503a22f4146e' },
+				 { Key: 'aws:cloudformation:logical-id', Value: 'EBS' },
+				 { Key: 'aws:cloudformation:stack-name',
+					 Value: 'PROD-SqlStack-1MBILJJXSW63V' } ],
+			VolumeType: 'gp2',
+			Iops: 240,
+			Encrypted: false
+		}]
 	}
+
 };
 
 export default ec2Responses;
