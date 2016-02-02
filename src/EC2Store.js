@@ -12,7 +12,7 @@ class EC2Store {
 
 	// A list of all snapshots in the AWS account. Should return a Promise.
 	// Snapshots returned should be mapped to a format we expect. i.e.:
-	// { SnapshotId, StartTime, Name, ExpiryDate, ...<Other Tags> }
+	// { SnapshotId, StartTime, Name, ExpiryDate, Tags }
 	// Only returns snapshots tagged with the 'backups:config-v0'
 	// It is also necessary to filter out public snapshots that aren't owned by
 	// the current user.
@@ -50,10 +50,9 @@ class EC2Store {
 						backupConfig.map(backupParam => {
 							let [key, value] = backupParam.split(':');
 							if (key === 'ExpiryDate') {
-								snap.ExpiryDate = value;
+								snap.ExpiryDate = parseInt(value);
 							}
 						});
-						delete snap['backups:config-v0'];
 						return snap;
 					});
 					resolve(snapshots);
