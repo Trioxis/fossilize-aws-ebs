@@ -83,7 +83,7 @@ describe('EC2Store', () => {
 	});
 
 	describe('listEBS', () => {
-		it.skip('should ask AWS EC2 for a list of all EBS volumes', () => {
+		it('should ask AWS EC2 for a list of all EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
@@ -93,7 +93,7 @@ describe('EC2Store', () => {
 				});
 		});
 
-		it.skip('should return a Promise that resolves to an array of EBS volumes', () => {
+		it('should return a Promise that resolves to an array of EBS volumes', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 			let volListPromise = ec2Store.listEBS();
 
@@ -105,32 +105,113 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it.skip('should map the response to an array of objects that each represent an EBS volume', () => {
+		it('should map the response to an array of objects that each represent an EBS volume', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
 			// Response contains one snapshot so we can easily check that mapping is correct
-			let singleVol = ec2Responses.volumes1.Volumes[1];
-			mockEC2.describeVolumes = sinon.stub().yields(null, {Volumes: [singleVol]});
+			let firstVol = ec2Responses.volumes1.Volumes[1];
+			let secondVol = ec2Responses.volumes1.Volumes[2];
+			let thirdVol = ec2Responses.volumes1.Volumes[3];
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
 				.then(volList => {
-					expect(volList.length).to.be(1);
-					volList.map((volume) => {
-						expect(volume).to.eql({
-							VolumeId: singleVol.VolumeId,
-							Name: singleVol.Tags[1].Value,
+					expect(volList.length).to.be(3);
+					expect(volList).to.be.eql([
+						{
+							VolumeId: firstVol.VolumeId,
+							Name: firstVol.Tags[1].Value,
 							BackupConfig: {
 								BackupTypes: [
 									{ Frequency: 1, Expiry: 12 },
 									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
 									{ Frequency: 48, Expiry: 144 }
 								]
+							},
+							Tags: {
+								Name: firstVol.Tags[1].Value,
+								"backups:config-v0": "[1|12],Weekly,[48|144]"
 							}
-						});
-					});
+						},
+						{
+							VolumeId: secondVol.VolumeId,
+							Name: secondVol.Tags[0].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Frequency: 48, Expiry: 144 }
+								]
+							},
+							Tags: {
+								Name: secondVol.Tags[0].Value,
+								"backups:config-v0": "Daily,Weekly,[48|144]"
+							}
+						},
+						{
+							VolumeId: thirdVol.VolumeId,
+							Name: thirdVol.Tags[1].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+								]
+							},
+							Tags: {
+								Name: thirdVol.Tags[1].Value,
+								"backups:config-v0": "Daily,Weekly,Hourly"
+							}
+						}
+					])
 					return;
 				});
 		});
+
+		it('should gracefully handle errors in tags', () => {
+			// This means converting the Name and backups:config tags to properties
+			// and removing all other unnecessary properties
+
+			// Response contains one snapshot so we can easily check that mapping is correct
+			let firstVol = ec2Responses.volumes2.Volumes[1];
+			let secondVol = ec2Responses.volumes2.Volumes[2];
+			let thirdVol = ec2Responses.volumes2.Volumes[3];
+			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes2);
+
+			return ec2Store.listEBS()
+				.then(volList => {
+					expect(volList.length).to.be(2);
+					expect(volList).to.be.eql([
+						{
+							VolumeId: secondVol.VolumeId,
+							Name: secondVol.Tags[0].Value,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+								]
+							},
+							Tags: {
+								Name: secondVol.Tags[0].Value,
+								"backups:config-v0": "Daily,Weeeeeeeeekly,[2,144]"
+							}
+						},
+						{
+							VolumeId: thirdVol.VolumeId,
+							Name: thirdVol.VolumeId,
+							BackupConfig: {
+								BackupTypes: [
+									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+								]
+							},
+							Tags: {
+								"backups:config-v0": "Daily,Beakly,Hourly"
+							}
+						}
+					])
+					return;
+				});
+			});
 	});
 });
