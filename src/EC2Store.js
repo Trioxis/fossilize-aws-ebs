@@ -146,8 +146,8 @@ class EC2Store {
 
 								if (tuple && tuple.length === 3) {
 									volume.BackupConfig.BackupTypes.push({
-										Frequency: tuple[1],
-										Expiry: tuple[2]
+										Frequency: parseInt(tuple[1]),
+										Expiry: parseInt(tuple[2])
 									});
 								} else if (ALIASES.hasOwnProperty(backupType)) {
 									volume.BackupConfig.BackupTypes.push({
@@ -156,7 +156,7 @@ class EC2Store {
 										Expiry: ALIASES[backupType][1]
 									});
 								} else {
-									console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Could not interpret backup type \'' + backupType + '\'');
+									console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Could not interpret backup type \'' + backupType + '\'. Please ensure the \'' + BACKUP_API_TAG + '\' tag is valid');
 								}
 							});
 							delete volume[BACKUP_API_TAG];
