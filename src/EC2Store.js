@@ -11,13 +11,14 @@ let ALIASES = {
 	Monthly: [672, 8760],
 	Yearly: [8064, 61320]
 };
+let EXPIRY_DATE_FORMAT = "YYYYMMDDHHmmss";
 
 let prettyPrintVol = (vol) => {
-	return '(' + vol.VolumeId +') \'' + vol.Name +'\'';
+	return `(${vol.VolumeId}) '${vol.Name}'`;
 };
 
 let prettyPrintSnap = (snap) => {
-	return '(' + snap.SnapshotId +') \'' + snap.Name +'\'';
+	return `(${snap.SnapshotId}) '${snap.Name}'`;
 };
 
 // Class that gets information from AWS using the AWS Node API.
@@ -74,13 +75,13 @@ class EC2Store {
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
 							if (key === 'ExpiryDate') {
 								if (/^\d{14}$/.test(value)) {
-									if (moment(value, "YYYYMMDDHHmmss").isValid()) {
+									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
 										snap.ExpiryDate = parseInt(value);
 									} else {
-										console.warn('AWSBM WARN: Snapshot ' + prettyPrintSnap(snap) + ': Value for ExpiryDate \'' + value + '\' is not a valid date (in YYYYMMDDHHmmss format). Check the \'' + BACKUP_API_TAG + '\' tag is valid');
+										console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Value for ExpiryDate '${value}' is not a valid date (in ${EXPIRY_DATE_FORMAT} format). Check the '${BACKUP_API_TAG}' tag is valid`);
 									}
 								} else {
-									console.warn('AWSBM WARN: Snapshot ' + prettyPrintSnap(snap) + ': Found invalid value \'' + value + '\' for ExpiryDate. Check the \'' + BACKUP_API_TAG + '\' is valid and ExpiryDate is in YYYYMMDDHHmmss format');
+									console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Found invalid value '${value}' for ExpiryDate. Check the '${BACKUP_API_TAG}' is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
 							}
 						});
@@ -145,7 +146,7 @@ class EC2Store {
 										Expiry: ALIASES[backupType][1]
 									});
 								} else {
-									console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Could not interpret backup type \'' + backupType + '\'. Please ensure the \'' + BACKUP_API_TAG + '\' tag is valid');
+									console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Could not interpret backup type '${backupType}'. Please ensure the '${BACKUP_API_TAG}' tag is valid`);
 								}
 							});
 							return volume;
@@ -157,13 +158,13 @@ class EC2Store {
 							console.warn(volume);
 							return false;
 						} else if (!volume.BackupConfig || !volume.BackupConfig.BackupTypes || volume.BackupConfig.BackupTypes.length === 0) {
-							console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Ignoring volume because its \'' + BACKUP_API_TAG + '\' tag could not be intepreted. Please check it is in a valid format.');
+							console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Ignoring volume because its '${BACKUP_API_TAG}' tag could not be intepreted. Please check it is in a valid format.`);
 							return false;
 						}
 
 						volume.BackupConfig.BackupTypes = volume.BackupConfig.BackupTypes.filter(type => {
 							if (!type.Frequency || !type.Expiry) {
-								console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Ignoring backup type \'' + type +'\'. Please check the volume\'s \'' + BACKUP_API_TAG + '\' tag is valid');
+								console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Ignoring backup type '${type}'. Please check the volume's '${BACKUP_API_TAG}' tag is valid`);
 								return false;
 							}
 							return true;
