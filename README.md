@@ -77,7 +77,7 @@ This outputs a html report in `coverage/` that can be perused in a web browser. 
 
 #### Continuous Integration
 
-We're using [Travis CI](https://travis-ci.org/Trioxis/aws-backup-manager) for continuous integration. It runs all tests and sends code coverage information to [Coveralls](https://coveralls.io/github/Trioxis/aws-backup-manager) and [CodeClimate](https://codeclimate.com/github/Trioxis/aws-backup-manager). Check [`.travis.yml`](.travis.yml) for the tasks that are run in CI.
+We're using [Travis CI](https://travis-ci.org/Trioxis/aws-backup-manager) for continuous integration. It runs all tests and sends code coverage information to [Codecov](https://codecov.io/github/Trioxis/aws-backup-manager) and [CodeClimate](https://codeclimate.com/github/Trioxis/aws-backup-manager). Check [`.travis.yml`](.travis.yml) for the tasks that are run in CI.
 
 Note: the `CODECLIMATE_REPO_TOKEN` environment variable must be set in Travis CI to successfully send coverage information to CodeClimate
 
