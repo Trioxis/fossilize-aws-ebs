@@ -8,11 +8,15 @@ export default function () {
 
 	return ec2.listSnapshots()
 		.then(snapList => {
+			console.log('AWSBM: All backup snapshots:');
+			console.log(snapList);
 			let deadSnaps = findDeadSnapshots(snapList);
 			let cleanupActions = deadSnaps.map(snap => makeDeleteAction(snap));
 
 			let creationActions = ec2.listEBS()
 				.then(ebsList => {
+					console.log('AWSBM: All volumes to backup:');
+					console.log(ebsList);
 					return ebsList.map(volume => makeCreationActions(volume, snapList));
 				});
 
