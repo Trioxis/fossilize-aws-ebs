@@ -126,21 +126,23 @@ class EC2Store {
 						volume.Name = volumeResponse.VolumeId;
 
 						// Convert tags to properties on volume object
+						volume.Tags = {};
 						volumeResponse.Tags.map(tag => {
-							volume[tag.Key] = tag.Value;
+							volume.Tags[tag.Key] = tag.Value;
+							if (tag.Key === 'Name') volume.Name = tag.Value;
 						});
 
 						volume.VolumeId = volumeResponse.VolumeId;
 						return volume;
 
 						// only return volumes with the backup tag
-					}).filter(volume => volume.hasOwnProperty(BACKUP_API_TAG) )
+					}).filter(volume => volume.Tags.hasOwnProperty(BACKUP_API_TAG) )
 						.map(volume => {
 							// Convert backup tag to backup config object
 							volume.BackupConfig = {};
 							volume.BackupConfig.BackupTypes = [];
 
-							volume[BACKUP_API_TAG].split(',').map(backupType => {
+							volume.Tags[BACKUP_API_TAG].split(',').map(backupType => {
 								// If the backup type is a tuple, this will equal an array with three elements
 								let tuple = backupType.match(/\[(\d+)\|(\d+)\]/);
 
@@ -159,7 +161,6 @@ class EC2Store {
 									console.warn('AWSBM WARN: Volume '+ prettyPrintVol(volume) +': Could not interpret backup type \'' + backupType + '\'. Please ensure the \'' + BACKUP_API_TAG + '\' tag is valid');
 								}
 							});
-							delete volume[BACKUP_API_TAG];
 							return volume;
 						}
 					).filter(volume => {
