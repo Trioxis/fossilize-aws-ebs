@@ -13,6 +13,7 @@
     "_lint": "node ./node_modules/eslint/bin/eslint.js index.js src/**",
     "_mocha": "node ./node_modules/mocha/bin/mocha --compilers js:babel-register --recursive",
     "_send_to_coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "_send_to_codecov": "./node_modules/codecov/bin/codecov",
     "_send_to_codeclimate": "cat ./coverage/lcov.info | node ./node_modules/codeclimate-test-reporter/bin/codeclimate.js",
     "build": "babel src -d build --source-maps",
     "start": "node index.js"
@@ -38,6 +39,7 @@
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.3.13",
     "codeclimate-test-reporter": "^0.1.1",
+    "codecov": "^1.0.1",
     "coveralls": "^2.11.6",
     "eslint": "^1.10.3",
     "expect.js": "^0.3.1",
