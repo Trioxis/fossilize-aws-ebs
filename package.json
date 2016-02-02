@@ -50,6 +50,7 @@
     "winston": "^2.1.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.2.26"
+    "aws-sdk": "^2.2.26",
+    "moment": "^2.11.1"
   }
 }
