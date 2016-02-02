@@ -11,7 +11,7 @@ let ALIASES = {
 	Monthly: [672, 8760],
 	Yearly: [8064, 61320]
 };
-let EXPIRY_DATE_FORMAT = "YYYYMMDDHHmmss";
+let EXPIRY_DATE_FORMAT = 'YYYYMMDDHHmmss';
 
 let prettyPrintVol = (vol) => {
 	return `(${vol.VolumeId}) '${vol.Name}'`;
