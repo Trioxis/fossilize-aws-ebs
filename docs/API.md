@@ -30,7 +30,7 @@ where `params` is an object that configures how the class will contact EC2 (thin
 { VolumeId, Name, BackupConfig, Tags }
 ```
 * `VolumeId` is the AWS EC2 resource id
-* `Name` is the value of the EC2 tag with key `Name`
+* `Name` is the value of the EC2 tag with key `Name`. If the EC2 tag does not exist, the `VolumeId` is used instead.
 * `BackupConfig` is an object with property `BackupTypes`
     * `BackupTypes` is an array of objects mapped from the `backups:config-v0` tag. They have the form `{Frequency: x, Expiry: y, Alias: 'AliasName'}` (see the [Backup Tag API](./BackupTagAPI.md) for details). The `Alias` property is optional.
 * `Tags` is an object mapped from the EC2 tags on the volume. Properties on the `Tags` object are named according to the tag `key` and have the tag value
