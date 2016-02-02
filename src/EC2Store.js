@@ -104,7 +104,7 @@ class EC2Store {
 
 	// A list of all EBS volumes in the AWS account. Should return a Promise.
 	// Should be mapped to a format we expect. i.e.:
-	// { VolumeId, Name, BackupConfig }
+	// { VolumeId, Name, BackupConfig, Tags }
 	listEBS () {
 		return new Promise( (resolve, reject) => {
 
