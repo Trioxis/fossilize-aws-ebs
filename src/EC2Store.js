@@ -12,7 +12,7 @@ class EC2Store {
 
 	// A list of all snapshots in the AWS account. Should return a Promise.
 	// Snapshots returned should be mapped to a format we expect. i.e.:
-	// { SnapshotId, StartTime, Name, ExpiryDate }
+	// { SnapshotId, StartTime, Name, ExpiryDate, ...<Other Tags> }
 	// Only returns snapshots tagged with the 'backups:config-v0'
 	// It is also necessary to filter out public snapshots that aren't owned by
 	// the current user.
@@ -20,74 +20,36 @@ class EC2Store {
 
 		return new Promise((resolve, reject) => {
 			let ec2 = new AWS.EC2();
-			ec2.describeSnapshots({}, function (err, response) {
-				if (err) reject(err);
 
-				else {
-					var snapshotsForBackup = response.Snapshots.filter(function(snap){
-						for (var i=0; i<snap.Tags.length; i++) {
-							if (snap.Tags[i].Key === 'backups:config-v0') {
-								return true;
-							}
+			ec2.describeSnapshots({}, (err, response) => {
+				if (err) {
+					reject(err);
+				} else {
+
+					let snapshots = response.Snapshots.map(snapResponse => {
+						let snap = {};
+						snapResponse.Tags.map(tag => {
+							snap[tag.Key] = tag.Value;
+						});
+						snap.SnapshotId = snapResponse.SnapshotId;
+						snap.StartTime = snapResponse.StartTime;
+						return snap;
+					}).filter(snap => {
+						if (snap['backups:config-v0']) {
+							return true;
+						} else {
+							return false;
 						}
-						return false;
+					}).map(snap => {
+						let backupConfig = snap['backups:config-v0'].split(',');
+						backupConfig.map(backupParam => {
+							let [key, value] = backupParam.split(':');
+							snap[key] = value;
+						});
+						delete snap['backups:config-v0'];
+						return snap;
 					});
-
-					resolve(snapshotsForBackup.map(function(snap){
-
-						var filteredForName = snap.Tags.filter(function(tag){
-							if (tag.Key === 'Name'){
-								return true;
-							} else {
-								return false;
-							}
-						});
-
-						if (filteredForName.length === 1) {
-							filteredForName = filteredForName[0];
-						} else {
-							throw new Error('expected to receive snapshot with a single value for name but length > 1');
-						}
-
-						var filteredDateString = snap.Tags.filter(function(tag){
-							var expiryDate = 'ExpiryDate';
-							if (tag.Value.indexOf(expiryDate) > -1) {
-								return true;
-							} else {
-								return false;
-							}
-						});
-
-						if (filteredDateString.length === 1) {
-							filteredDateString = filteredDateString[0].Value.split(', ');
-						} else {
-							throw new Error('expected to receive an array with a single tag for expiry date but length > 1');
-						}
-
-						var filteredDateOnly = filteredDateString.filter(function(string){
-							var expiryDate = 'ExpiryDate';
-							if (string.indexOf(expiryDate) > -1) {
-								return true;
-							} else {
-								return false;
-							}
-						});
-
-						if (filteredDateOnly.length === 1) {
-							filteredDateOnly = parseInt(filteredDateOnly[0].slice(11,23));
-						} else {
-							throw new Error('expected to receive an array with a single value for expiry date but length > 1');
-						}
-
-						var finalSnapshot = {
-							SnapshotId: snap.SnapshotId,
-							StartTime: snap.StartTime,
-							Name: filteredForName.Value,
-							ExpiryDate: filteredDateOnly
-						};
-
-						return finalSnapshot;
-					}));
+					resolve(snapshots);
 				}
 			});
 		});
