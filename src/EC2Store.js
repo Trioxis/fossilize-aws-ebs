@@ -60,10 +60,10 @@ class EC2Store {
 
 						return snap;
 						// remove snapshots that have no backups:config-v0 tag
-					}).filter(snap => snap.Tags.hasOwnProperty('backups:config-v0')
+					}).filter(snap => snap.Tags.hasOwnProperty(BACKUP_API_TAG)
 					).map(snap => {
 						// map the backups:config-v0 tag on to the snapshot object
-						let backupConfig = snap.Tags['backups:config-v0'].split(',');
+						let backupConfig = snap.Tags[BACKUP_API_TAG].split(',');
 						backupConfig.map(backupParam => {
 							let [key, value] = backupParam.split(':');
 							if (key === 'ExpiryDate') {
