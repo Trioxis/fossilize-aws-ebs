@@ -44,7 +44,7 @@ You would use the following value for `backups:config-v0`
 
 The value of the `backups:config-v0` tag defines conditions that must be met for the snapshot to be deleted. Currently the only condition is the expiry date of the snapshot. The value is in the form of a comma delimited list of conditions.
 
-The **`ExpiryDate`** condition the date after which a snapshot should be deleted. The date value is in the format `YYYYMMddHHmmss` (these are the [same tokens as used in moment.js](http://momentjs.com/docs/#/parsing/string-format/)).
+The **`ExpiryDate`** condition the date after which a snapshot should be deleted. The date value is in the format `YYYYMMDDHHmmss` (these are the [same tokens as used in moment.js](http://momentjs.com/docs/#/parsing/string-format/)).
 
 To delete a snapshot after 11:25:13 PM on the 5th of June 2015, you would use this value for `backups:config-v0`
 ```
