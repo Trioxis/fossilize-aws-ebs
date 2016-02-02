@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
 
 let BACKUP_API_TAG = 'backups:config-v0';
-var ALIASES = {
+let ALIASES = {
 	Hourly: [1, 24],
 	Daily: [24, 168],
 	Weekly: [168, 672],
@@ -106,109 +106,62 @@ class EC2Store {
 	// Should be mapped to a format we expect. i.e.:
 	// { VolumeId, Name, BackupConfig }
 	listEBS () {
-		return new Promise(function(resolve, reject){
+		return new Promise( (resolve, reject) => {
 
 			let ec2 = new AWS.EC2();
 
-			ec2.describeVolumes({}, function(error, response){
+			ec2.describeVolumes({}, (error, response) => {
 				if (error) {
 					reject(error);
 				} else {
 
-					var volumesForBackup = response.Volumes.filter(function(volumes){
-						for (var i=0; i<volumes.Tags.length; i++) {
-							if (volumes.Tags[i].Key === 'backups:config-v0') {
-								return true;
-							} else {
-								return false;
-							}
-						}
-					});
+					// Map response object to volume objects
+					let volumes = response.Volumes.map(volumeResponse => {
+						let volume = {};
 
-					resolve(volumesForBackup.map(function(volumes){
+						// If the volume has no Name tag, use its id as the name instead
+						volume.Name = volumeResponse.VolumeId;
 
-						var filteredForName = volumes.Tags.filter(function(tag){
-							if (tag.Key === 'Name') {
-								return true;
-							} else {
-								return false;
-							}
+						// Convert tags to properties on volume object
+						volumeResponse.Tags.map(tag => {
+							volume[tag.Key] = tag.Value;
 						});
 
-						if (filteredForName.length === 1) {
-							filteredForName = filteredForName[0].Value;
-						} else {
-							throw new Error ('expected to receive volume with single value for name but length > 1');
+						volume.VolumeId = volumeResponse.VolumeId;
+						return volume;
+
+						// only return volumes with the backup tag
+					}).filter(volume => volume.hasOwnProperty(BACKUP_API_TAG) )
+						.map(volume => {
+							// Convert backup tag to backup config object
+							volume.BackupConfig = {};
+							volume.BackupConfig.BackupTypes = [];
+
+							volume[BACKUP_API_TAG].split(',').map(backupType => {
+								// If the backup type is a tuple, this will equal an array with three elements
+								let tuple = backupType.match(/\[(\d+)\|(\d+)\]/);
+
+								if (tuple && tuple.length === 3) {
+									volume.BackupConfig.BackupTypes.push({
+										Frequency: tuple[1],
+										Expiry: tuple[2]
+									});
+								} else {
+									volume.BackupConfig.BackupTypes.push({
+										Alias: backupType,
+										Frequency: ALIASES[backupType][0],
+										Expiry: ALIASES[backupType][1]
+									});
+								}
+							});
+							delete volume[BACKUP_API_TAG];
+							return volume;
 						}
-
-						var backupTag = volumes.Tags.filter(function(tag){
-							if ((/[[\d\|\d\]]/g).test(tag.Value) === true){
-								return true;
-							} else {
-								return false;
-							}
-						});
-
-						if (backupTag.length === 1) {
-							backupTag = backupTag[0];
-						} else {
-							throw new Error ('expected to receive volume with single tag for backup instructions, however length > 1');
-						}
-
-						var tagOnly = backupTag.Value.replace(/[\s]/g,'');
-						var tagSplit = tagOnly.split(/,/);
-
-						var aliasArray = {
-							Hourly: [1, 24],
-							Daily: [24, 168],
-							Weekly: [168, 672],
-							Monthly: [672, 8760],
-							Yearly: [8064, 61320]
-						};
-
-						var finalBackupTag = tagSplit.map(function(tag){
-							if ((/[\d]/).test(tag) === true){
-
-								var tupleObj = {
-									Expiry: parseInt(tag.split('|')[1].replace(/[[\]]/g,'')),
-									Frequency: parseInt(tag.split('|')[0].replace(/[[\]]/g,''))
-								};
-
-								return tupleObj; //I've assumed that the tuple will always have two values and be in the correct order, I could write it so that it tests which value is larger to guarantee the larger one becomes Expiry
-
-							} else if ((/[\w]/).test(tag) === true) {
-
-								var alias = tag.replace(/[,]/g,'');
-
-								var aliasObj = {
-									Alias: alias,
-									Expiry: aliasArray[alias][1],
-									Frequency: aliasArray[alias][0]
-								};
-
-								return aliasObj; //I've assumed that the alias in the tag will always match the API tags
-
-							} else {
-								throw new Error ('expected tag to contain either letters or numbers, tag found that does not contain either');
-							}
-						});
-
-						var finalVolSnap = {
-							VolumeId: volumes.VolumeId,
-							Name: filteredForName,
-							BackupConfig: {
-								BackupTypes: finalBackupTag
-							}
-						};
-
-						return finalVolSnap;
-
-					}));
+					);
+					resolve(volumes);
 				}
-
 			});
 		});
-
 	}
 }
 
