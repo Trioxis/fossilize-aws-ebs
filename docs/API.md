@@ -23,7 +23,7 @@ let ec2 = new EC2Store(params);
 ```
 where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
-`ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 with a tag named `backups:config-v0`. The array contains snapshot objects of the form
+`ec2.listSnapshots` - returns object of the form `{snapshots, warnings}`. `snapshots` is a Promise that resolves to an array of all snapshots in EC2 with a tag named `backups:config-v0`. The array contains snapshot objects of the form
 ```
 { SnapshotId, Name, StartTime, ExpiryDate, Tags }
 ```
@@ -34,7 +34,7 @@ where `params` is an object that configures how the class will contact EC2 (thin
 * `Tags` is an object mapped from the EC2 tags on the volume. Properties on the `Tags` object are named according to the tag `key` and have the tag value
 
 
-`ec2.listEBS` - returns a Promise that resolves to an array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`. The array contains volume objects of the form
+`ec2.listEBS` - returns an object of the form `{volumes, warnings}`. `volumes` is a Promise that resolves to an array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`. The array contains volume objects of the form
 ```
 { VolumeId, Name, BackupConfig, Tags }
 ```
@@ -43,6 +43,8 @@ where `params` is an object that configures how the class will contact EC2 (thin
 * `BackupConfig` is an object with property `BackupTypes`
     * `BackupTypes` is an array of objects mapped from the `backups:config-v0` tag. They have the form `{Frequency: x, Expiry: y, Alias: 'AliasName'}` (see the [Backup Tag API](./BackupTagAPI.md) for details). The `Alias` property is optional.
 * `Tags` is an object mapped from the EC2 tags on the volume. Properties on the `Tags` object are named according to the tag `key` and have the tag value
+
+The `warnings` property of the above objects is an array of strings that describe problems that occurred while parsing EC2 objects.
 
 ## SnapshotAnalyser
 
