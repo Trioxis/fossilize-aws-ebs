@@ -41,5 +41,8 @@ export default function () {
 					printer.printStatistics(collector.stats);
 					printer.printWarnings(collector.warnings);
 				});
-		}).catch(err => console.error(err));
+		}).catch(err => {
+			console.error();
+			printer.printError(err);
+		});
 }

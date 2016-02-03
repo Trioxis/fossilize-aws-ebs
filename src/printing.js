@@ -47,9 +47,16 @@ var printWarnings = (warnings) => {
 	}
 };
 
+var printError = (error) => {
+	console.error('Error');
+	console.error(headingLine);
+	console.error(error.stack);
+};
+
 export {
 	printSnaplist,
 	printEBSList,
 	printStatistics,
-	printWarnings
+	printWarnings,
+	printError
 };
