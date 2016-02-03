@@ -74,7 +74,6 @@ let ec2Responses = {
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
-
 			{
 				SnapshotId: 'snap-e6f154m2',
 				VolumeId: 'vol-0a8631c0',
@@ -88,6 +87,20 @@ let ec2Responses = {
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
+			{
+				SnapshotId: 'snap-e6f254m2',
+				VolumeId: 'vol-0a8631c1',
+
+				StartTime: 'Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)',
+				Progress: '100%',
+				OwnerId: '791606823516',
+				Description: 'Daily backup of frg-web-xvdf',
+				VolumeSize: 20,
+				Tags: [ { Key: 'backups:config-v0', Value: 'ExpiryDate:20161327112059'},
+					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
+				Encrypted: false
+			},
+
 		],
 	},
 
