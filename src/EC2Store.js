@@ -37,6 +37,7 @@ class EC2Store {
 	// It is also necessary to filter out public snapshots that aren't owned by
 	// the current user.
 	listSnapshots () {
+		let warnings = [];
 
 		return new Promise((resolve, reject) => {
 			let ec2 = new AWS.EC2();
@@ -79,18 +80,18 @@ class EC2Store {
 									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
 										snap.ExpiryDate = parseInt(value);
 									} else {
-										console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Value for ExpiryDate '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the '${BACKUP_API_TAG}' tag is valid`);
+										warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Value for ExpiryDate '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the '${BACKUP_API_TAG}' tag is valid`);
 									}
 								} else {
-									console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Found invalid value '${value}' for ExpiryDate. Check the '${BACKUP_API_TAG}' is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
+									warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Found invalid value '${value}' for ExpiryDate. Check the '${BACKUP_API_TAG}' is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
 							} else {
-								console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
+								warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
 							}
 						});
 						return snap;
 					});
-					resolve(snapshots);
+					resolve({snapshots: snapshots, warnings: warnings});
 				}
 			});
 		});
@@ -100,6 +101,7 @@ class EC2Store {
 	// Should be mapped to a format we expect. i.e.:
 	// { VolumeId, Name, BackupConfig, Tags }
 	listEBS () {
+		let warnings = [];
 		return new Promise( (resolve, reject) => {
 
 			let ec2 = new AWS.EC2();
@@ -149,7 +151,7 @@ class EC2Store {
 										Expiry: ALIASES[backupType][1]
 									});
 								} else {
-									console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Could not interpret backup type '${backupType}'. Please ensure the '${BACKUP_API_TAG}' tag is valid`);
+									warnings.push(`Volume ${prettyPrintVol(volume)}: Could not interpret backup type '${backupType}'. Please ensure the '${BACKUP_API_TAG}' tag is valid`);
 								}
 							});
 							return volume;
@@ -157,17 +159,17 @@ class EC2Store {
 					).filter(volume => {
 						// sanitise array of failed mappings
 						if (!volume || !volume.VolumeId || !volume.Name) {
-							console.warn('AWSBM WARN: Volume response from AWS could not be interpreted properly. It was mapped to:');
-							console.warn(volume);
+							warnings.push('Volume response from AWS could not be interpreted properly. It was mapped to:');
+							warnings.push(volume);
 							return false;
 						} else if (!volume.BackupConfig || !volume.BackupConfig.BackupTypes || volume.BackupConfig.BackupTypes.length === 0) {
-							console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Ignoring volume because its '${BACKUP_API_TAG}' tag could not be intepreted. Please check it is in a valid format.`);
+							warnings.push(`Volume ${prettyPrintVol(volume)}: Ignoring volume because its '${BACKUP_API_TAG}' tag could not be intepreted. Please check it is in a valid format.`);
 							return false;
 						}
 
 						volume.BackupConfig.BackupTypes = volume.BackupConfig.BackupTypes.filter(type => {
 							if (!type.Frequency || !type.Expiry) {
-								console.warn(`AWSBM WARN: Volume ${prettyPrintVol(volume)}: Ignoring backup type '${type}'. Please check the volume's '${BACKUP_API_TAG}' tag is valid`);
+								warnings.push(`Volume ${prettyPrintVol(volume)}: Ignoring backup type '${type}'. Please check the volume's '${BACKUP_API_TAG}' tag is valid`);
 								return false;
 							}
 							return true;
@@ -175,7 +177,7 @@ class EC2Store {
 
 						return true;
 					});
-					resolve(volumes);
+					resolve({volumes: volumes, warnings: warnings});
 				}
 			});
 		});
