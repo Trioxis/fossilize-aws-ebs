@@ -16,7 +16,7 @@
     "_send_to_codecov": "./node_modules/codecov/bin/codecov",
     "_send_to_codeclimate": "cat ./coverage/lcov.info | node ./node_modules/codeclimate-test-reporter/bin/codeclimate.js",
     "build": "babel src -d build --source-maps",
-    "start": "node index.js"
+    "start": "npm run build >/dev/null && node index.js"
   },
   "repository": {
     "type": "git",
