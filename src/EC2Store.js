@@ -85,7 +85,7 @@ class EC2Store {
 									console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Found invalid value '${value}' for ExpiryDate. Check the '${BACKUP_API_TAG}' is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
 							} else {
-								console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`)
+								console.warn(`AWSBM WARN: Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
 							}
 						});
 						return snap;
