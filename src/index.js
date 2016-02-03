@@ -44,5 +44,6 @@ export default function () {
 		}).catch(err => {
 			console.error();
 			printer.printError(err);
+			process.exit(1);
 		});
 }
