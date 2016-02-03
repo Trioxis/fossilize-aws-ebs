@@ -45,6 +45,52 @@ let ec2Responses = {
 		],
 	},
 
+	snapshots2: {
+		Snapshots: [
+			{
+				SnapshotId: 'snap-6c9f5062',
+				VolumeId: 'vol-b77cff7d',
+				State: 'completed',
+				StartTime: 'Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)',
+				Progress: '100%',
+				OwnerId: '791606823516',
+				Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
+				VolumeSize: 50,
+				Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
+					{ Key: 'backups:config-v0', Value: 'ExpoiryData:20160127112018' } ],
+				Encrypted: false
+			},
+
+			{
+				SnapshotId: 'snap-d9d374d7',
+				VolumeId: 'vol-0a8631c0',
+				State: 'completed',
+				StartTime: 'Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)',
+				Progress: '100%',
+				OwnerId: '791606823516',
+				Description: 'Daily backup of frg-web-xvdf',
+				VolumeSize: 20,
+				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111' },
+					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
+				Encrypted: false
+			},
+
+			{
+				SnapshotId: 'snap-e6f154m2',
+				VolumeId: 'vol-0a8631c0',
+
+				StartTime: 'Tue Jan 19 2016 09:37:23 GMT+1100 (AEDT)',
+				Progress: '100%',
+				OwnerId: '791606823516',
+				Description: 'Daily backup of frg-web-xvdf',
+				VolumeSize: 20,
+				Tags: [ { Key: 'not-a-backup', Value: 'ExpiryDate:20160527112059'},
+					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
+				Encrypted: false
+			},
+		],
+	},
+
 	volumes1: {
 		Volumes: [{
 			VolumeId: 'vol-7290edb8',
