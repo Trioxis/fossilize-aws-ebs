@@ -80,10 +80,10 @@ class EC2Store {
 									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
 										snap.ExpiryDate = parseInt(value);
 									} else {
-										warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Value for ExpiryDate '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the '${BACKUP_API_TAG}' tag is valid`);
+										warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined because the parsed value '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the ExpiryDate in '${BACKUP_API_TAG}' is valid`);
 									}
 								} else {
-									warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Found invalid value '${value}' for ExpiryDate. Check the '${BACKUP_API_TAG}' is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
+									warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined beacuse the parsed value '${value}' is invalid. Check the '${BACKUP_API_TAG}' tag is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
 							} else {
 								warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
