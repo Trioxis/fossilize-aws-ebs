@@ -23,14 +23,23 @@ let ec2 = new EC2Store(params);
 ```
 where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
-`ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 owned by the current user.
+`ec2.listSnapshots` - returns a Promise that resolves to an array of all snapshots in EC2 with a tag named `backups:config-v0`. The array contains snapshot objects of the form
+```
+{ SnapshotId, Name, StartTime, ExpiryDate, Tags }
+```
+* `SnapshotId` is the AWS EC2 resource id
+* `Name` is the value of the EC2 tag with the key `Name`. If the EC2 tag does not exist, the `SnapshotId` is used instead
+* `StartTime` is the time that the snapshot began being created, in the time format that the AWS API provides
+* `ExpiryDate` is the date and time after which the snapshot should be deleted. It is in `YYYYMMDDHHmmss` format and should be the same as the value given in the `backups:config-v0` parameter as defined in the [tag API doc](./BackupTagAPI.md). If `ExpiryDate` is not specified in `backups:config-v0`, this will be `undefined`.
+* `Tags` is an object mapped from the EC2 tags on the volume. Properties on the `Tags` object are named according to the tag `key` and have the tag value
+
 
 `ec2.listEBS` - returns a Promise that resolves to an array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`. The array contains volume objects of the form
 ```
 { VolumeId, Name, BackupConfig, Tags }
 ```
 * `VolumeId` is the AWS EC2 resource id
-* `Name` is the value of the EC2 tag with key `Name`. If the EC2 tag does not exist, the `VolumeId` is used instead.
+* `Name` is the value of the EC2 tag with key `Name`. If the EC2 tag does not exist, the `VolumeId` is used instead
 * `BackupConfig` is an object with property `BackupTypes`
     * `BackupTypes` is an array of objects mapped from the `backups:config-v0` tag. They have the form `{Frequency: x, Expiry: y, Alias: 'AliasName'}` (see the [Backup Tag API](./BackupTagAPI.md) for details). The `Alias` property is optional.
 * `Tags` is an object mapped from the EC2 tags on the volume. Properties on the `Tags` object are named according to the tag `key` and have the tag value

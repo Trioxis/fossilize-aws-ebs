@@ -49,7 +49,6 @@ describe('EC2Store', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
-			// Response contains one snapshot so we can easily check that mapping is correct
 			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
 
 			return ec2Store.listSnapshots()
@@ -57,17 +56,70 @@ describe('EC2Store', () => {
 					expect(snapList.length).to.be(2);
 					expect(snapList).to.eql([
 						{
-						  ExpiryDate: 201601271120,
-						  Name: "web-xvdf-backup-2015-12-27-00-19",
-						  SnapshotId: "snap-6c9f5062",
-						  StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)"
+							ExpiryDate: "20160127112018",
+							Name: "web-xvdf-backup-2015-12-27-00-19",
+							SnapshotId: "snap-6c9f5062",
+							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2015-12-27-00-19",
+								"backups:config-v0": "ExpiryDate:20160127112018"
+							}
 						},
 						{
-						  ExpiryDate: 201605271121,
-						  Name: "web-xvdf-backup-2016-01-02-06-58",
-						  SnapshotId: "snap-d9d374d7",
-						  StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)"
+							ExpiryDate: "20160527112111",
+							Name: "web-xvdf-backup-2016-01-02-06-58",
+							SnapshotId: "snap-d9d374d7",
+							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2016-01-02-06-58",
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111"
+							}
 						}
+					]);
+					return;
+				});
+		});
+
+		it('should gracefully handle bad tags on snapshots', () => {
+			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots2);
+
+			return ec2Store.listSnapshots()
+				.then(snapList => {
+					expect(snapList.length).to.be(3);
+					expect(snapList).to.eql([
+						{
+							ExpiryDate: undefined,
+							Name: "web-xvdf-backup-2015-12-27-00-19",
+							SnapshotId: "snap-6c9f5062",
+							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2015-12-27-00-19",
+								// Bad backup tag parameter
+								"backups:config-v0": "ExpoiryData:20160127112018"
+							}
+						},
+						{
+							ExpiryDate: undefined,
+							Name: "web-xvdf-backup-2016-01-02-06-58",
+							SnapshotId: "snap-d9d374d7",
+							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2016-01-02-06-58",
+								// Bad ExpiryDate value
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111"
+							}
+						},
+						{
+							ExpiryDate: undefined,
+							Name: "web-xvdf-backup-2016-01-02-06-58",
+							SnapshotId: "snap-e6f254m2",
+							StartTime: "Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)",
+							Tags: {
+								Name: "web-xvdf-backup-2016-01-02-06-58",
+								// Bad value for month in the expiry date
+								"backups:config-v0": "ExpiryDate:20161327112059"
+							}
+						},
 					]);
 					return;
 				});
