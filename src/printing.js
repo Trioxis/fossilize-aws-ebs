@@ -48,6 +48,7 @@ var printWarnings = (warnings) => {
 };
 
 var printError = (error) => {
+	console.error();
 	console.error('Error');
 	console.error(headingLine);
 	console.error(error.stack);

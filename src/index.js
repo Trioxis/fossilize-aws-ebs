@@ -22,6 +22,7 @@ export default function () {
 			printer.printSnaplist(snapshots);
 			collector.stats.snapshots += snapshots.length;
 			collector.warnings = collector.warnings.concat(warnings);
+
 			let deadSnaps = findDeadSnapshots(snapshots);
 			let cleanupActions = deadSnaps.map(snap => makeDeleteAction(snap));
 
@@ -31,6 +32,7 @@ export default function () {
 					collector.stats.volumes += volumes.length;
 					volumes.map((volume) => collector.stats.backupTypes += volume.BackupConfig.BackupTypes.length);
 					collector.warnings = collector.warnings.concat(warnings);
+					
 					return volumes.map(volume => makeCreationActions(volume, snapshots));
 				});
 
@@ -42,7 +44,6 @@ export default function () {
 					printer.printWarnings(collector.warnings);
 				});
 		}).catch(err => {
-			console.error();
 			printer.printError(err);
 			process.exit(1);
 		});
