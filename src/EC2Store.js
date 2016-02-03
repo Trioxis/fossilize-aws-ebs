@@ -76,7 +76,7 @@ class EC2Store {
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
 							snap.ExpiryDate = undefined;
 							if (key === 'ExpiryDate') {
-								if (/^\d{14}$/.test(value)) {
+								if (new RegExp(`^\\d{${EXPIRY_DATE_FORMAT.length}}$`).test(value)) {
 									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
 										snap.ExpiryDate = parseInt(value);
 									} else {
