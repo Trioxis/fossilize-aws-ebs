@@ -91,7 +91,7 @@ class EC2Store {
 						});
 						return snap;
 					});
-					resolve({snapshots: snapshots, warnings: warnings});
+					resolve({snapshots, warnings});
 				}
 			});
 		});
@@ -177,7 +177,7 @@ class EC2Store {
 
 						return true;
 					});
-					resolve({volumes: volumes, warnings: warnings});
+					resolve({volumes, warnings});
 				}
 			});
 		});
