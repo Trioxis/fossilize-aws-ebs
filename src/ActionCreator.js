@@ -8,6 +8,15 @@ let makeDeleteAction = (snap) => {
 // to create the necessary snapshots that fulful the backup requirements
 let makeCreationActions = (volume, snapList) => {
 
+	let x = snapList.filter((snap) => {
+		// console.log(snap);
+		if (snap.FromVolumeName === volume.Name) {
+			return true;
+		} else {
+			return false
+		}
+	}).length;
+	console.log(`${volume.VolumeId} ${volume.Name} has ${x} related snapshots`);
 	return determineBackupsNeeded(volume, snapList).map(backup => backup);
 };
 

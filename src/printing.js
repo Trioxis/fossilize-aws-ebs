@@ -6,7 +6,7 @@ var printSnaplist = (snapshots) => {
 	console.log('AWSBM Snapshots');
 	console.log(headingLine);
 	snapshots.map(snap => {
-		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
+		console.log(`(${snap.SnapshotId}): '${snap.Name}' (from volume: ${snap.FromVolumeName ? snap.FromVolumeName : 'unknown'})`);
 		let _ =  snap.SnapshotId.replace(/./g, ' ') + '    ';
 		console.log(`${_} Created: ${snap.StartTime}`);
 		console.log(`${_} Expires: ${snap.ExpiryDate ? moment(snap.ExpiryDate, 'YYYYMMDDHHmmss').fromNow() : 'Never'}`);
