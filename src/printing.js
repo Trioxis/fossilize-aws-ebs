@@ -8,8 +8,8 @@ var printSnaplist = (snapshots) => {
 	snapshots.map(snap => {
 		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
 		let _ =  snap.SnapshotId.replace(/./g, ' ') + '    ';
-		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'unknown'}`);
-		console.log(`           Type: ${snap.BackupType}`);
+		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
+		console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
 		console.log(`        Created: ${snap.StartTime}`);
 		console.log(`        Expires: ${snap.ExpiryDate ? moment(snap.ExpiryDate, 'YYYYMMDDHHmmss').fromNow() : 'Never'}`);
 		console.log();
@@ -24,10 +24,11 @@ var printEBSList = (volumes) => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
 		let _ =  vol.VolumeId.replace(/./g, ' ') + '    ';
 		vol.BackupConfig.BackupTypes.map(backup => {
-			let name = `${backup.Alias ? `${backup.Alias} `: ''}backup`;
+			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`} backup`;
 			let frequencyDescriptor = `${moment.duration(backup.Frequency, 'hours').humanize().replace(/(a )|(an )/g, '')} for ${moment.duration(backup.Expiry, 'hours').humanize()}`;
-			let numberAtATime = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
-			console.log(`        Backup: ${numberAtATime} (${name} every ${frequencyDescriptor})`);
+			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
+			console.log(`        Backup: ${name} (every ${frequencyDescriptor})`);
+			console.log(`                ${maximumSnapsDescriptor}`);
 		});
 		console.log();
 	});
