@@ -1,6 +1,6 @@
 import EC2Store from './EC2Store';
-import {findDeadSnapshots} from './Analyser';
-import {makeDeleteAction, matchSnapsToVolumes, makeCreationActions} from './ActionCreator';
+import {findDeadSnapshots, matchSnapsToVolumes} from './Analyser';
+import {makeDeleteAction, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
 import * as printer from './printing';
