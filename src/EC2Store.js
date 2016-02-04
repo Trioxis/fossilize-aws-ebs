@@ -67,8 +67,6 @@ class EC2Store {
 							}
 						});
 
-						if (snap.Tags.hasOwnProperty(BACKUP_API_TAG)){
-					}
 						return snap;
 
 						// remove snapshots that have no backups:config-v0 tag

@@ -16,7 +16,7 @@ let snapshotIsDead = (snapshot) => {
 var matchSnapsToVolumes = (volumes, snapList) => {
 
 	let matchedVolumes = volumes.map((volume) => {
-		volume.Snapshots = {}
+		volume.Snapshots = {};
 		snapList = snapList.filter((snap) => {
 			// console.log(snap);
 			if (snap.FromVolumeName === volume.Name) {
@@ -33,7 +33,7 @@ var matchSnapsToVolumes = (volumes, snapList) => {
 
 	let orphanedSnaps = snapList;
 	return {matchedVolumes, orphanedSnaps};
-}
+};
 
 
 export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes};

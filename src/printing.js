@@ -7,7 +7,6 @@ var printSnaplist = (snapshots) => {
 	console.log(headingLine);
 	snapshots.map(snap => {
 		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
-		let _ =  snap.SnapshotId.replace(/./g, ' ') + '    ';
 		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
 		console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
 		console.log(`        Created: ${snap.StartTime}`);
@@ -22,7 +21,6 @@ var printEBSList = (volumes) => {
 	console.log(headingLine);
 	volumes.map(vol => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
-		let _ =  vol.VolumeId.replace(/./g, ' ') + '    ';
 		let knownBackupTypes = [];
 		vol.BackupConfig.BackupTypes.map(backup => {
 			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`}`;
@@ -39,7 +37,7 @@ var printEBSList = (volumes) => {
 			if (knownBackupTypes.indexOf(backupType) === -1) {
 				console.log(`        ${vol.Snapshots[backupType].length} backups of unknown type ${backupType}`);
 			}
-		})
+		});
 		console.log();
 	});
 	console.log();
@@ -49,9 +47,9 @@ var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
 	console.log(`${stats.snapshots} snapshots`);
+	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
 	console.log(`${stats.volumes} EBS volumes`);
-	console.log(`${stats.backupTypes} volume backup types identified`);
-	console.log(`${stats.orphanedSnaps} orphaned snapshots`);
+	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
 	console.log();
 };
 
