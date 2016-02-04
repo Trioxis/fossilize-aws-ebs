@@ -56,23 +56,29 @@ describe('EC2Store', () => {
 					expect(snapshots.length).to.be(2);
 					expect(snapshots).to.eql([
 						{
-							ExpiryDate: "20160127112018",
+							BackupType: "[1|12]",
+							ExpiryDate: 20160127112018,
+							FromVolumeId: "vol-b77cff7d",
+							FromVolumeName: "francis",
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
 							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
-								"backups:config-v0": "ExpiryDate:20160127112018"
+								"backups:config-v0": "BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018"
 							}
 						},
 						{
-							ExpiryDate: "20160527112111",
+							BackupType: "Weekly",
+							ExpiryDate: undefined,
+							FromVolumeId: "vol-0a8631c0",
+							FromVolumeName: "jonathon",
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
 							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
-								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111"
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon"
 							}
 						}
 					]);
@@ -91,6 +97,9 @@ describe('EC2Store', () => {
 							ExpiryDate: undefined,
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
+							FromVolumeId: "vol-b77cff7d",
+							FromVolumeName: undefined,
+							BackupType: undefined,
 							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
@@ -100,6 +109,9 @@ describe('EC2Store', () => {
 						},
 						{
 							ExpiryDate: undefined,
+							FromVolumeName: undefined,
+							BackupType: undefined,
+							FromVolumeId: 'vol-0a8631c0',
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
 							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
@@ -111,13 +123,16 @@ describe('EC2Store', () => {
 						},
 						{
 							ExpiryDate: undefined,
+							FromVolumeName: 'thing',
+							BackupType: undefined,
+							FromVolumeId: 'vol-0a8631c1',
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-e6f254m2",
 							StartTime: "Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)",
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
 								// Bad value for month in the expiry date
-								"backups:config-v0": "ExpiryDate:20161327112059"
+								"backups:config-v0": "Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059"
 							}
 						},
 					]);
