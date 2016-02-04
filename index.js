@@ -1,9 +1,8 @@
 var BackupRunner = require('./build/');
 
 console.log('Runnning the backup script in ./build/');
-BackupRunner.default().then((result) => {
-	console.log('DONE');
-	console.log('Printing output:');
-	console.log(result);
-	console.log('Exiting');
+console.log();
+BackupRunner.default().then(() => {
+	console.log();
+	console.log('Done, Exiting');
 });

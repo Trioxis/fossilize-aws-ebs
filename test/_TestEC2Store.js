@@ -37,8 +37,8 @@ describe('EC2Store', () => {
 			let snapListPromise = ec2Store.listSnapshots();
 
 			expect(snapListPromise).to.be.a(Promise);
-			return snapListPromise.then(snapList => {
-				expect(snapList).to.be.an(Array);
+			return snapListPromise.then(({snapshots}) => {
+				expect(snapshots).to.be.an(Array);
 				return;
 			})
 		});
@@ -52,9 +52,9 @@ describe('EC2Store', () => {
 			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
 
 			return ec2Store.listSnapshots()
-				.then(snapList => {
-					expect(snapList.length).to.be(2);
-					expect(snapList).to.eql([
+				.then(({snapshots}) => {
+					expect(snapshots.length).to.be(2);
+					expect(snapshots).to.eql([
 						{
 							ExpiryDate: "20160127112018",
 							Name: "web-xvdf-backup-2015-12-27-00-19",
@@ -84,9 +84,9 @@ describe('EC2Store', () => {
 			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots2);
 
 			return ec2Store.listSnapshots()
-				.then(snapList => {
-					expect(snapList.length).to.be(3);
-					expect(snapList).to.eql([
+				.then(({snapshots}) => {
+					expect(snapshots.length).to.be(3);
+					expect(snapshots).to.eql([
 						{
 							ExpiryDate: undefined,
 							Name: "web-xvdf-backup-2015-12-27-00-19",
@@ -131,7 +131,7 @@ describe('EC2Store', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
-				.then(volumeList => {
+				.then(({volumes}) => {
 					expect(mockEC2.describeVolumes.called).to.be.ok();
 					return;
 				});
@@ -142,9 +142,9 @@ describe('EC2Store', () => {
 			let volListPromise = ec2Store.listEBS();
 
 			expect(volListPromise).to.be.a(Promise);
-			return volListPromise.then(volList => {
-				expect(volList).to.be.an(Array);
-				expect(volList.length).to.not.be(0);
+			return volListPromise.then(({volumes}) => {
+				expect(volumes).to.be.an(Array);
+				expect(volumes.length).to.not.be(0);
 				return;
 			})
 		});
@@ -160,9 +160,9 @@ describe('EC2Store', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
-				.then(volList => {
-					expect(volList.length).to.be(3);
-					expect(volList).to.be.eql([
+				.then(({volumes}) => {
+					expect(volumes.length).to.be(3);
+					expect(volumes).to.be.eql([
 						{
 							VolumeId: firstVol.VolumeId,
 							Name: firstVol.Tags[1].Value,
@@ -224,9 +224,9 @@ describe('EC2Store', () => {
 			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes2);
 
 			return ec2Store.listEBS()
-				.then(volList => {
-					expect(volList.length).to.be(2);
-					expect(volList).to.be.eql([
+				.then(({volumes}) => {
+					expect(volumes.length).to.be(2);
+					expect(volumes).to.be.eql([
 						{
 							VolumeId: secondVol.VolumeId,
 							Name: secondVol.Tags[0].Value,
