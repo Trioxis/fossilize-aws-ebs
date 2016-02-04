@@ -1,5 +1,5 @@
 import EC2Store from './EC2Store';
-import {findDeadSnapshots} from './SnapshotAnalyser';
+import {findDeadSnapshots} from './Analyser';
 import {makeDeleteAction, matchSnapsToVolumes, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
