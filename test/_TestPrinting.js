@@ -42,8 +42,8 @@ describe('Printer', () => {
 		it('should at least print the VolumeId and Name of each volume', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			printer.printEBSList([
-				{VolumeId: '237845', Name: 'franklin', BackupConfig: { BackupTypes: []}},
-				{VolumeId: '984752987', Name: 'bob', BackupConfig: { BackupTypes: []}},
+				{VolumeId: '237845', Name: 'franklin', BackupConfig: { BackupTypes: []}, Snapshots: []},
+				{VolumeId: '984752987', Name: 'bob', BackupConfig: { BackupTypes: []}, Snapshots: []},
 			]);
 
 			let output = '';

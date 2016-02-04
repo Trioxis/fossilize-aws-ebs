@@ -23,8 +23,10 @@ var printEBSList = (volumes) => {
 	volumes.map(vol => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
 		let _ =  vol.VolumeId.replace(/./g, ' ') + '    ';
+		let knownBackupTypes = [];
 		vol.BackupConfig.BackupTypes.map(backup => {
 			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`}`;
+			knownBackupTypes.push(name);
 			let displayName = `${name} backup`;
 			let frequencyDescriptor = `${moment.duration(backup.Frequency, 'hours').humanize().replace(/(a )|(an )/g, '')} for ${moment.duration(backup.Expiry, 'hours').humanize()}`;
 			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
@@ -33,6 +35,11 @@ var printEBSList = (volumes) => {
 			// if (vol.Snapshots[name]) {}
 			console.log(`                ${vol.Snapshots[name] ? vol.Snapshots[name].length : 0} backups currently exist`);
 		});
+		Object.keys(vol.Snapshots).map((backupType) => {
+			if (knownBackupTypes.indexOf(backupType) === -1) {
+				console.log(`        ${vol.Snapshots[backupType].length} backups of unknown type ${backupType}`);
+			}
+		})
 		console.log();
 	});
 	console.log();
