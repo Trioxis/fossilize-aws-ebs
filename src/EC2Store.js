@@ -53,15 +53,21 @@ class EC2Store {
 						// Use snapshot id if a Name tag does not exist
 						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
+						snap.FromVolumeId = snapResponse.VolumeId;
+						snap.FromVolumeName = undefined;
 						snap.StartTime = snapResponse.StartTime;
 
 						// Map EC2 tags to easy to use Tag object
 						snap.Tags = {};
 						snapResponse.Tags.map(tag => {
 							snap.Tags[tag.Key] = tag.Value;
-							if (tag.Key === 'Name') snap.Name = tag.Value;
+							if (tag.Key === 'Name' || tag.Key === 'FromVolumeName') {
+								snap[tag.Key] = tag.Value;
+							}
 						});
 
+						if (snap.Tags.hasOwnProperty(BACKUP_API_TAG)){
+					}
 						return snap;
 
 						// remove snapshots that have no backups:config-v0 tag
@@ -85,6 +91,8 @@ class EC2Store {
 								} else {
 									warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined beacuse the parsed value '${value}' is invalid. Check the '${BACKUP_API_TAG}' tag is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
+							} else if (key === 'FromVolumeName') {
+								snap.FromVolumeName = value;
 							} else {
 								warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
 							}
