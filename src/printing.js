@@ -24,11 +24,14 @@ var printEBSList = (volumes) => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
 		let _ =  vol.VolumeId.replace(/./g, ' ') + '    ';
 		vol.BackupConfig.BackupTypes.map(backup => {
-			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`} backup`;
+			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`}`;
+			let displayName = `${name} backup`;
 			let frequencyDescriptor = `${moment.duration(backup.Frequency, 'hours').humanize().replace(/(a )|(an )/g, '')} for ${moment.duration(backup.Expiry, 'hours').humanize()}`;
 			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
-			console.log(`        Backup: ${name} (every ${frequencyDescriptor})`);
+			console.log(`        Backup: ${displayName} (every ${frequencyDescriptor})`);
 			console.log(`                ${maximumSnapsDescriptor}`);
+			// if (vol.Snapshots[name]) {}
+			console.log(`                ${vol.Snapshots[name] ? vol.Snapshots[name].length : 0} backups currently exist`);
 		});
 		console.log();
 	});
@@ -41,6 +44,7 @@ var printStatistics = (stats) => {
 	console.log(`${stats.snapshots} snapshots`);
 	console.log(`${stats.volumes} EBS volumes`);
 	console.log(`${stats.backupTypes} volume backup types identified`);
+	console.log(`${stats.orphanedSnaps} orphaned snapshots`);
 	console.log();
 };
 

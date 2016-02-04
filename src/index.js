@@ -1,6 +1,6 @@
 import EC2Store from './EC2Store';
 import {findDeadSnapshots} from './SnapshotAnalyser';
-import {makeDeleteAction, makeCreationActions} from './ActionCreator';
+import {makeDeleteAction, matchSnapsToVolumes, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
 import * as printer from './printing';
@@ -10,6 +10,7 @@ export default function () {
 		warnings: [],
 		stats: {
 			snapshots: 0,
+			orphanedSnaps: 0,
 			volumes: 0,
 			backupTypes: 0
 		}
@@ -28,12 +29,18 @@ export default function () {
 
 			let creationActions = ec2.listEBS()
 				.then(({volumes, warnings}) => {
-					printer.printEBSList(volumes);
 					collector.stats.volumes += volumes.length;
 					volumes.map((volume) => collector.stats.backupTypes += volume.BackupConfig.BackupTypes.length);
 					collector.warnings = collector.warnings.concat(warnings);
-					
-					return volumes.map(volume => makeCreationActions(volume, snapshots));
+
+					let {matchedVolumes, orphanedSnaps} = matchSnapsToVolumes(volumes, snapshots);
+					collector.stats.orphanedSnaps += orphanedSnaps.length;
+
+					let actions = [];
+					actions.concat();
+					volumes.map(volume => actions.concat(makeCreationActions(volume, snapshots)));
+					printer.printEBSList(matchedVolumes);
+					return actions;
 				});
 
 			return Promise.all([cleanupActions, creationActions])
