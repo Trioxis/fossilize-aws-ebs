@@ -44,6 +44,17 @@ var printEBSList = (volumes) => {
 	console.log();
 };
 
+var printActions = (actions) => {
+	console.log('AWSBM Actions');
+	console.log(headingLine);
+	actions.map((action) => {
+		if (action.Action === 'SNAPSHOT_VOLUME') {
+			console.log(`${action.Action}: (${action.VolumeId}) '${action.VolumeName}' ${action.BackupType} (Expires ${action.ExpiryDate.fromNow()})`);
+		}
+	});
+	console.log();
+};
+
 var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
@@ -72,6 +83,7 @@ var printError = (error) => {
 export {
 	printSnaplist,
 	printEBSList,
+	printActions,
 	printStatistics,
 	printWarnings,
 	printError

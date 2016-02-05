@@ -37,9 +37,9 @@ export default function () {
 					collector.stats.orphanedSnaps += orphanedSnaps.length;
 
 					let actions = [];
-					actions.concat();
-					volumes.map(volume => actions.concat(makeCreationActions(volume, snapshots)));
+					matchedVolumes.map(volume => actions = actions.concat(makeCreationActions(volume)));
 					printer.printEBSList(matchedVolumes);
+					printer.printActions(actions);
 					return actions;
 				});
 
