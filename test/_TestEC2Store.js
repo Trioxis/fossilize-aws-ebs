@@ -184,9 +184,9 @@ describe('EC2Store', () => {
 							Name: firstVol.Tags[1].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 1, Expiry: 12 },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 48, Expiry: 144 }
+									{ Name: '[1|12]', Frequency: 1, Expiry: 12 },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: '[48|144]', Frequency: 48, Expiry: 144 }
 								]
 							},
 							Tags: {
@@ -199,9 +199,9 @@ describe('EC2Store', () => {
 							Name: secondVol.Tags[0].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 48, Expiry: 144 }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: '[48|144]', Frequency: 48, Expiry: 144 }
 								]
 							},
 							Tags: {
@@ -214,9 +214,9 @@ describe('EC2Store', () => {
 							Name: thirdVol.Tags[1].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: 'Hourly', Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
 							},
 							Tags: {
@@ -248,7 +248,7 @@ describe('EC2Store', () => {
 							Name: secondVol.Tags[0].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
 								]
 							},
 							Tags: {
@@ -261,8 +261,8 @@ describe('EC2Store', () => {
 							Name: thirdVol.VolumeId,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Hourly', Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
 							},
 							Tags: {

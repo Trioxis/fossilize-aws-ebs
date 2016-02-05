@@ -24,13 +24,13 @@ let makeCreationActions = (volume) => {
 	let actions = [];
 	backupTypes.map((backup) => {
 		actions.push({
-			Action: "SNAPSHOT_VOLUME",
+			Action: 'SNAPSHOT_VOLUME',
 			VolumeId: volume.VolumeId,
 			VolumeName: volume.Name,
 			BackupType: backup.Name,
 			ExpiryDate: moment().add(backup.Expiry, 'hours')
 		});
-	})
+	});
 	return actions;
 };
 
