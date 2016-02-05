@@ -23,12 +23,11 @@ var printEBSList = (volumes) => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
 		let knownBackupTypes = [];
 		vol.BackupConfig.BackupTypes.map(backup => {
-			let name = `${backup.Alias ? `${backup.Alias}`: `[${backup.Frequency}|${backup.Expiry}]`}`;
+			let name = `${backup.Name}`;
 			knownBackupTypes.push(name);
-			let displayName = `${name} backup`;
 			let frequencyDescriptor = `${moment.duration(backup.Frequency, 'hours').humanize().replace(/(a )|(an )/g, '')} for ${moment.duration(backup.Expiry, 'hours').humanize()}`;
 			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
-			console.log(`        Backup: ${displayName} (every ${frequencyDescriptor})`);
+			console.log(`        Backup: ${name} backup (every ${frequencyDescriptor})`);
 			console.log(`                ${maximumSnapsDescriptor}`);
 			console.log(`                ${vol.Snapshots[name] ? vol.Snapshots[name].length : 0} backups currently exist`);
 			if (vol.Snapshots[name] && vol.Snapshots[name].length > 0) {

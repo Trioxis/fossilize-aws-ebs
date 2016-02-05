@@ -148,11 +148,13 @@ class EC2Store {
 
 								if (tuple && tuple.length === 3) {
 									volume.BackupConfig.BackupTypes.push({
+										Name: `[${parseInt(tuple[1])}|${parseInt(tuple[2])}]`,
 										Frequency: parseInt(tuple[1]),
 										Expiry: parseInt(tuple[2])
 									});
 								} else if (ALIASES.hasOwnProperty(backupType)) {
 									volume.BackupConfig.BackupTypes.push({
+										Name: backupType,
 										Alias: backupType,
 										Frequency: ALIASES[backupType][0],
 										Expiry: ALIASES[backupType][1]
