@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import expect from 'expect.js';
+import moment from 'moment';
 
 import * as printer from '../src/printing';
 
@@ -20,8 +21,8 @@ describe('Printer', () => {
 		it('should at least print the SnapshotId and Name of each snapshot', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			printer.printSnaplist([
-				{SnapshotId: '237845', Name: 'franklin'},
-				{SnapshotId: '984752987', Name: 'bob'},
+				{SnapshotId: '237845', StartTime: moment(), Name: 'franklin'},
+				{SnapshotId: '984752987', StartTime: moment(), Name: 'bob'},
 			]);
 
 			let output = '';
