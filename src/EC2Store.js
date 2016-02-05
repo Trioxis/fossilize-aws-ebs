@@ -57,6 +57,7 @@ class EC2Store {
 						snap.StartTime = snapResponse.StartTime;
 						snap.FromVolumeName = undefined;
 						snap.BackupType = undefined;
+						snap.ExpiryDate = undefined;
 
 						// Map EC2 tags to easy to use Tag object
 						snap.Tags = {};
@@ -79,7 +80,6 @@ class EC2Store {
 							let [key, value] = backupParam.split(':');
 
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
-							snap.ExpiryDate = undefined;
 							if (key === 'ExpiryDate') {
 								if (new RegExp(`^\\d{${EXPIRY_DATE_FORMAT.length}}$`).test(value)) {
 									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
