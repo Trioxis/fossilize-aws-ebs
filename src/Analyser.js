@@ -10,15 +10,13 @@ let snapshotIsDead = (snapshot) => {
 	return snapshot;
 };
 
-// Given a list of EBS volumes and list of snapshots, attaches the snapshot to the
+// Given a list of EBS volumes and list of snapshots, matches each snapshot to the
 // EBS's Snapshots[BackupType] array. Returns an object containing the volume list
 // and a list of orphaned snapshots
-var matchSnapsToVolumes = (volumes, snapList) => {
-
+let matchSnapsToVolumes = (volumes, snapList) => {
 	let matchedVolumes = volumes.map((volume) => {
 		volume.Snapshots = {};
 		snapList = snapList.filter((snap) => {
-			// console.log(snap);
 			if (snap.FromVolumeName === volume.Name) {
 				if (!volume.Snapshots[snap.BackupType]) volume.Snapshots[snap.BackupType] = [];
 				volume.Snapshots[snap.BackupType].push(snap);
@@ -28,12 +26,24 @@ var matchSnapsToVolumes = (volumes, snapList) => {
 			}
 		});
 		return volume;
-
 	});
-
 	let orphanedSnaps = snapList;
 	return {matchedVolumes, orphanedSnaps};
 };
 
+// finds the most recently created snapshot in a list
+let getLatestSnapshot = (snapList) => {
+	// sort in to latest first
+	snapList.sort((a, b) => {
+		if (a.StartTime.isAfter(b)) {
+			return -1;
+		} else if (a.StartTime.isSame(b)) {
+			return 0;
+		} else {
+			return 1;
+		}
+	});
+	return snapList[0];
+}
 
-export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes};
+export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes, getLatestSnapshot};
