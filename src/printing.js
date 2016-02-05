@@ -30,8 +30,10 @@ var printEBSList = (volumes) => {
 			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
 			console.log(`        Backup: ${displayName} (every ${frequencyDescriptor})`);
 			console.log(`                ${maximumSnapsDescriptor}`);
-			// if (vol.Snapshots[name]) {}
 			console.log(`                ${vol.Snapshots[name] ? vol.Snapshots[name].length : 0} backups currently exist`);
+			if (vol.Snapshots[name] && vol.Snapshots[name].length > 0) {
+				console.log(`                Last backed up ${vol.Snapshots[name][0].StartTime.fromNow()}`);
+			}
 		});
 		Object.keys(vol.Snapshots).map((backupType) => {
 			if (knownBackupTypes.indexOf(backupType) === -1) {

@@ -13,7 +13,9 @@ let snapshotIsDead = (snapshot) => {
 // Given a list of EBS volumes and list of snapshots, matches each snapshot to the
 // EBS's Snapshots[BackupType] array. Returns an object containing the volume list
 // and a list of orphaned snapshots
+// The snapshot arrays are sorted by latest first
 let matchSnapsToVolumes = (volumes, snapList) => {
+	snapList = sortSnapsByMostRecent(snapList);
 	let matchedVolumes = volumes.map((volume) => {
 		volume.Snapshots = {};
 		snapList = snapList.filter((snap) => {
@@ -32,9 +34,9 @@ let matchSnapsToVolumes = (volumes, snapList) => {
 };
 
 // finds the most recently created snapshot in a list
-let getLatestSnapshot = (snapList) => {
+let sortSnapsByMostRecent = (snapList) => {
 	// sort in to latest first
-	snapList.sort((a, b) => {
+	return snapList.sort((a, b) => {
 		if (a.StartTime.isAfter(b)) {
 			return -1;
 		} else if (a.StartTime.isSame(b)) {
@@ -43,7 +45,6 @@ let getLatestSnapshot = (snapList) => {
 			return 1;
 		}
 	});
-	return snapList[0];
 }
 
-export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes, getLatestSnapshot};
+export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes, sortSnapsByMostRecent};
