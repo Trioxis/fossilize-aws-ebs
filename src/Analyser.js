@@ -45,6 +45,6 @@ let sortSnapsByMostRecent = (snapList) => {
 			return 1;
 		}
 	});
-}
+};
 
 export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes, sortSnapsByMostRecent};
