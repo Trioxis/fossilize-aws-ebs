@@ -9,8 +9,8 @@ var printSnaplist = (snapshots) => {
 		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
 		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
 		console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
-		console.log(`        Created: ${snap.StartTime}`);
-		console.log(`        Expires: ${snap.ExpiryDate ? moment(snap.ExpiryDate, 'YYYYMMDDHHmmss').fromNow() : 'Never'}`);
+		console.log(`        Created: ${snap.StartTime.format("dddd, MMMM Do YYYY, h:mm:ss a (ZZ)")} - ${snap.StartTime.fromNow()}`);
+		console.log(`        Expires: ${snap.ExpiryDate ? `${snap.ExpiryDate.format("dddd, MMMM Do YYYY, h:mm:ss a (ZZ)")} - ${snap.ExpiryDate.fromNow()}` : 'Never'}`);
 		console.log();
 	});
 	console.log();
