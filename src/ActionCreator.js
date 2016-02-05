@@ -21,17 +21,13 @@ let makeCreationActions = (volume) => {
 		}
 	});
 
-	let actions = [];
-	backupTypes.map((backup) => {
-		actions.push({
+	return backupTypes.map((backup) => ({
 			Action: 'SNAPSHOT_VOLUME',
 			VolumeId: volume.VolumeId,
 			VolumeName: volume.Name,
 			BackupType: backup.Name,
 			ExpiryDate: moment().add(backup.Expiry, 'hours')
-		});
-	});
-	return actions;
+	}));
 };
 
 // Read the tags on the EBS volume and check if the backup requirements are
