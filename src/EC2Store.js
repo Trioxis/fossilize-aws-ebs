@@ -54,7 +54,7 @@ class EC2Store {
 						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
 						snap.FromVolumeId = snapResponse.VolumeId;
-						snap.StartTime = snapResponse.StartTime;
+						snap.StartTime = moment(snapResponse.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
 						snap.FromVolumeName = undefined;
 						snap.BackupType = undefined;
 						snap.ExpiryDate = undefined;
@@ -82,8 +82,8 @@ class EC2Store {
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
 							if (key === 'ExpiryDate') {
 								if (new RegExp(`^\\d{${EXPIRY_DATE_FORMAT.length}}$`).test(value)) {
-									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
-										snap.ExpiryDate = parseInt(value);
+									if (moment.utc(value, EXPIRY_DATE_FORMAT).isValid()) {
+										snap.ExpiryDate = moment.utc(value, EXPIRY_DATE_FORMAT).local();
 									} else {
 										warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined because the parsed value '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the ExpiryDate in '${BACKUP_API_TAG}' is valid`);
 									}
