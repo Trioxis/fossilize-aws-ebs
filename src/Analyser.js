@@ -37,9 +37,9 @@ let matchSnapsToVolumes = (volumes, snapList) => {
 let sortSnapsByMostRecent = (snapList) => {
 	// sort in to latest first
 	return snapList.sort((a, b) => {
-		if (a.StartTime.isAfter(b)) {
+		if (a.StartTime.isAfter(b.StartTime)) {
 			return -1;
-		} else if (a.StartTime.isSame(b)) {
+		} else if (a.StartTime.isSame(b.StartTime)) {
 			return 0;
 		} else {
 			return 1;
