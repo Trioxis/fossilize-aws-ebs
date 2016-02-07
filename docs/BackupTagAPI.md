@@ -10,6 +10,8 @@ This document refers to **`v0`** of the API. So the tag key should be **`backups
 
 ## Tag API for EBS volumes
 
+**Each volume in an account must have a unique `Name` without commas in it. Otherwise there may be problems determining which snapshots belong to which volume**
+
 The value of the `backups:config-v0` tag defines how often the EBS volume should be backed up and how long these backups are to be retained. It is in the format of a comma delimited list of tuples and aliases.
 
 A tuple takes the form **`[x|y]`**
