@@ -1,11 +1,90 @@
 # Module APIs
 
+## Object Specifications
+
+These objects are a more useful (to us) representation of EC2 objects and are passed around the Modules below. The values are mapped from a combination of the [EC2 Response](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html) and the 'Name' and [`backups:config-v0` tags](./BackupTagAPI.md) on the object.
+
+### AWSBM Snapshot Object
+
+```JavaScript
+{
+	Name,
+	// The value of the 'Name' EC2 tag
+	SnapshotId,
+	// The EC2 resource id of the snapshot, e.g. 'snap-1234abcd'
+	FromVolumeId,
+	// The EC2 resource id of the volume that this snapshot was made from, e.g. 'vol-1234abcd'
+	FromVolumeName,
+	// The value of the 'Name' EC2 tag of the volume at creation time (it is possible this could have changed since creation)
+	StartTime,
+	// A moment.js object representing the time the snapshot was created
+	ExpiryDate,
+	// A moment.js object representing the time after which this snapshot has expired. Can be
+	// 'undefined' if no ExpiryDate was specified in the `backups:config-v0` tag
+	BackupType,
+	// The name of the backup type this snapshot is (one of the values from the volume's BackupTypes)
+	Tags: {	}
+	// The EC2 tags on the snapshot, where the property names are the 'Key' and the values are their 'Value'
+}
+```
+
+### AWSBM Volume Object
+
+```JavaScript
+{
+	Name,
+	// The value of the 'Name' EC2 tag
+	VolumeId,
+	// The EC2 resource id of the volume, e.g. 'vol-1234abcd'
+	BackupConfig: {
+		BackupTypes: [
+			// An object for every item in the 'backups:config-v0' tag of the volume
+			{
+				Name,
+				// The Alias of the backup type if it exists, otherwise '[Frequency|Expiry]'
+				Frequency,
+				// How often this backup should occur, in hours
+				Expiry
+				// How long snapshots of this time should exist, in hours
+			}
+		]
+	},
+	Tags: { },
+	// The EC2 tags on the volume, where the property name are the 'Key' and the values are their 'Value'
+	Snapshots: { }
+	// [OPTIONAL] Each property name of this object is the name of a 'BackupType'. The property contains
+	// an array of all the snapshots with the same BackupType and that have the same 'FromVolumeName' as this
+	// volume's 'Name'.
+}
+```
+
+### AWSBM Action Objects
+
+#### Make Snapshot Action
+
+```JavaScript
+{
+	Action: 'SNAPSHOT_VOLUME',
+	VolumeId,
+	// EC2 resource id of the volume being backed up
+	VolumeName,
+	// Value of the EC2 Tag with Key 'Name'
+	BackupType,
+	// The type of backup this snapshot will represent
+	ExpiryDate
+	// A moment.js object that represents the point in time that this snapshot expires.
+	// It should be the current time + the number of hours defined in Expiry for the BackupType
+}
+```
+
+## Modules
+
 ## ActionCreator
 
 [`ActionCreator.js`](../src/ActionCreator.js) exports three named functions. They all return objects that represent an action to be used by the `Actioner`
 
 - `makeDeleteAction(snap)` - accepts an object that represents a snapshot in EC2. It returns an object that represents an action that will delete the snapshot.
-- `makeCreationActions(volume, snapList)` - accepts an object that represents an EBS volume and an array of snapshot objects that exist in EC2. Returns an array of actions that will create the required backup snapshots for the EBS volume.
+- `makeCreationActions(volume)` - accepts an AWSBM Volume object (with `Snapshots` defined). Returns an array of `SNAPSHOT_VOLUME` AWSBM Action objects that will create the required backup snapshots for the EBS volume.
 - `determineBackupsNeeded(volume, snapList)` - accepts an EBS volume object and an array of snapshot objects. This simply determines that types of snapshots required and returns them as an array. This should be used by `makeCreateAction` to figure out what creation actions it needs to make.
 
 ## Actioner
