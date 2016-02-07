@@ -44,11 +44,15 @@ You would use the following value for `backups:config-v0`
 
 ## Tag API for Snapshots
 
-The value of the `backups:config-v0` tag defines conditions that must be met for the snapshot to be deleted. Currently the only condition is the expiry date of the snapshot. The value is in the form of a comma delimited list of conditions.
+The value of the `backups:config-v0` tag defines necessary metadata key-value pairs. For example, conditions that must be met for the snapshot to be deleted, or what volume the snapshot belongs to. The tag value is in the form of a comma delimited list of key-value pairs. The key and value are separated by a `:`.
 
-The **`ExpiryDate`** condition the date after which a snapshot should be deleted. The date value is in the format `YYYYMMDDHHmmss` (these are the [same tokens as used in moment.js](http://momentjs.com/docs/#/parsing/string-format/)).
+The **`ExpiryDate`** value contains the date after which a snapshot should be deleted. The date value is UTC and in the format `YYYYMMDDHHmmss` (these are the [same tokens as used in moment.js](http://momentjs.com/docs/#/parsing/string-format/)).
 
-To delete a snapshot after 11:25:13 PM on the 5th of June 2015, you would use this value for `backups:config-v0`
+The **`FromVolumeName`** value describes the Name tag of the volume that the snapshot was made from. It is used when determining what backup types are necessary.
+
+The **`BackupType`** value is defined from one of the values of the `backups:config-v0` tag of the volume from which the snapshot was made. It is either the Alias or `[Frequency|Expiry]`.
+
+For a snapshot that came from a backup type `[4|12]` of the volume with Name `website-data` and is set to be deleted at 11:25:13 PM on the 5th of June 2015, you would use this value for `backups:config-v0`
 ```
-ExpiryDate:20150605232513
+ExpiryDate:20150605232513,FromVolumeName:website-data,BackupType:[4|12]
 ```
