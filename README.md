@@ -65,7 +65,7 @@ You can set tests to run automatically with
 ```
 npm run watch
 ```
-Your terminal will display updated test status as soon as save your code.
+Your terminal will display updated test status as soon as save your code. (This doesn't do linting, you can use `npm run watch-lint` for that).
 
 #### Code Coverage
 
