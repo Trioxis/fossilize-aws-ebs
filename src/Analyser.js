@@ -33,7 +33,7 @@ let matchSnapsToVolumes = (volumes, snapList) => {
 	return {matchedVolumes, orphanedSnaps};
 };
 
-// finds the most recently created snapshot in a list
+// Sorts a list of snapshots by most recently created first
 let sortSnapsByMostRecent = (snapList) => {
 	// sort in to latest first
 	return snapList.sort((a, b) => {
