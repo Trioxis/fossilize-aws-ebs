@@ -16,8 +16,8 @@ The value of the `backups:config-v0` tag defines how often the EBS volume should
 
 A tuple takes the form **`[x|y]`**
 
-* **`x`** - backup **frequency** - is an integer denoting the number of hours between successive backups
-* **`y`** - backup **expiry** - is an integer denoting the time to live (TTL) for the backup in hours
+* **`x`** - backup **Frequency** - is an integer denoting the number of hours between successive backups
+* **`y`** - backup **Expiry** - is an integer denoting the time to live (TTL) for the backup in hours
 
 For example, the tuple `[1,12]` means the EBS should be backed up once an hour and these backups should be kept for twelve hours before they are deleted.
 
