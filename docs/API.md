@@ -32,10 +32,10 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 
 ```JavaScript
 {
-	Name,
-	// The value of the 'Name' EC2 tag
 	VolumeId,
 	// The EC2 resource id of the volume, e.g. 'vol-1234abcd'
+	Name,
+	// The value of the 'Name' EC2 tag. If one doesn't exist, it is set to the VolumeId
 	BackupConfig: {
 		BackupTypes: [
 			// An object for every item in the 'backups:config-v0' tag of the volume
