@@ -1,9 +1,21 @@
+import sinon from 'sinon';
 import moment from 'moment';
 import expect from 'expect.js';
 
 import {makeDeleteAction, makeCreationActions} from '../src/ActionCreator';
 
 describe('ActionCreator', () => {
+	let clock, sandbox;
+
+	beforeEach(() => {
+		sandbox = sinon.sandbox.create();
+		clock = sinon.useFakeTimers();
+	});
+
+	afterEach(() => {
+		sandbox.restore();
+	});
+
 	describe('makeDeleteAction', () => {
 		it.skip('should create a deletion action for the given snapshot');
 	});
