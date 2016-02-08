@@ -11,7 +11,7 @@ let ec2Responses = {
 				Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
 				VolumeSize: 50,
 				Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
-					{ Key: 'backups:config-v0', Value: 'ExpiryDate:20160127112018' } ],
+					{ Key: 'backups:config-v0', Value: 'BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018' } ],
 				Encrypted: false
 			},
 
@@ -24,7 +24,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:20160527112111' },
+				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon' },
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
@@ -38,7 +38,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'not-a-backup', Value: 'ExpiryDate:20160527112059'},
+				Tags: [ { Key: 'not-a-backup', Value: 'FromVolumeName:dave,ExpiryDate:20160527112059,BackupType:Monthly'},
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
@@ -77,7 +77,6 @@ let ec2Responses = {
 			{
 				SnapshotId: 'snap-e6f154m2',
 				VolumeId: 'vol-0a8631c0',
-
 				StartTime: 'Tue Jan 19 2016 09:37:23 GMT+1100 (AEDT)',
 				Progress: '100%',
 				OwnerId: '791606823516',
@@ -90,13 +89,12 @@ let ec2Responses = {
 			{
 				SnapshotId: 'snap-e6f254m2',
 				VolumeId: 'vol-0a8631c1',
-
 				StartTime: 'Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)',
 				Progress: '100%',
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'ExpiryDate:20161327112059'},
+				Tags: [ { Key: 'backups:config-v0', Value: 'Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059'},
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},

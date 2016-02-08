@@ -1,5 +1,6 @@
 import expect from 'expect.js';
 import sinon from 'sinon';
+import moment from 'moment';
 
 import EC2Store from '../src/EC2Store';
 import AWS from 'aws-sdk';
@@ -56,23 +57,29 @@ describe('EC2Store', () => {
 					expect(snapshots.length).to.be(2);
 					expect(snapshots).to.eql([
 						{
-							ExpiryDate: "20160127112018",
+							BackupType: "[1|12]",
+							ExpiryDate: moment.utc('20160127112018', "YYYYMMDDHHmmss").local(),
+							FromVolumeId: "vol-b77cff7d",
+							FromVolumeName: "francis",
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
-							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
+							StartTime: moment("Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
-								"backups:config-v0": "ExpiryDate:20160127112018"
+								"backups:config-v0": "BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018"
 							}
 						},
 						{
-							ExpiryDate: "20160527112111",
+							BackupType: "Weekly",
+							ExpiryDate: moment.utc('20160527112111', "YYYYMMDDHHmmss").local(),
+							FromVolumeId: "vol-0a8631c0",
+							FromVolumeName: "jonathon",
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
-							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
+							StartTime: moment("Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)", 'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
-								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111"
+								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon"
 							}
 						}
 					]);
@@ -91,7 +98,10 @@ describe('EC2Store', () => {
 							ExpiryDate: undefined,
 							Name: "web-xvdf-backup-2015-12-27-00-19",
 							SnapshotId: "snap-6c9f5062",
-							StartTime: "Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",
+							FromVolumeId: "vol-b77cff7d",
+							FromVolumeName: undefined,
+							BackupType: undefined,
+							StartTime: moment("Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)", 'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
 								// Bad backup tag parameter
@@ -100,9 +110,12 @@ describe('EC2Store', () => {
 						},
 						{
 							ExpiryDate: undefined,
+							FromVolumeName: undefined,
+							BackupType: undefined,
+							FromVolumeId: 'vol-0a8631c0',
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-d9d374d7",
-							StartTime: "Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)",
+							StartTime: moment("Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)", 'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
 								// Bad ExpiryDate value
@@ -111,13 +124,16 @@ describe('EC2Store', () => {
 						},
 						{
 							ExpiryDate: undefined,
+							FromVolumeName: 'thing',
+							BackupType: undefined,
+							FromVolumeId: 'vol-0a8631c1',
 							Name: "web-xvdf-backup-2016-01-02-06-58",
 							SnapshotId: "snap-e6f254m2",
-							StartTime: "Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)",
+							StartTime: moment("Tue Jan 19 2016 10:37:23 GMT+1100 (AEDT)", 'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
 								// Bad value for month in the expiry date
-								"backups:config-v0": "ExpiryDate:20161327112059"
+								"backups:config-v0": "Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059"
 							}
 						},
 					]);
@@ -168,9 +184,9 @@ describe('EC2Store', () => {
 							Name: firstVol.Tags[1].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 1, Expiry: 12 },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 48, Expiry: 144 }
+									{ Name: '[1|12]', Frequency: 1, Expiry: 12 },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: '[48|144]', Frequency: 48, Expiry: 144 }
 								]
 							},
 							Tags: {
@@ -183,9 +199,9 @@ describe('EC2Store', () => {
 							Name: secondVol.Tags[0].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 48, Expiry: 144 }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: '[48|144]', Frequency: 48, Expiry: 144 }
 								]
 							},
 							Tags: {
@@ -198,9 +214,9 @@ describe('EC2Store', () => {
 							Name: thirdVol.Tags[1].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 168, Expiry: 672, Alias: 'Weekly' },
-									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Weekly', Frequency: 168, Expiry: 672, Alias: 'Weekly' },
+									{ Name: 'Hourly', Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
 							},
 							Tags: {
@@ -232,7 +248,7 @@ describe('EC2Store', () => {
 							Name: secondVol.Tags[0].Value,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
 								]
 							},
 							Tags: {
@@ -245,8 +261,8 @@ describe('EC2Store', () => {
 							Name: thirdVol.VolumeId,
 							BackupConfig: {
 								BackupTypes: [
-									{ Frequency: 24, Expiry: 168, Alias: 'Daily' },
-									{ Frequency: 1, Expiry: 24, Alias: 'Hourly' }
+									{ Name: 'Daily', Frequency: 24, Expiry: 168, Alias: 'Daily' },
+									{ Name: 'Hourly', Frequency: 1, Expiry: 24, Alias: 'Hourly' }
 								]
 							},
 							Tags: {

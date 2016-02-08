@@ -53,13 +53,20 @@ class EC2Store {
 						// Use snapshot id if a Name tag does not exist
 						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
-						snap.StartTime = snapResponse.StartTime;
+						snap.FromVolumeId = snapResponse.VolumeId;
+						// NOTE: Ingesting date value with it's time zone (ZZ)
+						snap.StartTime = moment(snapResponse.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
+						snap.FromVolumeName = undefined;
+						snap.BackupType = undefined;
+						snap.ExpiryDate = undefined;
 
 						// Map EC2 tags to easy to use Tag object
 						snap.Tags = {};
 						snapResponse.Tags.map(tag => {
 							snap.Tags[tag.Key] = tag.Value;
-							if (tag.Key === 'Name') snap.Name = tag.Value;
+							if (tag.Key === 'Name') {
+								snap[tag.Key] = tag.Value;
+							}
 						});
 
 						return snap;
@@ -74,17 +81,19 @@ class EC2Store {
 							let [key, value] = backupParam.split(':');
 
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
-							snap.ExpiryDate = undefined;
 							if (key === 'ExpiryDate') {
 								if (new RegExp(`^\\d{${EXPIRY_DATE_FORMAT.length}}$`).test(value)) {
-									if (moment(value, EXPIRY_DATE_FORMAT).isValid()) {
-										snap.ExpiryDate = parseInt(value);
+									// NOTE: Ingest date as a UTC date using moment.utc()
+									if (moment.utc(value, EXPIRY_DATE_FORMAT).isValid()) {
+										snap.ExpiryDate = moment.utc(value, EXPIRY_DATE_FORMAT).local();
 									} else {
 										warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined because the parsed value '${value}' is not a valid date in ${EXPIRY_DATE_FORMAT} format. Check the ExpiryDate in '${BACKUP_API_TAG}' is valid`);
 									}
 								} else {
 									warnings.push(`Snapshot ${prettyPrintSnap(snap)}: ExpiryDate set to undefined beacuse the parsed value '${value}' is invalid. Check the '${BACKUP_API_TAG}' tag is valid and ExpiryDate is in ${EXPIRY_DATE_FORMAT} format`);
 								}
+							} else if (key === 'FromVolumeName' || key === 'BackupType') {
+								snap[key] = value;
 							} else {
 								warnings.push(`Snapshot ${prettyPrintSnap(snap)}: Unknown '${BACKUP_API_TAG}' parameter: '${backupParam}'`);
 							}
@@ -141,11 +150,13 @@ class EC2Store {
 
 								if (tuple && tuple.length === 3) {
 									volume.BackupConfig.BackupTypes.push({
+										Name: `[${parseInt(tuple[1])}|${parseInt(tuple[2])}]`,
 										Frequency: parseInt(tuple[1]),
 										Expiry: parseInt(tuple[2])
 									});
 								} else if (ALIASES.hasOwnProperty(backupType)) {
 									volume.BackupConfig.BackupTypes.push({
+										Name: backupType,
 										Alias: backupType,
 										Frequency: ALIASES[backupType][0],
 										Expiry: ALIASES[backupType][1]

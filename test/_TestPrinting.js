@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import expect from 'expect.js';
+import moment from 'moment';
 
 import * as printer from '../src/printing';
 
@@ -20,8 +21,8 @@ describe('Printer', () => {
 		it('should at least print the SnapshotId and Name of each snapshot', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			printer.printSnaplist([
-				{SnapshotId: '237845', Name: 'franklin'},
-				{SnapshotId: '984752987', Name: 'bob'},
+				{SnapshotId: '237845', StartTime: moment(), Name: 'franklin'},
+				{SnapshotId: '984752987', StartTime: moment(), Name: 'bob'},
 			]);
 
 			let output = '';
@@ -42,8 +43,24 @@ describe('Printer', () => {
 		it('should at least print the VolumeId and Name of each volume', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			printer.printEBSList([
-				{VolumeId: '237845', Name: 'franklin', BackupConfig: { BackupTypes: []}},
-				{VolumeId: '984752987', Name: 'bob', BackupConfig: { BackupTypes: []}},
+				{
+					VolumeId: '237845',
+					Name: 'franklin',
+					BackupConfig: {
+						BackupTypes: [ {Name: 'Weekly', Frequency: '168', Expiry: '672'}]
+					},
+					Snapshots: {
+						'Weekly': [{SnapshotId: '237845', StartTime: moment(), Name: 'Weekly'}],
+					}
+				},
+				{
+					VolumeId: '984752987',
+					Name: 'bob',
+					BackupConfig: {
+						BackupTypes: []
+					},
+					Snapshots: []
+				},
 			]);
 
 			let output = '';
@@ -57,6 +74,34 @@ describe('Printer', () => {
 			expect(output).to.contain('franklin');
 			expect(output).to.contain('984752987');
 			expect(output).to.contain('bob');
+		});
+	});
+
+	describe('printActions', () => {
+		it('should print the action type and details about the action', () => {
+			mocks.log = sandbox.stub(console, 'log');
+
+			printer.printActions([
+				{
+					Action: 'SNAPSHOT_VOLUME',
+					VolumeId: 'vol-1234abcd',
+					VolumeName: 'name-duh',
+					BackupType: 'Sometimes',
+					ExpiryDate: moment()
+				}
+			]);
+
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('SNAPSHOT_VOLUME');
+			expect(output).to.contain('vol-1234abcd');
+			expect(output).to.contain('name-duh');
+			expect(output).to.contain('Sometimes');
 		});
 	});
 

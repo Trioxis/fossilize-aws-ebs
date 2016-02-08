@@ -7,9 +7,11 @@ var printSnaplist = (snapshots) => {
 	console.log(headingLine);
 	snapshots.map(snap => {
 		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
-		let _ =  snap.SnapshotId.replace(/./g, ' ') + '    ';
-		console.log(`${_} Created: ${snap.StartTime}`);
-		console.log(`${_} Expires: ${snap.ExpiryDate ? moment(snap.ExpiryDate, 'YYYYMMDDHHmmss').fromNow() : 'Never'}`);
+		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
+		console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
+		console.log(`        Created: ${snap.StartTime.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.StartTime.fromNow()}`);
+		console.log(`        Expires: ${snap.ExpiryDate ? `${snap.ExpiryDate.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.ExpiryDate.fromNow()}` : 'Never'}`);
+		console.log();
 	});
 	console.log();
 };
@@ -19,13 +21,36 @@ var printEBSList = (volumes) => {
 	console.log(headingLine);
 	volumes.map(vol => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
-		let _ =  vol.VolumeId.replace(/./g, ' ') + '    ';
+		let knownBackupTypes = [];
 		vol.BackupConfig.BackupTypes.map(backup => {
-			let name = `${backup.Alias ? `${backup.Alias} `: ''}backup`;
+			let name = `${backup.Name}`;
+			knownBackupTypes.push(name);
 			let frequencyDescriptor = `${moment.duration(backup.Frequency, 'hours').humanize().replace(/(a )|(an )/g, '')} for ${moment.duration(backup.Expiry, 'hours').humanize()}`;
-			let numberAtATime = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
-			console.log(`${_} Backup: ${numberAtATime} (${name} every ${frequencyDescriptor})`);
+			let maximumSnapsDescriptor = `${Math.floor(backup.Expiry/backup.Frequency)} backups at a time`;
+			console.log(`        Backup: ${name} backup (every ${frequencyDescriptor})`);
+			console.log(`                ${maximumSnapsDescriptor}`);
+			console.log(`                ${vol.Snapshots[name] ? vol.Snapshots[name].length : 0} backups currently exist`);
+			if (vol.Snapshots[name] && vol.Snapshots[name].length > 0) {
+				console.log(`                Last backed up ${vol.Snapshots[name][0].StartTime.fromNow()}`);
+			}
 		});
+		Object.keys(vol.Snapshots).map((backupType) => {
+			if (knownBackupTypes.indexOf(backupType) === -1) {
+				console.log(`        ${vol.Snapshots[backupType].length} snapshots of unknown backup type ${backupType}`);
+			}
+		});
+		console.log();
+	});
+	console.log();
+};
+
+var printActions = (actions) => {
+	console.log('AWSBM Actions');
+	console.log(headingLine);
+	actions.map((action) => {
+		if (action.Action === 'SNAPSHOT_VOLUME') {
+			console.log(`${action.Action}: (${action.VolumeId}) '${action.VolumeName}' ${action.BackupType} (Expires ${action.ExpiryDate.fromNow()})`);
+		}
 	});
 	console.log();
 };
@@ -34,8 +59,9 @@ var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
 	console.log(`${stats.snapshots} snapshots`);
+	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
 	console.log(`${stats.volumes} EBS volumes`);
-	console.log(`${stats.backupTypes} volume backup types identified`);
+	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
 	console.log();
 };
 
@@ -57,6 +83,7 @@ var printError = (error) => {
 export {
 	printSnaplist,
 	printEBSList,
+	printActions,
 	printStatistics,
 	printWarnings,
 	printError

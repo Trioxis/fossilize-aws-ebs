@@ -1,8 +1,8 @@
 import expect from 'expect.js';
 
-import {findDeadSnapshots, snapshotIsDead} from '../src/SnapshotAnalyser';
+import {findDeadSnapshots, snapshotIsDead} from '../src/Analyser';
 
-describe('SnapshotAnalyser', () => {
+describe('Analyser', () => {
 	describe('findDeadSnapshots', () => {
 		it.skip('should remove snapshots that are still within their expiry from the given list');
 	});
