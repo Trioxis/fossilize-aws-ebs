@@ -54,6 +54,7 @@ class EC2Store {
 						snap.Name = snapResponse.SnapshotId;
 						snap.SnapshotId = snapResponse.SnapshotId;
 						snap.FromVolumeId = snapResponse.VolumeId;
+						// NOTE: Ingesting date value with it's time zone (ZZ)
 						snap.StartTime = moment(snapResponse.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
 						snap.FromVolumeName = undefined;
 						snap.BackupType = undefined;
@@ -82,6 +83,7 @@ class EC2Store {
 							// Check the expiry date is in YYYYMMDDHHmmss format (14 digits)
 							if (key === 'ExpiryDate') {
 								if (new RegExp(`^\\d{${EXPIRY_DATE_FORMAT.length}}$`).test(value)) {
+									// NOTE: Ingest date as a UTC date using moment.utc()
 									if (moment.utc(value, EXPIRY_DATE_FORMAT).isValid()) {
 										snap.ExpiryDate = moment.utc(value, EXPIRY_DATE_FORMAT).local();
 									} else {
