@@ -1,15 +1,58 @@
+import moment from 'moment';
 import expect from 'expect.js';
 
-import {makeDeleteAction, makeCreateAction} from '../src/ActionCreator';
+import {makeDeleteAction, makeCreationActions} from '../src/ActionCreator';
 
 describe('ActionCreator', () => {
 	describe('makeDeleteAction', () => {
 		it.skip('should create a deletion action for the given snapshot');
 	});
 
-	describe('makeCreateAction', () => {
-		it.skip('should return true if the snapshot is past its expiry date');
-		it.skip('should return false if the snapshot is still within its expiry date');
+	describe('makeCreationActions', () => {
+		it('should return a list of creation actions for each backup type that doesn\'t have a recent backup', () => {
+			let now = moment();
+			let volume = {
+				VolumeId: 'vol-abcdabcd',
+				Name: 'volume-lol',
+				BackupConfig: {
+					BackupTypes: [
+						{
+							Name: 'Daily',
+							Frequency: 24,
+							Expiry: 168
+						},
+						{
+							Name: 'Weekly',
+							Frequency: 168,
+							Expiry: 672
+						}
+					]
+				},
+				Snapshots: {
+					Daily: [{
+						Name: 'snapshot-lol',
+						SnapshotId: 'snap-12341234',
+						FromVolumeId: 'vol-abcdabcd',
+						FromVolumeName: 'volume-lol',
+						StartTime: moment(now).subtract(1, 'hours'),
+						ExpiryDate: now,
+						BackupType: 'Daily'
+					}]
+				}
+			};
+
+			let actions = makeCreationActions(volume);
+
+			expect(actions).to.be.eql([
+				{
+					Action: 'SNAPSHOT_VOLUME',
+					BackupType: 'Weekly',
+					ExpiryDate: moment(now).add(672, 'hours'),
+					VolumeId: 'vol-abcdabcd',
+					VolumeName: 'volume-lol'
+				}
+			]);
+		});
 	});
 
 	describe('determineBackupsNeeded', () => {
