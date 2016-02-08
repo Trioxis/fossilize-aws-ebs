@@ -77,6 +77,34 @@ describe('Printer', () => {
 		});
 	});
 
+	describe('printActions', () => {
+		it('should print the action type and details about the action', () => {
+			mocks.log = sandbox.stub(console, 'log');
+
+			printer.printActions([
+				{
+					Action: 'SNAPSHOT_VOLUME',
+					VolumeId: 'vol-1234abcd',
+					VolumeName: 'name-duh',
+					BackupType: 'Sometimes',
+					ExpiryDate: moment()
+				}
+			]);
+
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('SNAPSHOT_VOLUME');
+			expect(output).to.contain('vol-1234abcd');
+			expect(output).to.contain('name-duh');
+			expect(output).to.contain('Sometimes');
+		});
+	});
+
 	describe('printStatistics', () => {
 		it('prints from a statistics object the properties `snapshots`, `volumes` and `backupTypes`', () => {
 			mocks.log = sandbox.stub(console, 'log');
