@@ -18,8 +18,6 @@ let doActions = (actions) => {
 		actions.map((action) => {
 			switch (action.Action) {
 				case 'SNAPSHOT_VOLUME':
-
-
 					return makeBackupPromise(action);
 				default:
 					console.log(`Unknown action type ${action.Action}`);
@@ -32,7 +30,36 @@ let doActions = (actions) => {
 
 let makeBackupPromise = (action) => {
 	return makeSnapshotPromise(action)
-	.catch(err => salvagePromise(err, action));
+		.catch(err => salvageSnapshotPromise(err, action))
+		.then((result) => {
+			console.log('SNAPSHOTTING COMPLETE');
+			console.log(result);
+
+			let snapshotTag = '' +
+				`ExpiryDate:${action.ExpiryDate.format('YYYYMMDDHHmmss')},` +
+				`FromVolumeName:${action.VolumeName},` +
+				`BackupType:${action.BackupType}`;
+
+			return new Promise((resolve, reject) => {
+				ec2.createTags({
+					DryRun: false,
+					Resources: [result.SnapshotId],
+					Tags: [{
+						Key: 'backups:config-v0',
+						Value: snapshotTag
+					}, {
+						Key: 'Name',
+						Value: `${action.VolumeName}-${action.BackupType}`
+					}]
+				}, (err, response) => {
+					if (err) reject(err);
+					else {
+						console.log('Tagging complete');
+						resolve(response);
+					}
+				});
+			});
+		});
 };
 
 let makeSnapshotPromise = (action) => {
@@ -47,7 +74,7 @@ let makeSnapshotPromise = (action) => {
 	});
 };
 
-let salvagePromise = (err, action) => {
+let salvageSnapshotPromise = (err, action) => {
 	// Attempt to
 	if (err.code === 'SnapshotCreationPerVolumeRateExceeded') {
 		// Cannot create a snapshot on the same volume more than one every 15 seconds
