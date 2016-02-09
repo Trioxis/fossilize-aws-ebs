@@ -45,11 +45,18 @@ export default function () {
 
 			return Promise.all([cleanupActions, creationActions])
 				.then(actionsArray => actionsArray[0].concat(actionsArray[1]))
-				.then(action => doActions(action))
-				.then(() => {
-					printer.printStatistics(collector.stats);
-					printer.printWarnings(collector.warnings);
+				.then(action => {
+					console.log('Performing actions, please wait');
+					console.log('---------------------------------------------------');
+					return doActions(action).then((returned) => {
+						console.log();
+						console.log('Done, results: ');
+						console.log(returned);
+						printer.printStatistics(collector.stats);
+						printer.printWarnings(collector.warnings);
+					});
 				});
+
 		}).catch(err => {
 			printer.printError(err);
 			process.exit(1);
