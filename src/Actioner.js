@@ -36,7 +36,7 @@ let makeBackupPromise = (action) => {
 			let tags = [{
 				Key: 'backups:config-v0',
 				Value:
-					`ExpiryDate:${action.ExpiryDate.format('YYYYMMDDHHmmss')},` +
+					`ExpiryDate:${action.ExpiryDate.utc().format('YYYYMMDDHHmmss')},` +
 					`FromVolumeName:${action.VolumeName},` +
 					`BackupType:${action.BackupType}`
 			}, {
