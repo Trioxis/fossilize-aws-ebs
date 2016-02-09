@@ -14,13 +14,15 @@ let doActions = (actions) => {
 	// let warnings = [];
 	// let promises = Promise.resolve();
 
+	console.log(`i ${actions.length} actions to do`);
+
 	return Promise.all(
 		actions.map((action) => {
 			switch (action.Action) {
 				case 'SNAPSHOT_VOLUME':
 					return makeBackupPromise(action);
 				default:
-					console.log(`Unknown action type ${action.Action}`);
+					console.log(`x Unknown action type ${action.Action}`);
 					return Promise.resolve(null);
 
 			}
@@ -30,44 +32,49 @@ let doActions = (actions) => {
 
 let makeBackupPromise = (action) => {
 	return makeSnapshotPromise(action)
-		.catch(err => salvageSnapshotPromise(err, action))
-		.then((result) => {
-			console.log('SNAPSHOTTING COMPLETE');
-			console.log(result);
-
-			let snapshotTag = '' +
-				`ExpiryDate:${action.ExpiryDate.format('YYYYMMDDHHmmss')},` +
-				`FromVolumeName:${action.VolumeName},` +
-				`BackupType:${action.BackupType}`;
-
+		.then((snapshotResult) => {
+			let tags = [{
+				Key: 'backups:config-v0',
+				Value:
+					`ExpiryDate:${action.ExpiryDate.format('YYYYMMDDHHmmss')},` +
+					`FromVolumeName:${action.VolumeName},` +
+					`BackupType:${action.BackupType}`
+			}, {
+				Key: 'Name',
+				Value: `${action.VolumeName}-${action.BackupType}`
+			}];
 			return new Promise((resolve, reject) => {
+				console.log(`i Tagging ${action.VolumeName}-${action.BackupType}`);
 				ec2.createTags({
 					DryRun: false,
-					Resources: [result.SnapshotId],
-					Tags: [{
-						Key: 'backups:config-v0',
-						Value: snapshotTag
-					}, {
-						Key: 'Name',
-						Value: `${action.VolumeName}-${action.BackupType}`
-					}]
+					Resources: [snapshotResult.SnapshotId],
+					Tags: tags
 				}, (err, response) => {
-					if (err) reject(err);
-					else {
-						console.log('Tagging complete');
-						resolve(response);
+					if (err) {
+						console.log(`x Tagging ${action.VolumeName}-${action.BackupType} failed`);
+						reject(err);
+					} else {
+						console.log(`o Tagging ${action.VolumeName}-${action.BackupType} complete`);
+						// All you get from createTags is an empty object, much more
+						// useful to return what we were snapshotting
+						if (response) snapshotResult.Tags = tags;
+						resolve(snapshotResult);
 					}
 				});
 			});
-		});
+		})
+		.catch(err => salvageSnapshotPromise(err, action));
 };
 
 let makeSnapshotPromise = (action) => {
+	console.log(`i Snapshotting ${action.VolumeName}-${action.BackupType}`);
 	return new Promise((resolve, reject) => {
 		ec2.createSnapshot({ DryRun: false, VolumeId: action.VolumeId, Description: `${action.BackupType} omg`}, (err, res) => {
-			if (err) reject(err);
-			else {
-				console.log(`Snapshotted ${action.VolumeName} for ${action.BackupType}`);
+			if (err) {
+				console.log(`x Snapshotting ${action.VolumeName}-${action.BackupType} failed`);
+				reject(err);
+			} else {
+				console.log(`o Snapshotting ${action.VolumeName}-${action.BackupType} complete`);
 				resolve(res);
 			}
 		});
@@ -81,8 +88,8 @@ let salvageSnapshotPromise = (err, action) => {
 		// Wait and try again
 		return promiseToPauseFor(15000).then(() => makeBackupPromise(action));
 	} else {
-		console.log(`Error on ${action.BackupType}`);
-		console.log(err);
+		console.log(`x Action ${action.VolumeName}-${action.BackupType} failed`);
+		console.log(`x ${err}`);
 		return Promise.reject(err);
 	}
 };
