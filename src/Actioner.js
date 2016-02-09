@@ -32,37 +32,7 @@ let doActions = (actions) => {
 
 let makeBackupPromise = (action) => {
 	return makeSnapshotPromise(action)
-		.then((snapshotResult) => {
-			let tags = [{
-				Key: 'backups:config-v0',
-				Value:
-					`ExpiryDate:${action.ExpiryDate.utc().format('YYYYMMDDHHmmss')},` +
-					`FromVolumeName:${action.VolumeName},` +
-					`BackupType:${action.BackupType}`
-			}, {
-				Key: 'Name',
-				Value: `${action.VolumeName}-${action.BackupType}`
-			}];
-			return new Promise((resolve, reject) => {
-				console.log(`i Tagging ${action.VolumeName}-${action.BackupType}`);
-				ec2.createTags({
-					DryRun: false,
-					Resources: [snapshotResult.SnapshotId],
-					Tags: tags
-				}, (err, response) => {
-					if (err) {
-						console.log(`x Tagging ${action.VolumeName}-${action.BackupType} failed`);
-						reject(err);
-					} else {
-						console.log(`o Tagging ${action.VolumeName}-${action.BackupType} complete`);
-						// All you get from createTags is an empty object, much more
-						// useful to return what we were snapshotting
-						if (response) snapshotResult.Tags = tags;
-						resolve(snapshotResult);
-					}
-				});
-			});
-		})
+		.then((snapshot) => tagSnapshotPromise(snapshot, action))
 		.catch(err => salvageSnapshotPromise(err, action));
 };
 
@@ -76,6 +46,38 @@ let makeSnapshotPromise = (action) => {
 			} else {
 				console.log(`o Snapshotting ${action.VolumeName}-${action.BackupType} complete`);
 				resolve(res);
+			}
+		});
+	});
+};
+
+let tagSnapshotPromise = (snapshot, action) => {
+	let tags = [{
+		Key: 'backups:config-v0',
+		Value:
+			`ExpiryDate:${action.ExpiryDate.utc().format('YYYYMMDDHHmmss')},` +
+			`FromVolumeName:${action.VolumeName},` +
+			`BackupType:${action.BackupType}`
+	}, {
+		Key: 'Name',
+		Value: `${action.VolumeName}-${action.BackupType}`
+	}];
+	return new Promise((resolve, reject) => {
+		console.log(`i Tagging ${action.VolumeName}-${action.BackupType}`);
+		ec2.createTags({
+			DryRun: false,
+			Resources: [snapshot.SnapshotId],
+			Tags: tags
+		}, (err, response) => {
+			if (err) {
+				console.log(`x Tagging ${action.VolumeName}-${action.BackupType} failed`);
+				reject(err);
+			} else {
+				console.log(`o Tagging ${action.VolumeName}-${action.BackupType} complete`);
+				// All you get from createTags is an empty object, much more
+				// useful to return what we were snapshotting
+				if (response) snapshot.Tags = tags;
+				resolve(snapshot);
 			}
 		});
 	});
