@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
-let ec2 = new AWS.EC2();
 
 
 // Given an array of actions, perform the actions in AWS EC2
@@ -38,6 +37,7 @@ let makeBackup = (action) => {
 };
 
 let _makeSnapshot = (action) => {
+	let ec2 = new AWS.EC2();
 	console.log(`i Snapshotting ${action.VolumeName}-${action.BackupType}`);
 	return new Promise((resolve, reject) => {
 		ec2.createSnapshot({ DryRun: false, VolumeId: action.VolumeId, Description: `${action.BackupType} omg`}, (err, res) => {
@@ -53,6 +53,7 @@ let _makeSnapshot = (action) => {
 };
 
 let _tagSnapshot = (snapshot, action) => {
+	let ec2 = new AWS.EC2();
 	let tags = [{
 		Key: 'backups:config-v0',
 		Value:
