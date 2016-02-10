@@ -99,4 +99,12 @@ let _salvageSnapshotPromise = (err, action) => {
 };
 
 
-export {doActions};
+export {
+	doActions,
+	makeBackup,
+
+	_promiseToPauseFor,
+	_makeSnapshot,
+	_tagSnapshot,
+	_salvageSnapshotPromise
+};
