@@ -2,9 +2,6 @@ import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
 let ec2 = new AWS.EC2();
 
-let promiseToPauseFor = (ms) => new Promise(resolve => {
-	setTimeout(resolve, ms);
-});
 
 // Given an array of actions, perform the actions in AWS EC2
 // These could be creating a snapshot from an EBS volume, or
@@ -20,7 +17,7 @@ let doActions = (actions) => {
 		actions.map((action) => {
 			switch (action.Action) {
 				case 'SNAPSHOT_VOLUME':
-					return makeBackupPromise(action);
+					return makeBackup(action);
 				default:
 					console.log(`x Unknown action type ${action.Action}`);
 					return Promise.resolve(null);
@@ -30,13 +27,17 @@ let doActions = (actions) => {
 	);
 };
 
-let makeBackupPromise = (action) => {
-	return makeSnapshotPromise(action)
-		.then((snapshot) => tagSnapshotPromise(snapshot, action))
-		.catch(err => salvageSnapshotPromise(err, action));
+let _promiseToPauseFor = (ms) => new Promise(resolve => {
+	setTimeout(resolve, ms);
+});
+
+let makeBackup = (action) => {
+	return _makeSnapshot(action)
+		.then(snapshot => _tagSnapshot(snapshot, action))
+		.catch(err => _salvageSnapshotPromise(err, action));
 };
 
-let makeSnapshotPromise = (action) => {
+let _makeSnapshot = (action) => {
 	console.log(`i Snapshotting ${action.VolumeName}-${action.BackupType}`);
 	return new Promise((resolve, reject) => {
 		ec2.createSnapshot({ DryRun: false, VolumeId: action.VolumeId, Description: `${action.BackupType} omg`}, (err, res) => {
@@ -51,7 +52,7 @@ let makeSnapshotPromise = (action) => {
 	});
 };
 
-let tagSnapshotPromise = (snapshot, action) => {
+let _tagSnapshot = (snapshot, action) => {
 	let tags = [{
 		Key: 'backups:config-v0',
 		Value:
@@ -83,13 +84,14 @@ let tagSnapshotPromise = (snapshot, action) => {
 	});
 };
 
-let salvageSnapshotPromise = (err, action) => {
-	// Attempt to
+let _salvageSnapshotPromise = (err, action) => {
+	// Attempt to fix whatever problems may have arisen
 	if (err.code === 'SnapshotCreationPerVolumeRateExceeded') {
 		// Cannot create a snapshot on the same volume more than one every 15 seconds
 		// Wait and try again
-		return promiseToPauseFor(15000).then(() => makeBackupPromise(action));
+		return _promiseToPauseFor(15000).then(() => makeBackup(action));
 	} else {
+		// I dunno how to fix this, just fail completely
 		console.log(`x Action ${action.VolumeName}-${action.BackupType} failed`);
 		console.log(`x ${err}`);
 		return Promise.reject(err);
