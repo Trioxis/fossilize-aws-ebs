@@ -40,7 +40,10 @@ let _makeSnapshot = (action) => {
 	let ec2 = new AWS.EC2();
 	console.log(`i Snapshotting ${action.VolumeName}-${action.BackupType}`);
 	return new Promise((resolve, reject) => {
-		ec2.createSnapshot({ DryRun: false, VolumeId: action.VolumeId, Description: `${action.BackupType} omg`}, (err, res) => {
+		ec2.createSnapshot({
+			VolumeId: action.VolumeId,
+			Description: `AWSBM '${action.BackupType}' backup of volume '${action.VolumeName}' (${action.VolumeId})`
+		}, (err, res) => {
 			if (err) {
 				console.log(`x Snapshotting ${action.VolumeName}-${action.BackupType} failed`);
 				reject(err);
