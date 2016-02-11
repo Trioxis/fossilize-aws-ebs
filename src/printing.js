@@ -5,6 +5,9 @@ let headingLine = '-------------------------------------------------------------
 var printSnaplist = (snapshots) => {
 	console.log('AWSBM Snapshots');
 	console.log(headingLine);
+	if (snapshots.length === 0) {
+		console.log('No snapshots with valid backups:config-v0 tag found');
+	}
 	snapshots.map(snap => {
 		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
 		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
@@ -19,6 +22,9 @@ var printSnaplist = (snapshots) => {
 var printEBSList = (volumes) => {
 	console.log('AWSBM Volumes');
 	console.log(headingLine);
+	if (volumes.length === 0) {
+		console.log('No volumes with valid backups:config-v0 tag found');
+	}
 	volumes.map(vol => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);
 		let knownBackupTypes = [];
@@ -47,6 +53,9 @@ var printEBSList = (volumes) => {
 var printActions = (actions) => {
 	console.log('AWSBM Actions');
 	console.log(headingLine);
+	if (actions.length === 0) {
+		console.log('No actions are required');
+	}
 	actions.map((action) => {
 		if (action.Action === 'SNAPSHOT_VOLUME') {
 			console.log(`${action.Action}: (${action.VolumeId}) '${action.VolumeName}' ${action.BackupType} (Expires ${action.ExpiryDate.fromNow()})`);

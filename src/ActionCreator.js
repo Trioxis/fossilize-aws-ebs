@@ -3,7 +3,7 @@ import moment from 'moment';
 // Given a snapshot object, make an action that will delete the snapshots
 // TODO: What format are actions in?
 let makeDeleteAction = (snap) => {
-	return {snap};
+	return { Action: 'DELETE_SNAPSHOT', snap: snap};
 };
 
 // Given an EBS volume and a list of snapshots, return a list of actions
