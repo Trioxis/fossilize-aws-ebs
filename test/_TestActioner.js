@@ -23,18 +23,21 @@ describe('Actioner', () => {
 		sandbox.restore();
 	});
 
-	describe.skip('doActions', () => {
+	describe('doActions', () => {
 		it('should return promises for each action it is given', () => {
-			mocks.makeBackup = sandbox.stub(actioner, 'makeBackup').returns(Promise.resolve())
+			mocks.makeBackup = sandbox.stub(SnapshotVolumeAction, 'makeBackup', () => {
+				console.log('hey');
+				return Promise.resolve({});
+			});
 
 			let actions = [{
 				Action: 'SNAPSHOT_VOLUME',
 
 			}];
 
-			SnapshotVolumeAction.doActions(actions).then(() => {
-				expect().fail();
-
+			return doActions(actions)
+				.then(() => {
+					expect(mocks.makeBackup.called).to.be.ok();
 			});
 
 		})
