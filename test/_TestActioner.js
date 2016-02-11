@@ -8,13 +8,14 @@ import ec2Responses from './fixtures/EC2Responses';
 import * as actioner from '../src/Actioner';
 
 describe('Actioner', () => {
-	let sandbox, mocks, mockEC2, mockAWS;
+	let sandbox, mocks, mockEC2, mockAWS, clock;
 
 	beforeEach(() => {
 		mocks = {}
 		sandbox = sinon.sandbox.create();
 		mockEC2 = {};
 		mockAWS = sandbox.stub(AWS, 'EC2').returns(mockEC2);
+		clock = sandbox.useFakeTimers();
 	});
 
 	afterEach(() => {
