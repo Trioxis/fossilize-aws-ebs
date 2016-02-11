@@ -14,7 +14,7 @@ let doActions = (actions) => {
 		actions.map((action) => {
 			switch (action.Action) {
 				case 'SNAPSHOT_VOLUME':
-					return makeBackup(action);
+					return SnapshotVolume.makeBackup(action);
 				default:
 					console.log(`x Unknown action type ${action.Action}`);
 					return Promise.resolve(null);
@@ -26,5 +26,5 @@ let doActions = (actions) => {
 
 
 export {
-	doActions,
+	doActions
 };
