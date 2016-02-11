@@ -32,7 +32,6 @@ describe('Actioner', () => {
 			};
 
 			mockEC2.createSnapshot = sinon.stub().yields(null, {SnapshotId: 'snap-abcd1234'});
-			mockEC2.createTags = sinon.stub().yields(null);
 
 			return actioner._makeSnapshot(action)
 				.then(() => {
@@ -47,7 +46,45 @@ describe('Actioner', () => {
 	});
 
 	describe('_tagSnapshot', () => {
-		it('should tag the given snapshot appropriately based on the action it is given');
+		it('should tag the given snapshot appropriately based on the action it is given', () => {
+			let action = {
+				Action: 'SNAPSHOT_VOLUME',
+				VolumeId: 'vol-1234abcd',
+				VolumeName: 'a-volume',
+				BackupType: 'Hourly',
+				ExpiryDate: moment().add('24', 'hours')
+			};
+			let snapshot = {
+				SnapshotId: 'snap-abcd1234',
+		    VolumeId: 'vol-1234abcd',
+		    State: 'pending',
+		    StartTime: 'Thu Feb 11 2016 10:41:37 GMT+1100 (AEDT)',
+		    Progress: '',
+		    OwnerId: '123456789',
+		    Description: 'AWSBM \'Hourly\' backup of volume \'a-volume\' (vol-1234abcd)',
+		    VolumeSize: 80,
+			};
+
+			mockEC2.createTags = sinon.stub().yields(null);
+
+			return actioner._tagSnapshot(snapshot, action)
+				.then(() => {
+					expect(mockEC2.createTags.called).to.be.ok();
+					expect(mockEC2.createTags.args[0][0]).to.eql({
+						Resources: [
+							'snap-abcd1234'
+						],
+						Tags: [{
+							Key: 'backups:config-v0',
+							Value: 'ExpiryDate:19700102000000,FromVolumeName:a-volume,BackupType:Hourly'
+						}, {
+							Key: 'Name',
+							Value: 'a-volume-Hourly'
+						}]
+					});
+					return;
+				});
+		});
 	});
 
 });

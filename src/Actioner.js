@@ -70,7 +70,6 @@ let _tagSnapshot = (snapshot, action) => {
 	return new Promise((resolve, reject) => {
 		console.log(`i Tagging ${action.VolumeName}-${action.BackupType}`);
 		ec2.createTags({
-			DryRun: false,
 			Resources: [snapshot.SnapshotId],
 			Tags: tags
 		}, (err, response) => {

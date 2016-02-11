@@ -9,7 +9,7 @@ describe('ActionCreator', () => {
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
-		clock = sinon.useFakeTimers();
+		clock = sandbox.useFakeTimers();
 	});
 
 	afterEach(() => {
