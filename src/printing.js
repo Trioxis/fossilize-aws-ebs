@@ -1,9 +1,10 @@
 import moment from 'moment';
 
+let verbose = false;
 let headingLine = '-------------------------------------------------------------';
 
 var printSnaplist = (snapshots) => {
-	if (false /* implement verbose flag later */) {
+	if (verbose /* implement verbose flag later */) {
 		console.log('AWSBM Backups');
 		console.log(headingLine);
 		if (snapshots.length === 0) {
