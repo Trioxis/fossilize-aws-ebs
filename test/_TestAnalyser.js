@@ -2,7 +2,70 @@ import sinon from 'sinon';
 import expect from 'expect.js';
 import moment from 'moment';
 
-import {matchSnapsToVolumes, sortSnapsByMostRecent} from '../src/Analyser';
+import {findDeadSnapshots, matchSnapsToVolumes, sortSnapsByMostRecent} from '../src/Analyser';
+
+describe('findDeadSnapshots', () => {
+	let clock;
+	beforeEach(() => {
+		clock = sinon.useFakeTimers();
+	});
+
+	afterEach(() => {
+		clock.restore();
+	});
+
+	it('should filter out snapshots that have expired', () => {
+		let firstSnap = {
+			Name: 'first',
+			SnapshotId: 'snap-00000001',
+			FromVolumeId: 'vol-abcdabcd',
+			FromVolumeName: 'volume-lol',
+			ExpiryDate: moment().subtract(1, 'hours'),
+			StartTime: moment(),
+			BackupType: 'Daily'
+		};
+		let secondSnap = {
+			Name: 'second',
+			SnapshotId: 'snap-00000002',
+			FromVolumeId: 'vol-abcdabcd',
+			FromVolumeName: 'volume-lol',
+			ExpiryDate: moment().add(9, 'hours'),
+			StartTime: moment(),
+			BackupType: 'Daily'
+		};
+		let thirdSnap = {
+			Name: 'third',
+			SnapshotId: 'snap-00000003',
+			FromVolumeId: 'vol-abcdabcd',
+			FromVolumeName: 'volume-lol',
+			ExpiryDate: moment().subtract(1, 'days'),
+			StartTime: moment(),
+			BackupType: 'Daily'
+		};
+		let fourthSnap = {
+			Name: 'fourth',
+			SnapshotId: 'snap-00000004',
+			FromVolumeId: 'vol-abcdabcd',
+			FromVolumeName: 'volume-lol',
+			ExpiryDate: moment().subtract(1, 'months'),
+			StartTime: moment(),
+			BackupType: 'Daily'
+		};
+		let fifthSnap = {
+			Name: 'last',
+			SnapshotId: 'snap-00000005',
+			FromVolumeId: 'vol-abcdabcd',
+			FromVolumeName: 'volume-lol',
+			ExpiryDate: moment().add(7, 'years'),
+			StartTime: moment(),
+			BackupType: 'Daily'
+		};
+		let snapList = [firstSnap, secondSnap, thirdSnap, fourthSnap, fifthSnap];
+
+		let filtered = findDeadSnapshots(snapList);
+		expect(filtered).to.be.eql([firstSnap, thirdSnap, fourthSnap]);
+	});
+});
 
 describe('matchSnapsToVolumes', () => {
 	it('should attach some snapshots to volumes if their FromVolumeName and Name are the same', () => {
