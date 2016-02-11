@@ -18,6 +18,38 @@ describe('Printer', () => {
 	});
 
 	describe('printSnaplist', () => {
+		it('should that there are no snapshots if there aren\'t any given', () => {
+			mocks.log = sandbox.stub(console, 'log');
+			mocks.stdout = sandbox.stub(process.stdout, 'write');
+			printer.printSnaplist([]);
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			mocks.stdout.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('No snapshots');
+
+			printer.printSnaplist([], true);
+			output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			mocks.stdout.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			expect(output).to.contain('No snapshots');
+		});
 		it('should print a summary of snapshots', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			mocks.stdout = sandbox.stub(process.stdout, 'write');
