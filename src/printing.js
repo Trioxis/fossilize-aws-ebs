@@ -107,7 +107,7 @@ var printStatistics = (stats) => {
 	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
 	console.log(`${stats.volumes} EBS volumes`);
 	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
-	console.log(`${stats.actions} actions to take`);
+	console.log(`${stats.actions} actions attempted`);
 	console.log(`   - ${stats.createActions} create backup actions`);
 	console.log(`   - ${stats.deleteActions} delete backup actions`);
 	console.log();

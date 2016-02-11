@@ -58,12 +58,11 @@ export default function () {
 					return actions;
 				})
 				.then(action => {
-					console.log('Performing actions, please wait');
-					console.log('-------------------------------------------------------------');
 					return doActions(action).then((results) => {
 						console.log();
-						console.log('Done, results: ');
-						console.log(results);
+						console.log('AWSBM Action Outcomes');
+						console.log('-------------------------------------------------------------');
+						results.map((result) => console.log(result));
 						console.log();
 						printer.printStatistics(collector.stats);
 						printer.printWarnings(collector.warnings);

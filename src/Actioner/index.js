@@ -4,9 +4,8 @@ import * as SnapshotVolume from './SnapshotVolumeAction';
 // These could be creating a snapshot from an EBS volume, or
 // deleting an existing snapshot
 let doActions = (actions) => {
-	// let results = [];
-	// let warnings = [];
-	// let promises = Promise.resolve();
+	console.log('Performing actions, please wait');
+	console.log('-------------------------------------------------------------');
 
 	console.log(`i ${actions.length} actions to do`);
 
@@ -17,7 +16,7 @@ let doActions = (actions) => {
 					return SnapshotVolume.makeBackup(action);
 				default:
 					console.log(`x Unknown action type ${action.Action}`);
-					return Promise.resolve(null);
+					return Promise.resolve({outcome: `The Actioner does not know how to perform the action '${action.Action}'`});
 
 			}
 		})
