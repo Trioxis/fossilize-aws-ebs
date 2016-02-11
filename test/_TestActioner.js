@@ -26,7 +26,6 @@ describe('Actioner', () => {
 	describe('doActions', () => {
 		it('should return promises for each action it is given', () => {
 			mocks.makeBackup = sandbox.stub(SnapshotVolumeAction, 'makeBackup', () => {
-				console.log('hey');
 				return Promise.resolve({});
 			});
 
@@ -38,7 +37,8 @@ describe('Actioner', () => {
 			return doActions(actions)
 				.then(() => {
 					expect(mocks.makeBackup.called).to.be.ok();
-			});
+				}
+			);
 
 		})
 	})
@@ -109,36 +109,43 @@ describe('Actioner', () => {
 		});
 	});
 
-});
+	describe('makeBackup', () => {
+		it.skip('should retry after 15 seconds if a SnapshotCreationPerVolumeRateExceeded error is returned', () => {
+			let action = {
+				Action: 'SNAPSHOT_VOLUME',
+				VolumeId: 'vol-1234abcd',
+				VolumeName: 'a-volume',
+				BackupType: 'Hourly',
+				ExpiryDate: moment().add('24', 'hours')
+			};
 
-it.skip('should retry after 15 seconds if a SnapshotCreationPerVolumeRateExceeded error is returned', () => {
-	let action = {
-		Action: 'SNAPSHOT_VOLUME',
-		VolumeId: 'vol-1234abcd',
-		VolumeName: 'a-volume',
-		BackupType: 'Hourly',
-		ExpiryDate: moment().add('24', 'hours')
-	};
+			mockEC2.createSnapshot = sandbox.stub()
+			mockEC2.createSnapshot.yields(null, {SnapshotId: 'yey'})
+			mockEC2.createSnapshot.onFirstCall().yields({
+				message: 'The maximum per volume CreateSnapshot request rate has been exceeded. Use an increasing or variable sleep interval between requests.',
+				code: 'SnapshotCreationPerVolumeRateExceeded',
+				time: 'Thu Feb 11 2016 10:41:37 GMT+1100 (AEDT)',
+				requestId: '8b0b0101-9848-4d80-b012-ef16c4347182',
+				statusCode: 400,
+				retryable: false,
+				retryDelay: 30
+			}, null)
+			.onSecondCall().yields(null, {
+				SnapshotId: "lol"
+			});
 
-	mockEC2.createSnapshot = sandbox.stub()
-	mockEC2.createSnapshot.yields(null, {SnapshotId: 'yey'})
-	mockEC2.createSnapshot.onFirstCall().yields({
-		message: 'The maximum per volume CreateSnapshot request rate has been exceeded. Use an increasing or variable sleep interval between requests.',
-		code: 'SnapshotCreationPerVolumeRateExceeded',
-		time: 'Thu Feb 11 2016 10:41:37 GMT+1100 (AEDT)',
-		requestId: '8b0b0101-9848-4d80-b012-ef16c4347182',
-		statusCode: 400,
-		retryable: false,
-		retryDelay: 30
-	}, null);
+			mockEC2.createTags = sandbox.stub().onFirstCall().yields({});
+
+			// mocks._promiseToPauseFor = sandbox.stub(actioner, '_promiseToPauseFor').returns(Promise.resolve());
+
+			let backupPromise = SnapshotVolumeAction.makeBackup(action);
 
 
+			return backupPromise.then(() => {
+				expect
+				return;
+			});
 
-	mocks._promiseToPauseFor = sandbox.stub(actioner, '_promiseToPauseFor').returns(Promise.resolve());
-
-	return SnapshotVolumeAction.makeBackup(action)
-	.then(() => {
-		expect
-		return;
-	})
+		});
+	});
 });
