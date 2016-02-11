@@ -7,6 +7,7 @@ import ec2Responses from './fixtures/EC2Responses';
 
 import {doActions} from '../src/Actioner';
 import * as SnapshotVolumeAction from '../src/Actioner/SnapshotVolumeAction';
+import _promiseToPauseFor from '../src/Actioner/_promiseToPauseFor';
 
 describe('Actioner', () => {
 	let sandbox, mocks, mockEC2, mockAWS, clock;
@@ -106,6 +107,20 @@ describe('Actioner', () => {
 					});
 					return;
 				});
+		});
+	});
+
+	describe('_promiseToPauseFor', () => {
+		it('should wait the given amount of time before resolving', () => {
+			let promise = _promiseToPauseFor(2001);
+			// Longer than mocha's default timeout
+			// This test isn't really a fair test
+
+			clock.tick(2001);
+
+			return promise.then(() => {
+				return;
+			});
 		});
 	});
 
