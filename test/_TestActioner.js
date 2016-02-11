@@ -66,7 +66,7 @@ describe('Actioner', () => {
 		    VolumeSize: 80,
 			};
 
-			mockEC2.createTags = sandbox.stub().yields(null);
+			mockEC2.createTags = sandbox.stub().yields(null, {});
 
 			return actioner._tagSnapshot(snapshot, action)
 				.then(() => {
