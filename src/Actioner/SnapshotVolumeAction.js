@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import moment from 'moment';
 AWS.config.update({region: 'ap-southeast-2'});
 
 import _promiseToPauseFor from './_promiseToPauseFor';
@@ -30,6 +31,7 @@ let _makeSnapshot = (action) => {
 
 let _tagSnapshot = (snapshot, action) => {
 	let ec2 = new AWS.EC2();
+	let madeDate = moment().utc(snapshot.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
 	let tags = [{
 		Key: 'backups:config-v0',
 		Value:
@@ -38,7 +40,7 @@ let _tagSnapshot = (snapshot, action) => {
 			`BackupType:${action.BackupType}`
 	}, {
 		Key: 'Name',
-		Value: `${action.VolumeName}-${action.BackupType}`
+		Value: `${action.VolumeName}-${action.BackupType}+${madeDate.utc().format('YYYYMMDDHHmmss')}`
 	}];
 	return new Promise((resolve, reject) => {
 		console.log(`i Tagging ${action.VolumeName}-${action.BackupType}`);
@@ -65,6 +67,7 @@ let _salvageSnapshotPromise = (err, action) => {
 	if (err.code === 'SnapshotCreationPerVolumeRateExceeded') {
 		// Cannot create a snapshot on the same volume more than one every 15 seconds
 		// Wait and try again
+		console.log('Pausing');
 		return _promiseToPauseFor(15000).then(() => makeBackup(action));
 	} else {
 		// I dunno how to fix this, just fail completely

@@ -102,7 +102,7 @@ describe('Actioner', () => {
 							Value: 'ExpiryDate:19700102000000,FromVolumeName:a-volume,BackupType:Hourly'
 						}, {
 							Key: 'Name',
-							Value: 'a-volume-Hourly'
+							Value: 'a-volume-Hourly+19700101100000'
 						}]
 					});
 					return;
