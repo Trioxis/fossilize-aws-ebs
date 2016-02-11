@@ -5,7 +5,8 @@ import moment from 'moment';
 
 import ec2Responses from './fixtures/EC2Responses';
 
-import * as actioner from '../src/Actioner';
+import {doActions} from '../src/Actioner';
+import * as SnapshotVolumeAction from '../src/Actioner/SnapshotVolumeAction';
 
 describe('Actioner', () => {
 	let sandbox, mocks, mockEC2, mockAWS, clock;
@@ -22,6 +23,23 @@ describe('Actioner', () => {
 		sandbox.restore();
 	});
 
+	describe.skip('doActions', () => {
+		it('should return promises for each action it is given', () => {
+			mocks.makeBackup = sandbox.stub(actioner, 'makeBackup').returns(Promise.resolve())
+
+			let actions = [{
+				Action: 'SNAPSHOT_VOLUME',
+
+			}];
+
+			SnapshotVolumeAction.doActions(actions).then(() => {
+				expect().fail();
+
+			});
+
+		})
+	})
+
 	describe('_makeSnapshot', () => {
 		it('should attempt to snapshot the volume in the action provided', () => {
 			let action = {
@@ -34,7 +52,7 @@ describe('Actioner', () => {
 
 			mockEC2.createSnapshot = sandbox.stub().yields(null, {SnapshotId: 'snap-abcd1234'});
 
-			return actioner._makeSnapshot(action)
+			return SnapshotVolumeAction._makeSnapshot(action)
 				.then(() => {
 					expect(mockEC2.createSnapshot.called).to.be.ok();
 					expect(mockEC2.createSnapshot.args[0][0]).to.eql({
@@ -68,7 +86,7 @@ describe('Actioner', () => {
 
 			mockEC2.createTags = sandbox.stub().yields(null, {});
 
-			return actioner._tagSnapshot(snapshot, action)
+			return SnapshotVolumeAction._tagSnapshot(snapshot, action)
 				.then(() => {
 					expect(mockEC2.createTags.called).to.be.ok();
 					expect(mockEC2.createTags.args[0][0]).to.eql({
@@ -115,7 +133,7 @@ it.skip('should retry after 15 seconds if a SnapshotCreationPerVolumeRateExceede
 
 	mocks._promiseToPauseFor = sandbox.stub(actioner, '_promiseToPauseFor').returns(Promise.resolve());
 
-	return actioner.makeBackup(action)
+	return SnapshotVolumeAction.makeBackup(action)
 	.then(() => {
 		expect
 		return;
