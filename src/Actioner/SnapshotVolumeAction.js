@@ -1,9 +1,7 @@
 import AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-2'});
 
-let _promiseToPauseFor = (ms) => new Promise(resolve => {
-	setTimeout(resolve, ms);
-});
+import _promiseToPauseFor from './_promiseToPauseFor';
 
 let makeBackup = (action) => {
 	return _makeSnapshot(action)
@@ -78,7 +76,6 @@ let _salvageSnapshotPromise = (err, action) => {
 
 export {
 	makeBackup,
-	_promiseToPauseFor,
 	_makeSnapshot,
 	_tagSnapshot,
 	_salvageSnapshotPromise,
