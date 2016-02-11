@@ -78,5 +78,5 @@ export {
 	makeBackup,
 	_makeSnapshot,
 	_tagSnapshot,
-	_salvageSnapshotPromise,
-}
+	_salvageSnapshotPromise
+};
