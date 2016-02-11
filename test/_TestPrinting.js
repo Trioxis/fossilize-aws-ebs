@@ -18,7 +18,7 @@ describe('Printer', () => {
 	});
 
 	describe('printSnaplist', () => {
-		it('should at least print a summary of snapshots', () => {
+		it('should print a summary of snapshots', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			mocks.stdout = sandbox.stub(process.stdout, 'write');
 			printer.printSnaplist([
@@ -43,6 +43,25 @@ describe('Printer', () => {
 			expect(output).to.contain('Weekly');
 			expect(output).to.contain('Daily');
 			expect(output).to.contain('Unknown');
+		});
+		it('should at least print the SnapshotId and Name of each snapshot in verbose mode', () => {
+			mocks.log = sandbox.stub(console, 'log');
+			printer.printSnaplist([
+				{SnapshotId: '237845', StartTime: moment(), Name: 'franklin'},
+				{SnapshotId: '984752987', StartTime: moment(), Name: 'bob'},
+			], true);
+
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('237845');
+			expect(output).to.contain('franklin');
+			expect(output).to.contain('984752987');
+			expect(output).to.contain('bob');
 		});
 	});
 
