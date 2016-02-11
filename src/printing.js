@@ -60,6 +60,9 @@ var printActions = (actions) => {
 		if (action.Action === 'SNAPSHOT_VOLUME') {
 			console.log(`${action.Action}: (${action.VolumeId}) '${action.VolumeName}' ${action.BackupType} (Expires ${action.ExpiryDate.fromNow()})`);
 		}
+		if (action.Action === 'DELETE_SNAPSHOT') {
+			console.log(`${action.Action}: ${action.SnapshotId}`);
+		}
 	});
 	console.log();
 };
@@ -68,9 +71,13 @@ var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
 	console.log(`${stats.snapshots} snapshots`);
+	console.log(`   - ${stats.expiredSnaps} snapshots that have expired`);
 	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
 	console.log(`${stats.volumes} EBS volumes`);
 	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
+	console.log(`${stats.actions} actions to take`);
+	console.log(`   - ${stats.createActions} create backup actions`);
+	console.log(`   - ${stats.deleteActions} delete backup actions`);
 	console.log();
 };
 
