@@ -31,7 +31,7 @@ let _makeSnapshot = (action) => {
 
 let _tagSnapshot = (snapshot, action) => {
 	let ec2 = new AWS.EC2();
-	let madeDate = moment().utc(snapshot.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
+	let madeDate = moment(snapshot.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
 	let tags = [{
 		Key: 'backups:config-v0',
 		Value:

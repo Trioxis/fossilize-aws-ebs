@@ -81,7 +81,7 @@ describe('Actioner', () => {
 				SnapshotId: 'snap-abcd1234',
 		    VolumeId: 'vol-1234abcd',
 		    State: 'pending',
-		    StartTime: 'Thu Feb 11 2016 10:41:37 GMT+1100 (AEDT)',
+		    StartTime: 'Thu Jan 09 1970 10:41:37 GMT+1100 (AEDT)',
 		    Progress: '',
 		    OwnerId: '123456789',
 		    Description: 'AWSBM \'Hourly\' backup of volume \'a-volume\' (vol-1234abcd)',
@@ -102,7 +102,7 @@ describe('Actioner', () => {
 							Value: 'ExpiryDate:19700102000000,FromVolumeName:a-volume,BackupType:Hourly'
 						}, {
 							Key: 'Name',
-							Value: 'a-volume-Hourly+19700101100000'
+							Value: 'a-volume-Hourly+19700108234137'
 						}]
 					});
 					return;
