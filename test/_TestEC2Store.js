@@ -23,7 +23,7 @@ describe('EC2Store', () => {
 
 	describe('listSnapshots', () => {
 		it('should ask AWS EC2 for a list of all snapshots', () => {
-			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+			mockEC2.describeSnapshots = sandbox.stub().yields(null, ec2Responses.snapshots1);
 
 			return ec2Store.listSnapshots()
 				.then(snapList => {
@@ -33,7 +33,7 @@ describe('EC2Store', () => {
 		});
 
 		it('should return a Promise that resolves to an array of EC2 snapshots', () => {
-			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+			mockEC2.describeSnapshots = sandbox.stub().yields(null, ec2Responses.snapshots1);
 
 			let snapListPromise = ec2Store.listSnapshots();
 
@@ -50,7 +50,7 @@ describe('EC2Store', () => {
 			// This means converting the Name and backups:config tags to properties
 			// and removing all other unnecessary properties
 
-			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots1);
+			mockEC2.describeSnapshots = sandbox.stub().yields(null, ec2Responses.snapshots1);
 
 			return ec2Store.listSnapshots()
 				.then(({snapshots}) => {
@@ -88,7 +88,7 @@ describe('EC2Store', () => {
 		});
 
 		it('should gracefully handle bad tags on snapshots', () => {
-			mockEC2.describeSnapshots = sinon.stub().yields(null, ec2Responses.snapshots2);
+			mockEC2.describeSnapshots = sandbox.stub().yields(null, ec2Responses.snapshots2);
 
 			return ec2Store.listSnapshots()
 				.then(({snapshots}) => {
@@ -144,7 +144,7 @@ describe('EC2Store', () => {
 
 	describe('listEBS', () => {
 		it('should ask AWS EC2 for a list of all EBS volumes', () => {
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+			mockEC2.describeVolumes = sandbox.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
 				.then(({volumes}) => {
@@ -154,7 +154,7 @@ describe('EC2Store', () => {
 		});
 
 		it('should return a Promise that resolves to an array of EBS volumes', () => {
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+			mockEC2.describeVolumes = sandbox.stub().yields(null, ec2Responses.volumes1);
 			let volListPromise = ec2Store.listEBS();
 
 			expect(volListPromise).to.be.a(Promise);
@@ -173,7 +173,7 @@ describe('EC2Store', () => {
 			let firstVol = ec2Responses.volumes1.Volumes[1];
 			let secondVol = ec2Responses.volumes1.Volumes[2];
 			let thirdVol = ec2Responses.volumes1.Volumes[3];
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes1);
+			mockEC2.describeVolumes = sandbox.stub().yields(null, ec2Responses.volumes1);
 
 			return ec2Store.listEBS()
 				.then(({volumes}) => {
@@ -237,7 +237,7 @@ describe('EC2Store', () => {
 			let firstVol = ec2Responses.volumes2.Volumes[1];
 			let secondVol = ec2Responses.volumes2.Volumes[2];
 			let thirdVol = ec2Responses.volumes2.Volumes[3];
-			mockEC2.describeVolumes = sinon.stub().yields(null, ec2Responses.volumes2);
+			mockEC2.describeVolumes = sandbox.stub().yields(null, ec2Responses.volumes2);
 
 			return ec2Store.listEBS()
 				.then(({volumes}) => {

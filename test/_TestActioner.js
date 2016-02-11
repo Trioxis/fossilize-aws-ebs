@@ -32,7 +32,7 @@ describe('Actioner', () => {
 				ExpiryDate: moment().add('24', 'hours')
 			};
 
-			mockEC2.createSnapshot = sinon.stub().yields(null, {SnapshotId: 'snap-abcd1234'});
+			mockEC2.createSnapshot = sandbox.stub().yields(null, {SnapshotId: 'snap-abcd1234'});
 
 			return actioner._makeSnapshot(action)
 				.then(() => {
@@ -66,7 +66,7 @@ describe('Actioner', () => {
 		    VolumeSize: 80,
 			};
 
-			mockEC2.createTags = sinon.stub().yields(null);
+			mockEC2.createTags = sandbox.stub().yields(null);
 
 			return actioner._tagSnapshot(snapshot, action)
 				.then(() => {
@@ -99,7 +99,7 @@ it.skip('should retry after 15 seconds if a SnapshotCreationPerVolumeRateExceede
 		ExpiryDate: moment().add('24', 'hours')
 	};
 
-	mockEC2.createSnapshot = sinon.stub()
+	mockEC2.createSnapshot = sandbox.stub()
 	mockEC2.createSnapshot.yields(null, {SnapshotId: 'yey'})
 	mockEC2.createSnapshot.onFirstCall().yields({
 		message: 'The maximum per volume CreateSnapshot request rate has been exceeded. Use an increasing or variable sleep interval between requests.',
