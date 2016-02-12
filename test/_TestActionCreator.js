@@ -17,7 +17,16 @@ describe('ActionCreator', () => {
 	});
 
 	describe('makeDeleteAction', () => {
-		it.skip('should create a deletion action for the given snapshot');
+		it('should create a deletion action for the given snapshot', () => {
+			let snapshot = {
+				SnapshotId: 'snap-abcd1234'
+			};
+
+			expect(makeDeleteAction(snapshot)).to.be.eql({
+				Action: 'DELETE_SNAPSHOT',
+				SnapshotId: 'snap-abcd1234'
+			})
+		});
 	});
 
 	describe('makeCreationActions', () => {
