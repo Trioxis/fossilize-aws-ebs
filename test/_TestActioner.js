@@ -71,6 +71,21 @@ describe('Actioner', () => {
 					});
 					expect(outcome).to.be.eql({outcome: 'Deleted snapshot snap-abcd1234'});
 			});
+		});
+		
+		it('should pass the error object on if there is an error while deleting', () => {
+			let action = {
+				Action: 'DELETE_SNAPSHOT',
+				SnapshotId: 'snap-abcd1234'
+			};
+
+			mockEC2.deleteSnapshot = sandbox.stub()
+			mockEC2.deleteSnapshot.yields({message: 'Something went wrong', code: 'SnapshotDeletionError'}, null);
+
+			return DeleteSnapshotAction.deleteSnapshot(action)
+				.then((outcome) => {
+					expect(outcome).to.be.eql({message: 'Something went wrong', code: 'SnapshotDeletionError'});
+			});
 
 		});
 	});
