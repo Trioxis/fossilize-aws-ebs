@@ -46,7 +46,7 @@ export default function () {
 					// this is necessary because makeCreationActions can return multiple actions per volume
 					let actions = [];
 					matchedVolumes.map(volume => actions = actions.concat(makeCreationActions(volume)));
-					collector.stats.creationActions = actions.length;
+					collector.stats.createActions = actions.length;
 					return actions;
 				});
 
