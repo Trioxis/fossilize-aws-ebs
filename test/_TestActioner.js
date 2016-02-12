@@ -7,6 +7,7 @@ import ec2Responses from './fixtures/EC2Responses';
 
 import {doActions} from '../src/Actioner';
 import * as SnapshotVolumeAction from '../src/Actioner/SnapshotVolumeAction';
+import * as DeleteSnapshotAction from '../src/Actioner/DeleteSnapshotAction';
 import _promiseToPauseFor from '../src/Actioner/_promiseToPauseFor';
 
 describe('Actioner', () => {
@@ -29,15 +30,20 @@ describe('Actioner', () => {
 			mocks.makeBackup = sandbox.stub(SnapshotVolumeAction, 'makeBackup', () => {
 				return Promise.resolve({});
 			});
+			mocks.deleteSnapshot = sandbox.stub(DeleteSnapshotAction, 'deleteSnapshot', () => {
+				return Promise.resolve({});
+			});
 
 			let actions = [{
 				Action: 'SNAPSHOT_VOLUME',
-
+			}, {
+				Action: 'DELETE_SNAPSHOT'
 			}];
 
 			return doActions(actions)
 				.then(() => {
 					expect(mocks.makeBackup.called).to.be.ok();
+					expect(mocks.deleteSnapshot.called).to.be.ok();
 				}
 			);
 
