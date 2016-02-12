@@ -2,20 +2,52 @@ import moment from 'moment';
 
 let headingLine = '-------------------------------------------------------------';
 
-var printSnaplist = (snapshots) => {
-	console.log('AWSBM Snapshots');
-	console.log(headingLine);
-	if (snapshots.length === 0) {
-		console.log('No snapshots with valid backups:config-v0 tag found');
+var printSnaplist = (snapshots, verbose) => {
+	if (verbose /* implement verbose flag later */) {
+		console.log('AWSBM Backups');
+		console.log(headingLine);
+		if (snapshots.length === 0) {
+			console.log('No snapshots with valid backups:config-v0 tag found');
+		}
+		snapshots.map(snap => {
+			console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
+			console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
+			console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
+			console.log(`        Created: ${snap.StartTime.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.StartTime.fromNow()}`);
+			console.log(`        Expires: ${snap.ExpiryDate ? `${snap.ExpiryDate.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.ExpiryDate.fromNow()}` : 'Never'}`);
+			console.log();
+		});
+	} else {
+		console.log('AWSBM Backup Summary');
+		console.log(headingLine);
+		if (snapshots.length === 0) {
+			console.log('No snapshots with valid backups:config-v0 tag found');
+		}
+		let snapSummary = {};
+		let longestVolName = 9;
+		let longestBackupName = 16;
+		snapshots.map((snap) => {
+			let volume = snap.FromVolumeName ? snap.FromVolumeName : 'Unknown Volume';
+			longestVolName = longestVolName > volume.length ? longestVolName : volume.length;
+			if (!snapSummary[volume]) snapSummary[volume] = {};
+			let type = snap.BackupType ? snap.BackupType : 'Unknown Backup Type';
+			longestBackupName = longestBackupName > type.length ? longestBackupName : type.length;
+			if (!snapSummary[volume][type]) snapSummary[volume][type] = 0;
+			snapSummary[volume][type]++;
+		});
+		let spacing = '                                                            ';
+		console.log(`Volume  ` + spacing.slice(0, longestVolName - 6) +
+			`Backup Types  ` + spacing.slice(0, longestBackupName - 12) +
+			`Backups `
+		);
+		// console.log(`Volume      Backup Type      Backups`);
+		for (let vol in snapSummary) {
+			for (let type in snapSummary[vol]) {
+				process.stdout.write(`${vol}  ${spacing.slice(0, longestVolName - vol.length)}`);
+				process.stdout.write(`${type} ${spacing.slice(0, longestBackupName - type.length)} ${snapSummary[vol][type]}\n`);
+			}
+		}
 	}
-	snapshots.map(snap => {
-		console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
-		console.log(`           From: ${snap.FromVolumeName ? snap.FromVolumeName : 'UNKNOWN'}`);
-		console.log(`           Type: ${snap.BackupType ? snap.BackupType : 'UNKNOWN'}`);
-		console.log(`        Created: ${snap.StartTime.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.StartTime.fromNow()}`);
-		console.log(`        Expires: ${snap.ExpiryDate ? `${snap.ExpiryDate.format('dddd, MMMM Do YYYY, h:mm:ss a (ZZ)')} - ${snap.ExpiryDate.fromNow()}` : 'Never'}`);
-		console.log();
-	});
 	console.log();
 };
 
@@ -60,6 +92,9 @@ var printActions = (actions) => {
 		if (action.Action === 'SNAPSHOT_VOLUME') {
 			console.log(`${action.Action}: (${action.VolumeId}) '${action.VolumeName}' ${action.BackupType} (Expires ${action.ExpiryDate.fromNow()})`);
 		}
+		if (action.Action === 'DELETE_SNAPSHOT') {
+			console.log(`${action.Action}: ${action.SnapshotId}`);
+		}
 	});
 	console.log();
 };
@@ -68,9 +103,13 @@ var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
 	console.log(`${stats.snapshots} snapshots`);
+	console.log(`   - ${stats.expiredSnaps} snapshots that have expired`);
 	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
 	console.log(`${stats.volumes} EBS volumes`);
 	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
+	console.log(`${stats.actions} actions attempted`);
+	console.log(`   - ${stats.createActions} create backup actions`);
+	console.log(`   - ${stats.deleteActions} delete backup actions`);
 	console.log();
 };
 

@@ -1,13 +1,15 @@
+import moment from 'moment';
+
 // Given a list of snapshots, returns a list of snapshots that have expired
 // This can be determined using ExpiryDate tags
 let findDeadSnapshots = (snapshotList) => {
-	return [snapshotList];
-};
-
-// Helper function that checks if a single snapshot has expired or not.
-// Returns true if the snapshot has expired and needs to be deleted.
-let snapshotIsDead = (snapshot) => {
-	return snapshot;
+	return snapshotList.filter((snap) => {
+		if (moment().isAfter(snap.ExpiryDate)) {
+			return true;
+		} else {
+			return false;
+		}
+	});
 };
 
 // Given a list of EBS volumes and list of snapshots, matches each snapshot to the
@@ -47,4 +49,4 @@ let sortSnapsByMostRecent = (snapList) => {
 	});
 };
 
-export {findDeadSnapshots, snapshotIsDead, matchSnapsToVolumes, sortSnapsByMostRecent};
+export {findDeadSnapshots, matchSnapsToVolumes, sortSnapsByMostRecent};

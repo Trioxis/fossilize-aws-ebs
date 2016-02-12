@@ -18,12 +18,70 @@ describe('Printer', () => {
 	});
 
 	describe('printSnaplist', () => {
-		it('should at least print the SnapshotId and Name of each snapshot', () => {
+		it('should that there are no snapshots if there aren\'t any given', () => {
+			mocks.log = sandbox.stub(console, 'log');
+			mocks.stdout = sandbox.stub(process.stdout, 'write');
+			printer.printSnaplist([]);
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			mocks.stdout.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('No snapshots');
+
+			printer.printSnaplist([], true);
+			output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			mocks.stdout.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			expect(output).to.contain('No snapshots');
+		});
+		it('should print a summary of snapshots', () => {
+			mocks.log = sandbox.stub(console, 'log');
+			mocks.stdout = sandbox.stub(process.stdout, 'write');
+			printer.printSnaplist([
+				{SnapshotId: '237845', StartTime: moment(), BackupType: 'Weekly', Name: 'franklin'},
+				{SnapshotId: '984752987', StartTime: moment(), BackupType: 'Weekly', Name: 'bob'},
+				{SnapshotId: '28764519', StartTime: moment(), BackupType: 'Daily', Name: 'franklin'},
+				{SnapshotId: '879387957', StartTime: moment(), Name: 'bob'},
+			]);
+
+			let output = '';
+			mocks.log.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+			mocks.stdout.args.map(call => {
+				call.map(line => {
+					output += line;
+				})
+			});
+
+			expect(output).to.contain('Weekly');
+			expect(output).to.contain('Daily');
+			expect(output).to.contain('Unknown');
+		});
+		it('should at least print the SnapshotId and Name of each snapshot in verbose mode', () => {
 			mocks.log = sandbox.stub(console, 'log');
 			printer.printSnaplist([
 				{SnapshotId: '237845', StartTime: moment(), Name: 'franklin'},
 				{SnapshotId: '984752987', StartTime: moment(), Name: 'bob'},
-			]);
+			], true);
 
 			let output = '';
 			mocks.log.args.map(call => {
