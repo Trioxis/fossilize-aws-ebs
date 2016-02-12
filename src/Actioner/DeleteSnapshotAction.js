@@ -3,7 +3,7 @@ AWS.config.update({region: 'ap-southeast-2'});
 
 let deleteSnapshot = (action) => {
 	let ec2 = new AWS.EC2();
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		ec2.deleteSnapshot({
 			DryRun: true,
 			SnapshotId: action.SnapshotId
