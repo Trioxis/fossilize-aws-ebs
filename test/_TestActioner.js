@@ -26,7 +26,7 @@ describe('Actioner', () => {
 	});
 
 	describe('doActions', () => {
-		it('should return promises for each action it is given', () => {
+		it('should return promises for each action it is given, even if it can\'t do the action', () => {
 			mocks.makeBackup = sandbox.stub(SnapshotVolumeAction, 'makeBackup', () => {
 				return Promise.resolve({});
 			});
@@ -38,12 +38,15 @@ describe('Actioner', () => {
 				Action: 'SNAPSHOT_VOLUME',
 			}, {
 				Action: 'DELETE_SNAPSHOT'
+			}, {
+				Action: 'BOGUS_ACTION'
 			}];
 
 			return doActions(actions)
-				.then(() => {
+				.then((outcomes) => {
 					expect(mocks.makeBackup.called).to.be.ok();
 					expect(mocks.deleteSnapshot.called).to.be.ok();
+					expect(outcomes[2]).to.be.eql({outcome: 'The Actioner does not know how to perform the action \'BOGUS_ACTION\''});
 				}
 			);
 
