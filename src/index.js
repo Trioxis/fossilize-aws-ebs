@@ -59,9 +59,11 @@ export default function () {
 				})
 				.then(action => {
 					return doActions(action).then((results) => {
-						console.log();
-						console.log('AWSBM Action Outcomes');
-						console.log('-------------------------------------------------------------');
+						if (results.length > 0 ) {
+							console.log();
+							console.log('AWSBM Action Outcomes');
+							console.log('-------------------------------------------------------------');
+						}
 						results.map((result) => console.log(result));
 						console.log();
 						printer.printStatistics(collector.stats);

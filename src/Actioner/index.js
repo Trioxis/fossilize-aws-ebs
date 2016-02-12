@@ -5,10 +5,11 @@ import * as DeleteSnapshot from './DeleteSnapshotAction';
 // These could be creating a snapshot from an EBS volume, or
 // deleting an existing snapshot
 let doActions = (actions) => {
-	console.log('Performing actions, please wait');
-	console.log('-------------------------------------------------------------');
-
-	console.log(`i ${actions.length} actions to do`);
+	if (actions.length > 0) {
+		console.log('Performing actions, please wait');
+		console.log('-------------------------------------------------------------');
+		console.log(`i ${actions.length} actions to do`);
+	}
 
 	return Promise.all(
 		actions.map((action) => {
