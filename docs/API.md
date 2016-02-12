@@ -77,6 +77,16 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 }
 ```
 
+#### Delete Snapshot Action
+
+```JavaScript
+{
+	Action: 'DELETE_SNAPSHOT',
+	SnapshotId,
+	// EC2 resource id of the snapshot to delete
+}
+```
+
 ## Modules
 
 ## ActionCreator
@@ -116,4 +126,3 @@ The `warnings` property of the above objects is an array of strings that describ
 - `matchSnapsToVolumes(volumes, snapList)` - given an array of AWSBM Volumes (with no `Snapshots` property defined) and an array of AWSBM Snapshots, returns `{matchedVolumes, orphanedSnaps}` where `matchedSnapshots` is the array of AWSBM Volumes with `Snapshots` defined and `orphanedSnapshots` are all the AWSBM Snapshots that had no `FromVolumeName` matching `Name` value in the AWSBM Volumes.
 - `sortSnapsByMostRecent(snapList)` - returns an array of snapshots sorted by most recently created first.
 - `findDeadSnapshots(snapshotList)` - accepts an array of snapshot objects and returns an array of snapshots that have expired.
-- `snapshotIsDead(snapshot)` - given a snapshot object, returns true if the snapshot has expired. It determines this based on tags that represent things like expiry dates. If the snapshot is still valid, the function returns false.
