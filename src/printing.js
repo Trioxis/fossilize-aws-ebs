@@ -27,10 +27,10 @@ var printSnaplist = (snapshots, verbose) => {
 		let longestVolName = 9;
 		let longestBackupName = 16;
 		snapshots.map((snap) => {
-			let volume = snap.FromVolumeName ? snap.FromVolumeName : 'Unknown Volume';
+			let volume = snap.FromVolumeName ? snap.FromVolumeName : '<Unknown Volume>';
 			longestVolName = longestVolName > volume.length ? longestVolName : volume.length;
 			if (!snapSummary[volume]) snapSummary[volume] = {};
-			let type = snap.BackupType ? snap.BackupType : 'Unknown Backup Type';
+			let type = snap.BackupType ? snap.BackupType : '<Unknown Backup Type>';
 			longestBackupName = longestBackupName > type.length ? longestBackupName : type.length;
 			if (!snapSummary[volume][type]) snapSummary[volume][type] = 0;
 			snapSummary[volume][type]++;

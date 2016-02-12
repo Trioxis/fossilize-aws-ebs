@@ -46,7 +46,7 @@ export default function () {
 					// this is necessary because makeCreationActions can return multiple actions per volume
 					let actions = [];
 					matchedVolumes.map(volume => actions = actions.concat(makeCreationActions(volume)));
-					collector.stats.creationActions = actions.length;
+					collector.stats.createActions = actions.length;
 					return actions;
 				});
 
@@ -59,9 +59,11 @@ export default function () {
 				})
 				.then(action => {
 					return doActions(action).then((results) => {
-						console.log();
-						console.log('AWSBM Action Outcomes');
-						console.log('-------------------------------------------------------------');
+						if (results.length > 0 ) {
+							console.log();
+							console.log('AWSBM Action Outcomes');
+							console.log('-------------------------------------------------------------');
+						}
 						results.map((result) => console.log(result));
 						console.log();
 						printer.printStatistics(collector.stats);

@@ -7,6 +7,7 @@ import ec2Responses from './fixtures/EC2Responses';
 
 import {doActions} from '../src/Actioner';
 import * as SnapshotVolumeAction from '../src/Actioner/SnapshotVolumeAction';
+import * as DeleteSnapshotAction from '../src/Actioner/DeleteSnapshotAction';
 import _promiseToPauseFor from '../src/Actioner/_promiseToPauseFor';
 
 describe('Actioner', () => {
@@ -25,24 +26,69 @@ describe('Actioner', () => {
 	});
 
 	describe('doActions', () => {
-		it('should return promises for each action it is given', () => {
+		it('should return promises for each action it is given, even if it can\'t do the action', () => {
 			mocks.makeBackup = sandbox.stub(SnapshotVolumeAction, 'makeBackup', () => {
+				return Promise.resolve({});
+			});
+			mocks.deleteSnapshot = sandbox.stub(DeleteSnapshotAction, 'deleteSnapshot', () => {
 				return Promise.resolve({});
 			});
 
 			let actions = [{
 				Action: 'SNAPSHOT_VOLUME',
-
+			}, {
+				Action: 'DELETE_SNAPSHOT'
+			}, {
+				Action: 'BOGUS_ACTION'
 			}];
 
 			return doActions(actions)
-				.then(() => {
+				.then((outcomes) => {
 					expect(mocks.makeBackup.called).to.be.ok();
+					expect(mocks.deleteSnapshot.called).to.be.ok();
+					expect(outcomes[2]).to.be.eql({outcome: 'The Actioner does not know how to perform the action \'BOGUS_ACTION\''});
 				}
 			);
 
-		})
-	})
+		});
+	});
+
+	describe('deleteSnapshot', () => {
+		it('should delete the snapshot by the resource id given', () => {
+			let action = {
+				Action: 'DELETE_SNAPSHOT',
+				SnapshotId: 'snap-abcd1234'
+			};
+
+			mockEC2.deleteSnapshot = sandbox.stub()
+			mockEC2.deleteSnapshot.yields(null, {})
+
+			return DeleteSnapshotAction.deleteSnapshot(action)
+				.then((outcome) => {
+					expect(mockEC2.deleteSnapshot.called).to.be.ok();
+					expect(mockEC2.deleteSnapshot.args[0][0]).to.be.eql({
+						SnapshotId: 'snap-abcd1234'
+					});
+					expect(outcome).to.be.eql({outcome: 'Deleted snapshot snap-abcd1234'});
+			});
+		});
+		
+		it('should pass the error object on if there is an error while deleting', () => {
+			let action = {
+				Action: 'DELETE_SNAPSHOT',
+				SnapshotId: 'snap-abcd1234'
+			};
+
+			mockEC2.deleteSnapshot = sandbox.stub()
+			mockEC2.deleteSnapshot.yields({message: 'Something went wrong', code: 'SnapshotDeletionError'}, null);
+
+			return DeleteSnapshotAction.deleteSnapshot(action)
+				.then((outcome) => {
+					expect(outcome).to.be.eql({message: 'Something went wrong', code: 'SnapshotDeletionError'});
+			});
+
+		});
+	});
 
 	describe('_makeSnapshot', () => {
 		it('should attempt to snapshot the volume in the action provided', () => {
