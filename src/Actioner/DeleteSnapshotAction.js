@@ -5,13 +5,11 @@ let deleteSnapshot = (action) => {
 	let ec2 = new AWS.EC2();
 	return new Promise((resolve) => {
 		ec2.deleteSnapshot({
-			DryRun: true,
 			SnapshotId: action.SnapshotId
-		}, (err, response) => {
+		}, (err) => {
 			if (err) {
 				resolve(err);
 			} else {
-				if (response) { console.log(response);}
 				resolve({outcome: `Deleted snapshot ${action.SnapshotId}`});
 			}
 		});

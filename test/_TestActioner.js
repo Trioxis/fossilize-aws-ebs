@@ -50,8 +50,30 @@ describe('Actioner', () => {
 				}
 			);
 
-		})
-	})
+		});
+	});
+
+	describe('deleteSnapshot', () => {
+		it('should delete the snapshot by the resource id given', () => {
+			let action = {
+				Action: 'DELETE_SNAPSHOT',
+				SnapshotId: 'snap-abcd1234'
+			};
+
+			mockEC2.deleteSnapshot = sandbox.stub()
+			mockEC2.deleteSnapshot.yields(null, {})
+
+			return DeleteSnapshotAction.deleteSnapshot(action)
+				.then((outcome) => {
+					expect(mockEC2.deleteSnapshot.called).to.be.ok();
+					expect(mockEC2.deleteSnapshot.args[0][0]).to.be.eql({
+						SnapshotId: 'snap-abcd1234'
+					});
+					expect(outcome).to.be.eql({outcome: 'Deleted snapshot snap-abcd1234'});
+			});
+
+		});
+	});
 
 	describe('_makeSnapshot', () => {
 		it('should attempt to snapshot the volume in the action provided', () => {
