@@ -83,7 +83,7 @@ let _convertToOutcome = (snapshot, action) => {
 		outcome: 'SNAPSHOT_SUCCESSFUL',
 		SnapshotId: snapshot.SnapshotId,
 		BackupType: action.BackupType
-	}
+	};
 };
 
 export {
