@@ -114,7 +114,7 @@ var printStatistics = (stats) => {
 	console.log(`   - ${stats.actions.delete} delete backup actions`);
 	console.log();
 
-	logToCloudWatch(stats).then((result) => {
+	logToCloudWatch(stats).then(() => {
 		console.log('Logged statistics to CloudWatch');
 	}).catch((err) => {
 		console.error('Error logging to CloudWatch:');
