@@ -84,11 +84,13 @@ export default function () {
 							return printer.printWarnings(collector.warnings);
 						});
 					});
-				})
-		}).then(() => dumpConsoleLogToCloudWatch().catch((err) => {
+				});
+		}).then(() => dumpConsoleLogToCloudWatch()
+			.catch((err) => {
 				console.log('Error pushing raw logs to CloudWatch');
 				console.log(err);
-			})).catch(err => {
+			}
+		)).catch(err => {
 			printer.printError(err);
 			process.exit(1);
 		});
