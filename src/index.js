@@ -3,6 +3,9 @@ import {findDeadSnapshots, matchSnapsToVolumes} from './Analyser';
 import {makeDeleteAction, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
+import {collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
+collectConsoleLog();
+
 import * as printer from './printing';
 
 export default function () {
@@ -76,11 +79,16 @@ export default function () {
 							if (result.outcome === 'DELETE_SUCCESSFUL') collector.stats.actions.deleted.push(result.SnapshotId);
 						});
 						console.log();
-						printer.printStatistics(collector.stats);
-						printer.printWarnings(collector.warnings);
+					}).then(() => {
+						return printer.printStatistics(collector.stats).then(() => {
+							return printer.printWarnings(collector.warnings);
+						});
 					});
-				});
-		}).catch(err => {
+				})
+		}).then(() => dumpConsoleLogToCloudWatch().catch((err) => {
+				console.log('Error pushing raw logs to CloudWatch');
+				console.log(err);
+			})).catch(err => {
 			printer.printError(err);
 			process.exit(1);
 		});
