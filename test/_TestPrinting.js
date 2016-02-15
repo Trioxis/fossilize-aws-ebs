@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import expect from 'expect.js';
 import moment from 'moment';
+import * as logger from '../src/CloudWatchLogger';
 
 import * as printer from '../src/printing';
 
@@ -11,6 +12,7 @@ describe('Printer', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 		mocks = {};
+		mocks.logger = sandbox.stub(logger, 'logToCloudWatch').returns(Promise.resolve());
 	});
 
 	afterEach(() => {
