@@ -1,4 +1,6 @@
 import moment from 'moment';
+import {logToCloudWatch} from './CloudWatchLogger';
+
 
 let headingLine = '-------------------------------------------------------------';
 
@@ -111,6 +113,13 @@ var printStatistics = (stats) => {
 	console.log(`   - ${stats.createActions} create backup actions`);
 	console.log(`   - ${stats.deleteActions} delete backup actions`);
 	console.log();
+
+	logToCloudWatch(stats).then((result) => {
+		console.log('Logged statistics to CloudWatch');
+	}).catch((err) => {
+		console.error('Error logging to CloudWatch:');
+		console.error(err);
+	});
 };
 
 var printWarnings = (warnings) => {
