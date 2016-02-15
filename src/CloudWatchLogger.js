@@ -26,8 +26,8 @@ let tryPut = (obj, nextToken) => {
 			} else {
 				resolve(data);
 			}
-		})
+		});
 	});
-}
+};
 
-export {logToCloudWatch}
+export {logToCloudWatch};
