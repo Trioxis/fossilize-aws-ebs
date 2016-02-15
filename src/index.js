@@ -20,7 +20,9 @@ export default function () {
 			},
 			actions: {
 				create: 0,
-				delete: 0
+				delete: 0,
+				created: [],
+				deleted: [],
 			}
 		}
 	};
@@ -68,7 +70,11 @@ export default function () {
 							console.log('AWSBM Action Outcomes');
 							console.log('-------------------------------------------------------------');
 						}
-						results.map((result) => console.log(result));
+						results.map((result) => {
+							console.log(result);
+							if (result.outcome === 'SNAPSHOT_SUCCESSFUL') collector.stats.actions.created.push(`${result.SnapshotId} - ${result.BackupType}`);
+							if (result.outcome === 'DELETE_SUCCESSFUL') collector.stats.actions.deleted.push(result.SnapshotId);
+						});
 						console.log();
 						printer.printStatistics(collector.stats);
 						printer.printWarnings(collector.warnings);
