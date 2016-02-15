@@ -22,7 +22,7 @@ export default function () {
 				create: 0,
 				delete: 0,
 				created: [],
-				deleted: [],
+				deleted: []
 			}
 		}
 	};
