@@ -166,7 +166,21 @@ describe('Printer', () => {
 	describe('printStatistics', () => {
 		it('prints from a statistics object the properties `snapshots`, `volumes` and `backupTypes`', () => {
 			mocks.log = sandbox.stub(console, 'log');
-			printer.printStatistics({snapshots: 984752987, volumes: 82634862, backupTypes: 289174});
+			printer.printStatistics({
+				ec2Objects: {
+					snapshots: 984752987,
+					volumes: 82634862
+				},
+				backups: {
+					backupTypes: 289174,
+					expiredSnaps: 12,
+					orphanedSnaps: 120
+				},
+				actions: {
+					create: 30,
+					delete: 38756
+				}
+			});
 
 			let output = '';
 			mocks.log.args.map(call => {
