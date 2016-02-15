@@ -43,8 +43,8 @@ var printSnaplist = (snapshots, verbose) => {
 		// console.log(`Volume      Backup Type      Backups`);
 		for (let vol in snapSummary) {
 			for (let type in snapSummary[vol]) {
-				process.stdout.write(`${vol}  ${spacing.slice(0, longestVolName - vol.length)}`);
-				process.stdout.write(`${type} ${spacing.slice(0, longestBackupName - type.length)} ${snapSummary[vol][type]}\n`);
+				console.log(`${vol}  ${spacing.slice(0, longestVolName - vol.length)}` +
+					`${type} ${spacing.slice(0, longestBackupName - type.length)} ${snapSummary[vol][type]}`);
 			}
 		}
 	}
