@@ -115,7 +115,7 @@ var printStatistics = (stats) => {
 	console.log();
 
 	stats.timestamp = Date.now();
-	logToCloudWatch(stats).then(() => {
+	return logToCloudWatch(stats).then(() => {
 		console.log('Logged statistics to CloudWatch');
 	}).catch((err) => {
 		console.error('Error logging to CloudWatch:');
