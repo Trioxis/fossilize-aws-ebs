@@ -3,7 +3,7 @@ import {findDeadSnapshots, matchSnapsToVolumes} from './Analyser';
 import {makeDeleteAction, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
-import {collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
+import {logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
 collectConsoleLog();
 
 import * as printer from './printing';
@@ -94,6 +94,11 @@ export default function () {
 			}
 		)).catch(err => {
 			printer.printError(err);
-			process.exit(1);
+			logToCloudWatch({error: true, errorObject: err}).then(() => {
+				console.log('Logged error to CloudWatch');
+				process.exit(1);
+			}).catch(err => {
+				console.log('Could not log error to CloudWatch');
+			});
 		});
 }
