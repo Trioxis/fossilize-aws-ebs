@@ -7,6 +7,7 @@ import _promiseToPauseFor from './_promiseToPauseFor';
 let makeBackup = (action) => {
 	return _makeSnapshot(action)
 		.then(snapshot => _tagSnapshot(snapshot, action))
+		.then(snapshot => _convertToOutcome(snapshot, action))
 		.catch(err => _salvageSnapshotPromise(err, action));
 };
 
@@ -74,6 +75,14 @@ let _salvageSnapshotPromise = (err, action) => {
 		console.log(`x Action ${action.VolumeName}-${action.BackupType} failed`);
 		console.log(`x ${err}`);
 		return Promise.reject(err);
+	}
+};
+
+let _convertToOutcome = (snapshot, action) => {
+	return {
+		outcome: 'SNAPSHOT_SUCCESSFUL',
+		SnapshotId: snapshot.SnapshotId,
+		BackupType: action.BackupType
 	}
 };
 
