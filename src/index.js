@@ -10,7 +10,6 @@ import * as printer from './printing';
 
 export default function () {
 	let collector = {
-		warnings: [],
 		stats: {
 			ec2Objects: {
 				snapshots: 0,
@@ -26,7 +25,9 @@ export default function () {
 				delete: 0,
 				created: [],
 				deleted: []
-			}
+			},
+			warnings: 0,
+			warningMessages: []
 		}
 	};
 
@@ -36,7 +37,7 @@ export default function () {
 		.then(({snapshots, warnings}) => {
 			printer.printSnaplist(snapshots);
 			collector.stats.ec2Objects.snapshots = snapshots.length;
-			collector.warnings = collector.warnings.concat(warnings);
+			collector.stats.warningMessages = collector.stats.warningMessages.concat(warnings);
 
 			let deadSnaps = findDeadSnapshots(snapshots);
 			collector.stats.backups.expiredSnaps = deadSnaps.length;
@@ -47,7 +48,7 @@ export default function () {
 				.then(({volumes, warnings}) => {
 					collector.stats.ec2Objects.volumes = volumes.length;
 					volumes.map((volume) => collector.stats.backups.backupTypes += volume.BackupConfig.BackupTypes.length);
-					collector.warnings = collector.warnings.concat(warnings);
+					collector.stats.warningMessages = collector.stats.warningMessages.concat(warnings);
 
 					let {matchedVolumes, orphanedSnaps} = matchSnapsToVolumes(volumes, snapshots);
 					collector.stats.backups.orphanedSnaps = orphanedSnaps.length;
@@ -80,8 +81,9 @@ export default function () {
 						});
 						console.log();
 					}).then(() => {
+						collector.stats.warnings = collector.stats.warningMessages.length;
 						return printer.printStatistics(collector.stats).then(() => {
-							return printer.printWarnings(collector.warnings);
+							return printer.printWarnings(collector.stats.warningMessages);
 						});
 					});
 				});
