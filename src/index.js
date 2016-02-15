@@ -75,7 +75,7 @@ export default function () {
 						}
 						results.map((result) => {
 							console.log(result);
-							if (result.outcome === 'SNAPSHOT_SUCCESSFUL') collector.stats.actions.created.push(`${result.SnapshotId} - ${result.BackupType}`);
+							if (result.outcome === 'SNAPSHOT_SUCCESSFUL') collector.stats.actions.created.push(`${result.VolumeId} - ${result.BackupType}`);
 							if (result.outcome === 'DELETE_SUCCESSFUL') collector.stats.actions.deleted.push(result.SnapshotId);
 						});
 						console.log();
