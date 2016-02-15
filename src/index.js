@@ -89,16 +89,17 @@ export default function () {
 				});
 		}).then(() => dumpConsoleLogToCloudWatch()
 			.catch((err) => {
-				console.log('Error pushing raw logs to CloudWatch');
-				console.log(err);
+				console.error('Error pushing raw logs to CloudWatch');
+				console.error(err);
 			}
 		)).catch(err => {
 			printer.printError(err);
 			logToCloudWatch({error: true, errorObject: err}).then(() => {
-				console.log('Logged error to CloudWatch');
+				console.error('Logged error to CloudWatch');
 				process.exit(1);
 			}).catch(err => {
-				console.log('Could not log error to CloudWatch');
+				console.error('Could not log error to CloudWatch:');
+				console.error(err);
 			});
 		});
 }
