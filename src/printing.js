@@ -104,14 +104,14 @@ var printActions = (actions) => {
 var printStatistics = (stats) => {
 	console.log('AWSBM Statistics');
 	console.log(headingLine);
-	console.log(`${stats.snapshots} snapshots`);
-	console.log(`   - ${stats.expiredSnaps} snapshots that have expired`);
-	console.log(`   - ${stats.orphanedSnaps} snapshots with no associated volume`);
-	console.log(`${stats.volumes} EBS volumes`);
-	console.log(`   - ${stats.backupTypes} EBS volume backup types identified`);
-	console.log(`${stats.actions} actions attempted`);
-	console.log(`   - ${stats.createActions} create backup actions`);
-	console.log(`   - ${stats.deleteActions} delete backup actions`);
+	console.log(`${stats.ec2Objects.snapshots} snapshots`);
+	console.log(`   - ${stats.backups.expiredSnaps} snapshots that have expired`);
+	console.log(`   - ${stats.backups.orphanedSnaps} snapshots with no associated volume`);
+	console.log(`${stats.ec2Objects.volumes} EBS volumes`);
+	console.log(`   - ${stats.backups.backupTypes} EBS volume backup types identified`);
+	console.log(`${stats.actions.create + stats.actions.delete} actions attempted`);
+	console.log(`   - ${stats.actions.create} create backup actions`);
+	console.log(`   - ${stats.actions.delete} delete backup actions`);
 	console.log();
 
 	logToCloudWatch(stats).then((result) => {

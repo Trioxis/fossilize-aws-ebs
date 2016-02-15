@@ -9,14 +9,19 @@ export default function () {
 	let collector = {
 		warnings: [],
 		stats: {
-			snapshots: 0,
-			orphanedSnaps: 0,
-			expiredSnaps: 0,
-			volumes: 0,
-			backupTypes: 0,
-			actions: 0,
-			createActions: 0,
-			deleteActions: 0
+			ec2Objects: {
+				snapshots: 0,
+				volumes: 0
+			},
+			backups: {
+				backupTypes: 0,
+				expiredSnaps: 0,
+				orphanedSnaps: 0
+			},
+			actions: {
+				create: 0,
+				delete: 0
+			}
 		}
 	};
 
@@ -25,28 +30,28 @@ export default function () {
 	return ec2.listSnapshots()
 		.then(({snapshots, warnings}) => {
 			printer.printSnaplist(snapshots);
-			collector.stats.snapshots = snapshots.length;
+			collector.stats.ec2Objects.snapshots = snapshots.length;
 			collector.warnings = collector.warnings.concat(warnings);
 
 			let deadSnaps = findDeadSnapshots(snapshots);
-			collector.stats.expiredSnaps = deadSnaps.length;
+			collector.stats.backups.expiredSnaps = deadSnaps.length;
 			let cleanupActions = deadSnaps.map(snap => makeDeleteAction(snap));
-			collector.stats.deleteActions = cleanupActions.length;
+			collector.stats.actions.delete = cleanupActions.length;
 
 			let creationActions = ec2.listEBS()
 				.then(({volumes, warnings}) => {
-					collector.stats.volumes = volumes.length;
-					volumes.map((volume) => collector.stats.backupTypes += volume.BackupConfig.BackupTypes.length);
+					collector.stats.ec2Objects.volumes = volumes.length;
+					volumes.map((volume) => collector.stats.backups.backupTypes += volume.BackupConfig.BackupTypes.length);
 					collector.warnings = collector.warnings.concat(warnings);
 
 					let {matchedVolumes, orphanedSnaps} = matchSnapsToVolumes(volumes, snapshots);
-					collector.stats.orphanedSnaps = orphanedSnaps.length;
+					collector.stats.backups.orphanedSnaps = orphanedSnaps.length;
 					printer.printEBSList(matchedVolumes);
 
 					// this is necessary because makeCreationActions can return multiple actions per volume
 					let actions = [];
 					matchedVolumes.map(volume => actions = actions.concat(makeCreationActions(volume)));
-					collector.stats.createActions = actions.length;
+					collector.stats.actions.create = actions.length;
 					return actions;
 				});
 
@@ -54,7 +59,6 @@ export default function () {
 				.then(actionsArray => {
 					let actions = actionsArray[0].concat(actionsArray[1]);
 					printer.printActions(actions);
-					collector.stats.actions = actions.length;
 					return actions;
 				})
 				.then(action => {
@@ -70,7 +74,6 @@ export default function () {
 						printer.printWarnings(collector.warnings);
 					});
 				});
-
 		}).catch(err => {
 			printer.printError(err);
 			process.exit(1);
