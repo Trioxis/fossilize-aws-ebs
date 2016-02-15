@@ -69,10 +69,10 @@ describe('Actioner', () => {
 					expect(mockEC2.deleteSnapshot.args[0][0]).to.be.eql({
 						SnapshotId: 'snap-abcd1234'
 					});
-					expect(outcome).to.be.eql({outcome: 'Deleted snapshot snap-abcd1234'});
+					expect(outcome).to.be.eql({outcome: 'DELETE_SUCCESSFUL', SnapshotId: 'snap-abcd1234'});
 			});
 		});
-		
+
 		it('should pass the error object on if there is an error while deleting', () => {
 			let action = {
 				Action: 'DELETE_SNAPSHOT',
