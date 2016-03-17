@@ -106,3 +106,7 @@ The function exported by [`src/index.js`](src/index.js) should run the entire ba
 ### Backup Tag API
 
 See the [Backup Tag API doc](docs/BackupTagAPI.md).
+
+### Logging
+
+This branch sends a metric object to a CloudWatch Log group named `tmp-1`, log stream `tmp-strm-1`. This object can be interpreted by CloudWatch and converted in to metrics. This branch also dumps all output from the script to CloudWatch Logs to the `tmp-1` group in a log stream named `tmp-strm-2`. Make sure these groups and streams exist before running the script. 
