@@ -1,9 +1,9 @@
-# aws-backup-manager
+# fossilize-aws-ebs
 Easily backup your Amazon EBS volumes
 
 **This project is in alpha.** Implementation is complete, however breaking changes are likely. Nevertheless, it is being used in production in some organisations, deal with it.
 
-[![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager) [![codecov.io](https://codecov.io/github/Trioxis/aws-backup-manager/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/aws-backup-manager?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/aws-backup-manager/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/aws-backup-manager)
+[![Build Status](https://travis-ci.org/Trioxis/fossilize-aws-ebs.svg?branch=master)](https://travis-ci.org/Trioxis/fossilize-aws-ebs) [![codecov.io](https://codecov.io/github/Trioxis/fossilize-aws-ebs/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/ffossilize-aws-ebs?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs)
 
 ## What does this do?
 
@@ -25,7 +25,7 @@ You can remove types of backup from the value as necessary. See the [Backup Tag 
 
 To install the script in the current directory, run this line
 ```
-git clone https://github.com/Trioxis/aws-backup-manager.git . && npm install && npm run build
+git clone https://github.com/Trioxis/fossilize-aws-ebs.git . && npm install && npm run build
 ```
 
 To do a backup once, run
@@ -41,7 +41,7 @@ This will make and delete EC2 backups as necessary and then exit. This command s
 
 Make sure your [AWS credentials are set up](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Setting_AWS_Credentials) then clone the repository to disk
 ```
-git clone https://github.com/Trioxis/aws-backup-manager.git
+git clone https://github.com/Trioxis/fossilize-aws-ebs.git
 ```
 then install dependencies
 ```
@@ -77,7 +77,7 @@ This outputs a html report in `coverage/` that can be perused in a web browser. 
 
 #### Continuous Integration
 
-We're using [Travis CI](https://travis-ci.org/Trioxis/aws-backup-manager) for continuous integration. It runs all tests and sends code coverage information to [Codecov](https://codecov.io/github/Trioxis/aws-backup-manager) and [CodeClimate](https://codeclimate.com/github/Trioxis/aws-backup-manager). Check [`.travis.yml`](.travis.yml) for the tasks that are run in CI.
+We're using [Travis CI](https://travis-ci.org/Trioxis/fossilize-aws-ebs) for continuous integration. It runs all tests and sends code coverage information to [Codecov](https://codecov.io/github/Trioxis/fossilize-aws-ebs) and [CodeClimate](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs). Check [`.travis.yml`](.travis.yml) for the tasks that are run in CI.
 
 Note: the `CODECLIMATE_REPO_TOKEN` environment variable must be set in Travis CI to successfully send coverage information to CodeClimate
 
