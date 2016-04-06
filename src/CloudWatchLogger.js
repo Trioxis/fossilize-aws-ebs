@@ -1,6 +1,9 @@
 import AWS from 'aws-sdk';
 import util from 'util';
 
+let groupName = 'fossilize';
+let streamPrefix = groupName + '-aws-ebs';
+
 let consoleLogOverride = false;
 let logs = [];
 let collectConsoleLog = () => {
@@ -21,34 +24,90 @@ let collectConsoleLog = () => {
 	}
 };
 
-let dumpConsoleLogToCloudWatch = (nextToken) => {
-	let pushedLogs = logs;
-	logs = [];
+// returns the nextToken for the logstream
+let checkAndCreateLogStream = (group, stream) => {
 	var cloudwatchlogs = new AWS.CloudWatchLogs();
+
 	return new Promise((resolve, reject) => {
-		cloudwatchlogs.putLogEvents({
-			logEvents: pushedLogs,
-			logGroupName: 'tmp-1',
-			logStreamName: 'tmp-strm-2',
-			sequenceToken: nextToken
+		cloudwatchlogs.describeLogStreams({
+			logGroupName: group,
+			logStreamNamePrefix: stream
 		}, (err, data) => {
 			if (err) {
-				logs = logs.concat(pushedLogs);
-				if (err.code === 'InvalidSequenceTokenException') {
-					let seq = err.message.match(/\d+/)[0];
-					resolve(dumpConsoleLogToCloudWatch(seq));
+				if (err.message.includes('group does not exist')) {
+					err.message = `The log group '${group}' does not exist in CloudWatch. Please check your logging config is correct or create the log group in AWS yourself. (AWS error: ${err.message})`
+					reject(err)
 				} else {
-					reject(err);
+					reject(err)
 				}
 			} else {
-				resolve(data);
+				let specifiedStream = data.logStreams.filter((logStream) => {
+					return logStream.logStreamName === stream
+				})
+
+				if (specifiedStream.length === 1) {
+					resolve(specifiedStream[0])
+				} else {
+					console.log(`Note: created log stream '${stream}' in log group '${group}' because it did not exist`);
+					return resolve(createLogStream(group, stream))
+				}
+			}
+		})
+	})
+}
+
+let createLogStream = (group, stream) => {
+	var cloudwatchlogs = new AWS.CloudWatchLogs();
+	return new Promise((resolve, reject) => {
+		cloudwatchlogs.createLogStream({
+			logGroupName: group,
+			logStreamName: stream
+		}, (err, data) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve({
+					logStreamName: stream
+				});
 			}
 		});
+	});
+}
+
+let dumpConsoleLogToCloudWatch = (nextToken) => {
+	return checkAndCreateLogStream(groupName, streamPrefix+'-logs')
+		.then((stream) => {
+			let pushedLogs = logs;
+			logs = [];
+			var cloudwatchlogs = new AWS.CloudWatchLogs();
+			return new Promise((resolve, reject) => {
+				cloudwatchlogs.putLogEvents({
+					logEvents: pushedLogs,
+					logGroupName: groupName,
+					logStreamName: stream.logStreamName,
+					sequenceToken: nextToken ? nextToken : stream.uploadSequenceToken
+				}, (err, data) => {
+					if (err) {
+						logs = logs.concat(pushedLogs);
+						if (err.code === 'InvalidSequenceTokenException') {
+							let seq = err.message.match(/\d+/)[0];
+							resolve(dumpConsoleLogToCloudWatch(seq));
+						} else {
+							reject(err);
+						}
+					} else {
+						resolve(data);
+					}
+				});
+			});
 	});
 };
 
 let logToCloudWatch = (obj) => {
-	return tryPut(obj);
+	return checkAndCreateLogStream(groupName, streamPrefix+'-metrics')
+		.then((stream) => {
+			return tryPut(obj)
+	});
 };
 
 let tryPut = (obj, nextToken) => {
@@ -59,8 +118,8 @@ let tryPut = (obj, nextToken) => {
 				message: JSON.stringify(obj),
 				timestamp: Date.now()
 			}],
-			logGroupName: 'tmp-1',
-			logStreamName: 'tmp-strm-1',
+			logGroupName: groupName,
+			logStreamName: 'fossilize-aws-ebs-metrics',
 			sequenceToken: nextToken
 		}, (err, data) => {
 			if (err) {
