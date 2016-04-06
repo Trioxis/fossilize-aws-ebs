@@ -3,7 +3,7 @@ Easily backup your Amazon EBS volumes
 
 **This project is in alpha.** Implementation is complete, however breaking changes are likely. Nevertheless, it is being used in production in some organisations, deal with it.
 
-[![Build Status](https://travis-ci.org/Trioxis/fossilize-aws-ebs.svg?branch=master)](https://travis-ci.org/Trioxis/fossilize-aws-ebs) [![codecov.io](https://codecov.io/github/Trioxis/fossilize-aws-ebs/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/ffossilize-aws-ebs?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs)
+[![Build Status](https://travis-ci.org/Trioxis/fossilize-aws-ebs.svg?branch=master)](https://travis-ci.org/Trioxis/fossilize-aws-ebs) [![codecov.io](https://codecov.io/github/Trioxis/fossilize-aws-ebs/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/fossilize-aws-ebs?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/fossilize-aws-ebs)
 
 ## What does this do?
 
