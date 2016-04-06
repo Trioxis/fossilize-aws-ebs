@@ -45,7 +45,7 @@ let checkAndCreateLogStream = (group, stream) => {
 		}, (err, data) => {
 			if (err) {
 				if (err.message.includes('group does not exist')) {
-					err.message = `The log group '${group}' does not exist in CloudWatch. Please check your logging config is correct or create the log group in AWS yourself. (AWS error: ${err.message})`;
+					err.message = `The log group '${group}' does not exist in CloudWatch. Please create the log group named '${group}' in AWS manually. (AWS error: ${err.message})`;
 					reject(err);
 				} else {
 					reject(err);
@@ -137,4 +137,4 @@ let pushEventsToCloudwatch = (events, stream, nextToken) => {
 	});
 };
 
-export {logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch};
+export {logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch, checkAndCreateLogStream};
