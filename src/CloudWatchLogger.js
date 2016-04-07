@@ -137,4 +137,10 @@ let pushEventsToCloudwatch = (events, stream, nextToken) => {
 	});
 };
 
-export {logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch, checkAndCreateLogStream};
+export {
+	logToCloudWatch,
+	collectConsoleLog,
+	dumpConsoleLogToCloudWatch,
+	checkAndCreateLogStream,
+	pushEventsToCloudwatch
+};
