@@ -94,7 +94,7 @@ let dumpConsoleLogToCloudWatch = () => {
 		.then((stream) => {
 			let pushedLogs = logs;
 			logs = [];
-			return pushEventsToCloudwatch(pushedLogs, stream.logStreamName, stream.uploadSequenceToken);
+			return pushEventsToCloudWatch(pushedLogs, stream.logStreamName, stream.uploadSequenceToken);
 		});
 };
 
@@ -106,7 +106,7 @@ let logToCloudWatch = (obj) => {
 				message: JSON.stringify(obj),
 				timestamp: Date.now()
 			}];
-			return pushEventsToCloudwatch(events, stream.logStreamName, stream.uploadSequenceToken);
+			return pushEventsToCloudWatch(events, stream.logStreamName, stream.uploadSequenceToken);
 		});
 };
 
@@ -114,7 +114,7 @@ let logToCloudWatch = (obj) => {
 // Retries if it had an invalid sequence token
 // `stream` is a stream name as string
 // `nextToken` is the uploadSequenceToken, is optional and can be wrong
-let pushEventsToCloudwatch = (events, stream, nextToken) => {
+let pushEventsToCloudWatch = (events, stream, nextToken) => {
 	var cloudwatchlogs = new AWS.CloudWatchLogs();
 	return new Promise((resolve, reject) => {
 		cloudwatchlogs.putLogEvents({
@@ -126,7 +126,7 @@ let pushEventsToCloudwatch = (events, stream, nextToken) => {
 			if (err) {
 				if (err.code === 'InvalidSequenceTokenException') {
 					let seq = err.message.match(/\d+/)[0];
-					resolve(pushEventsToCloudwatch(events, stream, seq));
+					resolve(pushEventsToCloudWatch(events, stream, seq));
 				} else {
 					reject(err);
 				}
@@ -142,5 +142,5 @@ export {
 	collectConsoleLog,
 	dumpConsoleLogToCloudWatch,
 	checkAndCreateLogStream,
-	pushEventsToCloudwatch
+	pushEventsToCloudWatch
 };
