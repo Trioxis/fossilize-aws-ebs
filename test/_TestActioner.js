@@ -72,7 +72,7 @@ describe('Actioner', () => {
 					expect(outcome).to.be.eql({outcome: 'Deleted snapshot snap-abcd1234'});
 			});
 		});
-		
+
 		it('should pass the error object on if there is an error while deleting', () => {
 			let action = {
 				Action: 'DELETE_SNAPSHOT',
@@ -107,7 +107,7 @@ describe('Actioner', () => {
 					expect(mockEC2.createSnapshot.called).to.be.ok();
 					expect(mockEC2.createSnapshot.args[0][0]).to.eql({
 						VolumeId: 'vol-1234abcd',
-						Description: `AWSBM 'Hourly' backup of volume 'a-volume' (vol-1234abcd)`
+						Description: `Fossilize 'Hourly' backup of volume 'a-volume' (vol-1234abcd)`
 					});
 					return;
 				});
@@ -130,7 +130,7 @@ describe('Actioner', () => {
 		    StartTime: 'Thu Jan 09 1970 10:41:37 GMT+1100 (AEDT)',
 		    Progress: '',
 		    OwnerId: '123456789',
-		    Description: 'AWSBM \'Hourly\' backup of volume \'a-volume\' (vol-1234abcd)',
+		    Description: 'Fossilize \'Hourly\' backup of volume \'a-volume\' (vol-1234abcd)',
 		    VolumeSize: 80,
 			};
 

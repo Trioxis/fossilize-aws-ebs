@@ -4,7 +4,7 @@ let headingLine = '-------------------------------------------------------------
 
 var printSnaplist = (snapshots, verbose) => {
 	if (verbose /* implement verbose flag later */) {
-		console.log('AWSBM Backups');
+		console.log('Fossilize Backups');
 		console.log(headingLine);
 		if (snapshots.length === 0) {
 			console.log('No snapshots with valid backups:config-v0 tag found');
@@ -18,7 +18,7 @@ var printSnaplist = (snapshots, verbose) => {
 			console.log();
 		});
 	} else {
-		console.log('AWSBM Backup Summary');
+		console.log('Fossilize Backup Summary');
 		console.log(headingLine);
 		if (snapshots.length === 0) {
 			console.log('No snapshots with valid backups:config-v0 tag found');
@@ -52,7 +52,7 @@ var printSnaplist = (snapshots, verbose) => {
 };
 
 var printEBSList = (volumes) => {
-	console.log('AWSBM Volumes');
+	console.log('Fossilize Volumes');
 	console.log(headingLine);
 	if (volumes.length === 0) {
 		console.log('No volumes with valid backups:config-v0 tag found');
@@ -83,7 +83,7 @@ var printEBSList = (volumes) => {
 };
 
 var printActions = (actions) => {
-	console.log('AWSBM Actions');
+	console.log('Fossilize Actions');
 	console.log(headingLine);
 	if (actions.length === 0) {
 		console.log('No actions are required');
@@ -100,7 +100,7 @@ var printActions = (actions) => {
 };
 
 var printStatistics = (stats) => {
-	console.log('AWSBM Statistics');
+	console.log('Fossilize Statistics');
 	console.log(headingLine);
 	console.log(`${stats.snapshots} snapshots`);
 	console.log(`   - ${stats.expiredSnaps} snapshots that have expired`);

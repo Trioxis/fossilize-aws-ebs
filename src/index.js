@@ -61,7 +61,7 @@ export default function () {
 					return doActions(action).then((results) => {
 						if (results.length > 0 ) {
 							console.log();
-							console.log('AWSBM Action Outcomes');
+							console.log('Fossilize Action Outcomes');
 							console.log('-------------------------------------------------------------');
 						}
 						results.map((result) => console.log(result));

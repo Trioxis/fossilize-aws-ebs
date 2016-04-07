@@ -16,7 +16,7 @@ let _makeSnapshot = (action) => {
 	return new Promise((resolve, reject) => {
 		ec2.createSnapshot({
 			VolumeId: action.VolumeId,
-			Description: `AWSBM '${action.BackupType}' backup of volume '${action.VolumeName}' (${action.VolumeId})`
+			Description: `Fossilize '${action.BackupType}' backup of volume '${action.VolumeName}' (${action.VolumeId})`
 		}, (err, res) => {
 			if (err) {
 				console.log(`x Snapshotting ${action.VolumeName}-${action.BackupType} failed`);

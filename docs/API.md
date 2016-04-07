@@ -4,7 +4,7 @@
 
 These objects are a more useful (to us) representation of EC2 objects and are passed around the Modules below. The values are mapped from a combination of the [EC2 Response](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html) and the 'Name' and [`backups:config-v0` tags](./BackupTagAPI.md) on the object.
 
-### AWSBM Snapshot Object
+### Fossilize Snapshot Object
 
 ```JavaScript
 {
@@ -28,7 +28,7 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 }
 ```
 
-### AWSBM Volume Object
+### Fossilize Volume Object
 
 ```JavaScript
 {
@@ -58,7 +58,7 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 }
 ```
 
-### AWSBM Action Objects
+### Fossilize Action Objects
 
 #### Make Snapshot Action
 
@@ -94,7 +94,7 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 [`ActionCreator.js`](../src/ActionCreator.js) exports three named functions. They all return objects that represent an action to be used by the `Actioner`
 
 - `makeDeleteAction(snap)` - accepts an object that represents a snapshot in EC2. It returns an object that represents an action that will delete the snapshot.
-- `makeCreationActions(volume)` - accepts an AWSBM Volume object (with `Snapshots` defined). Returns an array of `SNAPSHOT_VOLUME` AWSBM Action objects that will create the required backup snapshots for the EBS volume.
+- `makeCreationActions(volume)` - accepts a Fossilize Volume object (with `Snapshots` defined). Returns an array of `SNAPSHOT_VOLUME` Fossilize Action objects that will create the required backup snapshots for the EBS volume.
 - `determineBackupsNeeded(volume, snapList)` - accepts an EBS volume object and an array of snapshot objects. This simply determines that types of snapshots required and returns them as an array. This should be used by `makeCreateAction` to figure out what creation actions it needs to make.
 
 ## Actioner
@@ -112,10 +112,10 @@ let ec2 = new EC2Store(params);
 ```
 where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
-`ec2.listSnapshots` - returns a Promised object of the form `{snapshots, warnings}`. `snapshots` is an array of all snapshots in EC2 with a tag named `backups:config-v0`, represented as AWSBM Snapshot objects.
+`ec2.listSnapshots` - returns a Promised object of the form `{snapshots, warnings}`. `snapshots` is an array of all snapshots in EC2 with a tag named `backups:config-v0`, represented as Fossilize Snapshot objects.
 
 
-`ec2.listEBS` - returns a Promised object of the form `{volumes, warnings}`. `volumes` is a array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`, represented as AWSBM Volume objects (without `Snapshots` defined).
+`ec2.listEBS` - returns a Promised object of the form `{volumes, warnings}`. `volumes` is a array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`, represented as Fossilize Volume objects (without `Snapshots` defined).
 
 The `warnings` property of the above objects is an array of strings that describe problems that occurred while parsing EC2 objects.
 
@@ -123,6 +123,6 @@ The `warnings` property of the above objects is an array of strings that describ
 
 [`Analyser.js`](../src/Analyser.js) exports two named functions that examine whether or not snapshots should continue to exist.
 
-- `matchSnapsToVolumes(volumes, snapList)` - given an array of AWSBM Volumes (with no `Snapshots` property defined) and an array of AWSBM Snapshots, returns `{matchedVolumes, orphanedSnaps}` where `matchedSnapshots` is the array of AWSBM Volumes with `Snapshots` defined and `orphanedSnapshots` are all the AWSBM Snapshots that had no `FromVolumeName` matching `Name` value in the AWSBM Volumes.
+- `matchSnapsToVolumes(volumes, snapList)` - given an array of Fossilize Volumes (with no `Snapshots` property defined) and an array of Fossilize Snapshots, returns `{matchedVolumes, orphanedSnaps}` where `matchedSnapshots` is the array of Fossilize Volumes with `Snapshots` defined and `orphanedSnapshots` are all the Fossilize Snapshots that had no `FromVolumeName` matching `Name` value in the Fossilize Volumes.
 - `sortSnapsByMostRecent(snapList)` - returns an array of snapshots sorted by most recently created first.
 - `findDeadSnapshots(snapshotList)` - accepts an array of snapshot objects and returns an array of snapshots that have expired.
