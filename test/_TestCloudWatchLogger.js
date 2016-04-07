@@ -2,7 +2,10 @@ import expect from 'expect.js';
 import sinon from 'sinon';
 import moment from 'moment';
 
-import {checkAndCreateLogStream} from '../src/CloudWatchLogger';
+import {
+	checkAndCreateLogStream,
+	pushEventsToCloudWatch
+} from '../src/CloudWatchLogger';
 import AWS from 'aws-sdk';
 
 import ec2Responses from './fixtures/EC2Responses';
@@ -21,7 +24,7 @@ describe('CloudWatchLogger', () => {
 	});
 
 	describe('checkAndCreateLogStream', () => {
-		it('reject if the log group doesn\'t exist', () => {
+		it('should reject if the log group doesn\'t exist', () => {
 			let error = new Error('The specified log group does not exist.');
 			error.code = 'ResourceNotFoundException';
 			error.message = 'The specified log stream does not exist.';
@@ -43,4 +46,25 @@ describe('CloudWatchLogger', () => {
 				})
 		});
 	});
+
+	describe('pushEventsToCloudWatch', () => {
+		it('should attempt to send the given events array to the given stream', () => {
+			mockCWL.putLogEvents = sandbox.stub().yields(null, { nextSequenceToken: '49559447643390120336188858375423323056268601740478120946' });
+			return pushEventsToCloudWatch([{
+				message: JSON.stringify({an: 'object'}),
+				timestamp: 1460005569743
+			}], 'fossilize-aws-ebs-logs')
+				.then((res) => {
+					expect(mockCWL.putLogEvents.args[0][0]).to.eql({
+						logEvents: [{
+							message: "{\"an\":\"object\"}",
+							timestamp: 1460005569743
+						}],
+						logGroupName: 'fossilize',
+						logStreamName: 'fossilize-aws-ebs-logs',
+						sequenceToken: undefined
+					})
+				});
+		})
+	})
 });
