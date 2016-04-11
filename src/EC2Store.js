@@ -3,7 +3,7 @@ AWS.config.update({region: 'ap-southeast-2'});
 
 import moment from 'moment';
 
-let BACKUP_API_TAG = 'backups:config-v0';
+let BACKUP_API_TAG = 'fossilize:config-v0';
 let ALIASES = {
 	Hourly: [1, 24],
 	Daily: [24, 168],
@@ -33,7 +33,7 @@ class EC2Store {
 	// A list of all snapshots in the AWS account. Should return a Promise.
 	// Snapshots returned should be mapped to a format we expect. i.e.:
 	// { SnapshotId, StartTime, Name, ExpiryDate, Tags }
-	// Only returns snapshots tagged with the 'backups:config-v0'
+	// Only returns snapshots tagged with the 'fossilize:config-v0'
 	// It is also necessary to filter out public snapshots that aren't owned by
 	// the current user.
 	listSnapshots () {
@@ -71,10 +71,10 @@ class EC2Store {
 
 						return snap;
 
-						// remove snapshots that have no backups:config-v0 tag
+						// remove snapshots that have no fossilize:config-v0 tag
 					}).filter(snap => snap.Tags.hasOwnProperty(BACKUP_API_TAG)
 					).map(snap => {
-						// map the backups:config-v0 tag on to the snapshot object
+						// map the fossilize:config-v0 tag on to the snapshot object
 						let backupConfig = snap.Tags[BACKUP_API_TAG].split(',');
 
 						backupConfig.map(backupParam => {

@@ -7,7 +7,7 @@ var printSnaplist = (snapshots, verbose) => {
 		console.log('Fossilize Backups');
 		console.log(headingLine);
 		if (snapshots.length === 0) {
-			console.log('No snapshots with valid backups:config-v0 tag found');
+			console.log('No snapshots with valid fossilize:config-v0 tag found');
 		}
 		snapshots.map(snap => {
 			console.log(`(${snap.SnapshotId}): '${snap.Name}'`);
@@ -21,7 +21,7 @@ var printSnaplist = (snapshots, verbose) => {
 		console.log('Fossilize Backup Summary');
 		console.log(headingLine);
 		if (snapshots.length === 0) {
-			console.log('No snapshots with valid backups:config-v0 tag found');
+			console.log('No snapshots with valid fossilize:config-v0 tag found');
 		}
 		let snapSummary = {};
 		let longestVolName = 9;
@@ -55,7 +55,7 @@ var printEBSList = (volumes) => {
 	console.log('Fossilize Volumes');
 	console.log(headingLine);
 	if (volumes.length === 0) {
-		console.log('No volumes with valid backups:config-v0 tag found');
+		console.log('No volumes with valid fossilize:config-v0 tag found');
 	}
 	volumes.map(vol => {
 		console.log(`(${vol.VolumeId}): '${vol.Name}'`);

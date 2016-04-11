@@ -11,7 +11,7 @@ let ec2Responses = {
 				Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
 				VolumeSize: 50,
 				Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
-					{ Key: 'backups:config-v0', Value: 'BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018' } ],
+					{ Key: 'fossilize:config-v0', Value: 'BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018' } ],
 				Encrypted: false
 			},
 
@@ -24,7 +24,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon' },
+				Tags: [ { Key: 'fossilize:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon' },
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
@@ -57,7 +57,7 @@ let ec2Responses = {
 				Description: 'Created by CreateImage(i-aab1ce75) for ami-bb0953d8 from vol-b77cff7d',
 				VolumeSize: 50,
 				Tags: [ { Key: 'Name', Value: 'web-xvdf-backup-2015-12-27-00-19' },
-					{ Key: 'backups:config-v0', Value: 'ExpoiryData:20160127112018' } ],
+					{ Key: 'fossilize:config-v0', Value: 'ExpoiryData:20160127112018' } ],
 				Encrypted: false
 			},
 
@@ -70,7 +70,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111' },
+				Tags: [ { Key: 'fossilize:config-v0', Value: 'OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111' },
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
@@ -94,7 +94,7 @@ let ec2Responses = {
 				OwnerId: '791606823516',
 				Description: 'Daily backup of frg-web-xvdf',
 				VolumeSize: 20,
-				Tags: [ { Key: 'backups:config-v0', Value: 'Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059'},
+				Tags: [ { Key: 'fossilize:config-v0', Value: 'Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059'},
 					{ Key: 'Name', Value: 'web-xvdf-backup-2016-01-02-06-58' } ],
 				Encrypted: false
 			},
@@ -124,7 +124,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 18 2015 11:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: '[1|12],Weekly,[48|144]' },
+			 [ { Key: 'fossilize:config-v0', Value: '[1|12],Weekly,[48|144]' },
 				 { Key: 'Name', Value: 'sql-blank-mbr' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
@@ -139,7 +139,7 @@ let ec2Responses = {
 			Attachments: [],
 			Tags:
 			 [ { Key: 'Name', Value: 'where-is-name-lol' },
-		 		 { Key: 'backups:config-v0', Value: 'Daily,Weekly,[48|144]' } ],
+		 		 { Key: 'fossilize:config-v0', Value: 'Daily,Weekly,[48|144]' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
 			Encrypted: false
@@ -152,7 +152,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 20 2015 12:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: 'Daily,Weekly,Hourly' },
+			 [ { Key: 'fossilize:config-v0', Value: 'Daily,Weekly,Hourly' },
 		 		 { Key: 'Name', Value: 'very-important-data' }, ],
 			VolumeType: 'gp2',
 			Iops: 240,
@@ -204,7 +204,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 18 2015 11:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: '@#$%^&*,87*(#YHIKSDF|)' },
+			 [ { Key: 'fossilize:config-v0', Value: '@#$%^&*,87*(#YHIKSDF|)' },
 				 { Key: 'Name', Value: 'sql-blank-mbr' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
@@ -219,7 +219,7 @@ let ec2Responses = {
 			Attachments: [],
 			Tags:
 			 [ { Key: 'Name', Value: 'where-is-name-lol' },
-		 		 { Key: 'backups:config-v0', Value: 'Daily,Weeeeeeeeekly,[2,144]' } ],
+		 		 { Key: 'fossilize:config-v0', Value: 'Daily,Weeeeeeeeekly,[2,144]' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
 			Encrypted: false
@@ -232,7 +232,7 @@ let ec2Responses = {
 			CreateTime: "Fri Dec 20 2015 12:15:59 GMT+1100 (AEDT)",
 			Attachments: [],
 			Tags:
-			 [ { Key: 'backups:config-v0', Value: 'Daily,Beakly,Hourly' } ],
+			 [ { Key: 'fossilize:config-v0', Value: 'Daily,Beakly,Hourly' } ],
 			VolumeType: 'gp2',
 			Iops: 240,
 			Encrypted: false

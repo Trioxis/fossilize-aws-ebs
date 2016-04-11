@@ -17,7 +17,7 @@ Make sure you have your AWS credentials set up. Set the `AWS_ACCESS_KEY_ID` and 
 
 ### Tag your EBS volumes
 
-To automatically back up an EBS volume hourly, daily, weekly, monthly and yearly, it must have a tag with key **`backups:config-v0`** and value **`Hourly,Daily,Weekly,Monthly,Yearly`**
+To automatically back up an EBS volume hourly, daily, weekly, monthly and yearly, it must have a tag with key **`fossilize:config-v0`** and value **`Hourly,Daily,Weekly,Monthly,Yearly`**
 
 You can remove types of backup from the value as necessary. See the [Backup Tag API doc](docs/BackupTagAPI.md) for explanations and more fine grained controls.
 

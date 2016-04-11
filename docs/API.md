@@ -2,7 +2,7 @@
 
 ## Object Specifications
 
-These objects are a more useful (to us) representation of EC2 objects and are passed around the Modules below. The values are mapped from a combination of the [EC2 Response](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html) and the 'Name' and [`backups:config-v0` tags](./BackupTagAPI.md) on the object.
+These objects are a more useful (to us) representation of EC2 objects and are passed around the Modules below. The values are mapped from a combination of the [EC2 Response](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html) and the 'Name' and [`fossilize:config-v0` tags](./BackupTagAPI.md) on the object.
 
 ### Fossilize Snapshot Object
 
@@ -20,7 +20,7 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 	// A moment.js object representing the time the snapshot was created
 	ExpiryDate,
 	// A moment.js object representing the time after which this snapshot has expired. Can be
-	// 'undefined' if no ExpiryDate was specified in the `backups:config-v0` tag
+	// 'undefined' if no ExpiryDate was specified in the `fossilize:config-v0` tag
 	BackupType,
 	// The name of the backup type this snapshot is (one of the values from the volume's BackupTypes)
 	Tags: {	}
@@ -38,7 +38,7 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 	// The value of the 'Name' EC2 tag. If one doesn't exist, it is set to the VolumeId
 	BackupConfig: {
 		BackupTypes: [
-			// An object for every item in the 'backups:config-v0' tag of the volume
+			// An object for every item in the 'fossilize:config-v0' tag of the volume
 			{
 				Name,
 				// The Alias of the backup type if it exists, otherwise '[Frequency|Expiry]'
@@ -110,12 +110,12 @@ These objects are a more useful (to us) representation of EC2 objects and are pa
 import EC2Store from './EC2Store';
 let ec2 = new EC2Store(params);
 ```
-where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `backups:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
+where `params` is an object that configures how the class will contact EC2 (things like availability zone, user account id and/or credentials). Now that we have an `EC2Store` instance called `ec2`, we can use it to get information from EC2. These functions should only return EC2 objects that have a `fossilize:config-v0` tag and should be mapped to a more useful format (which is described in [tests](../test/_TestEC2Store.js)).
 
-`ec2.listSnapshots` - returns a Promised object of the form `{snapshots, warnings}`. `snapshots` is an array of all snapshots in EC2 with a tag named `backups:config-v0`, represented as Fossilize Snapshot objects.
+`ec2.listSnapshots` - returns a Promised object of the form `{snapshots, warnings}`. `snapshots` is an array of all snapshots in EC2 with a tag named `fossilize:config-v0`, represented as Fossilize Snapshot objects.
 
 
-`ec2.listEBS` - returns a Promised object of the form `{volumes, warnings}`. `volumes` is a array of all the EBS volumes in EC2 that have a tag named `backups:config-v0`, represented as Fossilize Volume objects (without `Snapshots` defined).
+`ec2.listEBS` - returns a Promised object of the form `{volumes, warnings}`. `volumes` is a array of all the EBS volumes in EC2 that have a tag named `fossilize:config-v0`, represented as Fossilize Volume objects (without `Snapshots` defined).
 
 The `warnings` property of the above objects is an array of strings that describe problems that occurred while parsing EC2 objects.
 

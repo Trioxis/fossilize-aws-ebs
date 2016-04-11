@@ -144,7 +144,7 @@ describe('Actioner', () => {
 							'snap-abcd1234'
 						],
 						Tags: [{
-							Key: 'backups:config-v0',
+							Key: 'fossilize:config-v0',
 							Value: 'ExpiryDate:19700102000000,FromVolumeName:a-volume,BackupType:Hourly'
 						}, {
 							Key: 'Name',

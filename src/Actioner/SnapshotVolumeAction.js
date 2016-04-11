@@ -33,7 +33,7 @@ let _tagSnapshot = (snapshot, action) => {
 	let ec2 = new AWS.EC2();
 	let madeDate = moment(snapshot.StartTime, 'ddd MMM DD YYYY HH:mm:ss ZZ');
 	let tags = [{
-		Key: 'backups:config-v0',
+		Key: 'fossilize:config-v0',
 		Value:
 			`ExpiryDate:${action.ExpiryDate.utc().format('YYYYMMDDHHmmss')},` +
 			`FromVolumeName:${action.VolumeName},` +

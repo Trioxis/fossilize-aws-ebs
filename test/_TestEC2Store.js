@@ -44,10 +44,10 @@ describe('EC2Store', () => {
 			})
 		});
 
-		it('should only return snapshots that have the `backups:config-v0` tag');
+		it('should only return snapshots that have the `fossilize:config-v0` tag');
 
 		it('should map the response to an array of objects that each represent a snapshot', () => {
-			// This means converting the Name and backups:config tags to properties
+			// This means converting the Name and fossilize:config tags to properties
 			// and removing all other unnecessary properties
 
 			mockEC2.describeSnapshots = sandbox.stub().yields(null, ec2Responses.snapshots1);
@@ -66,7 +66,7 @@ describe('EC2Store', () => {
 							StartTime: moment("Sun Dec 27 2015 00:19:31 GMT+1100 (AEDT)",'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
-								"backups:config-v0": "BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018"
+								"fossilize:config-v0": "BackupType:[1|12],FromVolumeName:francis,ExpiryDate:20160127112018"
 							}
 						},
 						{
@@ -79,7 +79,7 @@ describe('EC2Store', () => {
 							StartTime: moment("Sat Jan 02 2016 06:58:55 GMT+1100 (AEDT)", 'ddd MMM DD YYYY HH:mm:ss ZZ'),
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
-								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon"
+								"fossilize:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:20160527112111,BackupType:Weekly,FromVolumeName:jonathon"
 							}
 						}
 					]);
@@ -105,7 +105,7 @@ describe('EC2Store', () => {
 							Tags: {
 								Name: "web-xvdf-backup-2015-12-27-00-19",
 								// Bad backup tag parameter
-								"backups:config-v0": "ExpoiryData:20160127112018"
+								"fossilize:config-v0": "ExpoiryData:20160127112018"
 							}
 						},
 						{
@@ -119,7 +119,7 @@ describe('EC2Store', () => {
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
 								// Bad ExpiryDate value
-								"backups:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111"
+								"fossilize:config-v0": "OtherMetadata:some_random_junk,ExpiryDate:201UII(#6052712111"
 							}
 						},
 						{
@@ -133,7 +133,7 @@ describe('EC2Store', () => {
 							Tags: {
 								Name: "web-xvdf-backup-2016-01-02-06-58",
 								// Bad value for month in the expiry date
-								"backups:config-v0": "Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059"
+								"fossilize:config-v0": "Derp:Jerp,FromVolumeName:thing,ExpiryDate:20161327112059"
 							}
 						},
 					]);
@@ -166,7 +166,7 @@ describe('EC2Store', () => {
 		});
 
 		it('should map the response to an array of objects that each represent an EBS volume', () => {
-			// This means converting the Name and backups:config tags to properties
+			// This means converting the Name and fossilize:config tags to properties
 			// and removing all other unnecessary properties
 
 			// Response contains one snapshot so we can easily check that mapping is correct
@@ -191,7 +191,7 @@ describe('EC2Store', () => {
 							},
 							Tags: {
 								Name: firstVol.Tags[1].Value,
-								"backups:config-v0": "[1|12],Weekly,[48|144]"
+								"fossilize:config-v0": "[1|12],Weekly,[48|144]"
 							}
 						},
 						{
@@ -206,7 +206,7 @@ describe('EC2Store', () => {
 							},
 							Tags: {
 								Name: secondVol.Tags[0].Value,
-								"backups:config-v0": "Daily,Weekly,[48|144]"
+								"fossilize:config-v0": "Daily,Weekly,[48|144]"
 							}
 						},
 						{
@@ -221,7 +221,7 @@ describe('EC2Store', () => {
 							},
 							Tags: {
 								Name: thirdVol.Tags[1].Value,
-								"backups:config-v0": "Daily,Weekly,Hourly"
+								"fossilize:config-v0": "Daily,Weekly,Hourly"
 							}
 						}
 					])
@@ -230,7 +230,7 @@ describe('EC2Store', () => {
 		});
 
 		it('should gracefully handle errors in tags', () => {
-			// This means converting the Name and backups:config tags to properties
+			// This means converting the Name and fossilize:config tags to properties
 			// and removing all other unnecessary properties
 
 			// Response contains one snapshot so we can easily check that mapping is correct
@@ -253,7 +253,7 @@ describe('EC2Store', () => {
 							},
 							Tags: {
 								Name: secondVol.Tags[0].Value,
-								"backups:config-v0": "Daily,Weeeeeeeeekly,[2,144]"
+								"fossilize:config-v0": "Daily,Weeeeeeeeekly,[2,144]"
 							}
 						},
 						{
@@ -266,7 +266,7 @@ describe('EC2Store', () => {
 								]
 							},
 							Tags: {
-								"backups:config-v0": "Daily,Beakly,Hourly"
+								"fossilize:config-v0": "Daily,Beakly,Hourly"
 							}
 						}
 					])
