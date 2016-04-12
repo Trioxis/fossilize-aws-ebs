@@ -114,6 +114,48 @@ describe('CloudWatchLogger', () => {
 						sequenceToken: undefined
 					})
 				});
-		})
+		});
+
+		it('should retry with a new upload token if the first one was wrong or not given', () => {
+			let error = new Error('');
+			error.code = 'InvalidSequenceTokenException'
+			error.message = 'The given sequenceToken is invalid. The next expected sequenceToken is: 49559447643390120336188903679850713268628490158155498482';
+			error.code = 'InvalidSequenceTokenException';
+			error.time = "Tue Apr 12 2016 16:22:16 GMT+1000 (AEST)";
+			error.requestId = 'e6e70729-0076-11e6-a20c-a761be2c58f5';
+			error.statusCode = 400;
+			error.retryable = false;
+			error.retryDelay = 57.76881698984653;
+
+			mockCWL.putLogEvents = sandbox.stub()
+			mockCWL.putLogEvents.onCall(0).yields(error, null)
+			mockCWL.putLogEvents.onCall(1).yields(null, { nextSequenceToken: '49559557653390120336188903956952321373557515805750526900' });
+
+			return pushEventsToCloudWatch([{
+				message: JSON.stringify({an: 'object'}),
+				timestamp: 1460005569743
+			}], 'fossilize-aws-ebs-logs')
+				.then((res) => {
+					expect(mockCWL.putLogEvents.args[0][0]).to.eql({
+						logEvents: [{
+							message: "{\"an\":\"object\"}",
+							timestamp: 1460005569743
+						}],
+						logGroupName: 'fossilize',
+						logStreamName: 'fossilize-aws-ebs-logs',
+						sequenceToken: undefined
+					})
+
+					expect(mockCWL.putLogEvents.args[1][0]).to.eql({
+						logEvents: [{
+							message: "{\"an\":\"object\"}",
+							timestamp: 1460005569743
+						}],
+						logGroupName: 'fossilize',
+						logStreamName: 'fossilize-aws-ebs-logs',
+						sequenceToken: 49559447643390120336188903679850713268628490158155498482
+					})
+				});
+		});
 	})
 });
