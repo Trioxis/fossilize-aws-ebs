@@ -198,8 +198,8 @@ describe('Printer', () => {
 	});
 
 	describe('printWarnings', () => {
-		it('prints out the given array to the warn console line by line', () => {
-			mocks.log = sandbox.stub(console, 'warn');
+		it('prints out the given array to the console line by line', () => {
+			mocks.log = sandbox.stub(console, 'log');
 			printer.printWarnings(['Help!', 'A message!', 'hello!']);
 
 			let output = '';
@@ -218,7 +218,7 @@ describe('Printer', () => {
 
 	describe('printError', () => {
 		it('prints the error stack to console', () => {
-			mocks.log = sandbox.stub(console, 'error');
+			mocks.log = sandbox.stub(console, 'log');
 			printer.printError(new Error('something wrong'));
 
 			let output = '';

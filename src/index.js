@@ -3,8 +3,7 @@ import {findDeadSnapshots, matchSnapsToVolumes} from './Analyser';
 import {makeDeleteAction, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
-import {logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
-collectConsoleLog();
+import {log, logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
 
 import * as printer from './printing';
 
@@ -70,16 +69,16 @@ export default function () {
 				.then(action => {
 					return doActions(action).then((results) => {
 						if (results.length > 0 ) {
-							console.log();
-							console.log('AWSBM Action Outcomes');
-							console.log('-------------------------------------------------------------');
+							log();
+							log('AWSBM Action Outcomes');
+							log('-------------------------------------------------------------');
 						}
 						results.map((result) => {
-							console.log(result);
+							log(result);
 							if (result.outcome === 'SNAPSHOT_SUCCESSFUL') collector.stats.actions.created.push(`${result.VolumeId} - ${result.BackupType}`);
 							if (result.outcome === 'DELETE_SUCCESSFUL') collector.stats.actions.deleted.push(result.SnapshotId);
 						});
-						console.log();
+						log();
 					}).then(() => {
 						collector.stats.warnings = collector.stats.warningMessages.length;
 						return printer.printStatistics(collector.stats).then(() => {

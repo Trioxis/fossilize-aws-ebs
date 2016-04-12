@@ -27,6 +27,17 @@ let collectConsoleLog = () => {
 	}
 };
 
+let log = function () {
+	if (arguments['0']) {
+		logs.push({
+			message: util.format(arguments['0']),
+			timestamp: Date.now()
+		});
+	}
+	console.log.apply(console, arguments);
+}
+
+
 // Checks that the given log group and log stream exist
 // Returns a promise
 // Rejects if the log group does not exist
@@ -58,7 +69,7 @@ let checkAndCreateLogStream = (group, stream) => {
 				if (specifiedStream.length === 1) {
 					resolve(specifiedStream[0]);
 				} else {
-					console.log(`Note: created log stream '${stream}' in log group '${group}' because it did not exist`);
+					log(`Note: created log stream '${stream}' in log group '${group}' because it did not exist`);
 					return resolve(createLogStream(group, stream));
 				}
 			}
@@ -142,5 +153,6 @@ export {
 	collectConsoleLog,
 	dumpConsoleLogToCloudWatch,
 	checkAndCreateLogStream,
-	pushEventsToCloudWatch
+	pushEventsToCloudWatch,
+	log
 };
