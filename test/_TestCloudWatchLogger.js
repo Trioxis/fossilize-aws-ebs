@@ -3,8 +3,10 @@ import sinon from 'sinon';
 import moment from 'moment';
 
 import {
+	log,
 	checkAndCreateLogStream,
-	pushEventsToCloudWatch
+	pushEventsToCloudWatch,
+	dumpConsoleLogToCloudWatch
 } from '../src/CloudWatchLogger';
 import AWS from 'aws-sdk';
 
@@ -21,6 +23,56 @@ describe('CloudWatchLogger', () => {
 
 	afterEach(() => {
 		sandbox.restore();
+	});
+
+	describe('log', () => {
+		it('should log to console.log', () => {
+			let consoleLog = sandbox.stub(console, 'log');
+			log('Hello there', 'rofl');
+			expect(consoleLog.args[0]).to.be.eql(['Hello there', 'rofl'])
+		})
+	});
+
+	describe('dumpConsoleLogToCloudWatch', () => {
+		it('should send its logs to cloudwatch then flush all its cached logs', () => {
+			let response = {
+				logStreams: [{
+					logStreamName: 'fossilize-aws-ebs-logs',
+					creationTime: 1459923663107,
+					firstEventTimestamp: 1459923660897,
+					lastEventTimestamp: 1460005569743,
+					lastIngestionTime: 1460005779288,
+					uploadSequenceToken: '49559447643390120336188858375423323056268601740478120946',
+					arn: 'arn:aws:logs:ap-southeast-2:12345678911:log-group:fossilize:log-stream:fossilize-aws-ebs-logs',
+					storedBytes: 7528
+				}]
+			}
+
+			mockCWL.describeLogStreams = sandbox.stub().yields(null, response);
+			mockCWL.putLogEvents = sandbox.stub().yields(null, { nextSequenceToken: '49559447643390120336188858375423323056268601740478120946' });
+
+			return dumpConsoleLogToCloudWatch().then(() => {
+				sandbox.useFakeTimers();
+				log('Hello there');
+
+
+				return dumpConsoleLogToCloudWatch()
+				.then((res) => {
+					expect(mockCWL.putLogEvents.args[1][0]).to.be.eql({
+						logEvents: [{
+							message: 'Hello there',
+							timestamp: 0
+						}],
+						logGroupName: 'fossilize',
+						logStreamName: 'fossilize-aws-ebs-logs',
+						sequenceToken: 49559447643390120336188858375423323056268601740478120946
+					})
+
+				});
+			})
+
+
+		})
 	});
 
 	describe('checkAndCreateLogStream', () => {
