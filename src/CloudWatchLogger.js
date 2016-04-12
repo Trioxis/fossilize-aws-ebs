@@ -4,28 +4,7 @@ import util from 'util';
 let groupName = 'fossilize';
 let streamPrefix = groupName + '-aws-ebs';
 
-let consoleLogOverride = false;
 let logs = [];
-
-// Turns on capturing of everything that is printed to console using `console.log`
-// Everything is stored in the `logs` array.
-let collectConsoleLog = () => {
-	if (!consoleLogOverride) {
-		(function () {
-			consoleLogOverride = true;
-			var oldLog = console.log;
-			console.log = function() {
-				if (arguments['0']) {
-					logs.push({
-						message: util.format(arguments['0']),
-						timestamp: Date.now()
-					});
-				}
-				oldLog.apply(console, arguments);
-			};
-		})();
-	}
-};
 
 let log = function () {
 	if (arguments['0']) {
@@ -35,8 +14,7 @@ let log = function () {
 		});
 	}
 	console.log.apply(console, arguments);
-}
-
+};
 
 // Checks that the given log group and log stream exist
 // Returns a promise
@@ -150,7 +128,6 @@ let pushEventsToCloudWatch = (events, stream, nextToken) => {
 
 export {
 	logToCloudWatch,
-	collectConsoleLog,
 	dumpConsoleLogToCloudWatch,
 	checkAndCreateLogStream,
 	pushEventsToCloudWatch,

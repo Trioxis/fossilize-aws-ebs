@@ -3,7 +3,7 @@ import {findDeadSnapshots, matchSnapsToVolumes} from './Analyser';
 import {makeDeleteAction, makeCreationActions} from './ActionCreator';
 import {doActions} from './Actioner';
 
-import {log, logToCloudWatch, collectConsoleLog, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
+import {log, logToCloudWatch, dumpConsoleLogToCloudWatch} from './CloudWatchLogger';
 
 import * as printer from './printing';
 
