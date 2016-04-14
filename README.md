@@ -109,4 +109,4 @@ See the [Backup Tag API doc](docs/BackupTagAPI.md).
 
 ### Logging
 
-This branch sends a metric object to a CloudWatch Log group named `tmp-1`, log stream `tmp-strm-1`. This object can be interpreted by CloudWatch and converted in to metrics. This branch also dumps all output from the script to CloudWatch Logs to the `tmp-1` group in a log stream named `tmp-strm-2`. Make sure these groups and streams exist before running the script. 
+This branch sends a metric object to a CloudWatch Log group named `fossilize`, log stream `fossilize-aws-ebs-metrics`. This object can be interpreted by CloudWatch and converted in to metrics. This branch also dumps raw log output to the `fossilize` group in a log stream named `fossilize-aws-ebs-logs`. Make sure the `fossilize` log group exists and the script will create the streams for you.
