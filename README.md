@@ -1,7 +1,7 @@
 # aws-backup-manager
-Automatically back up EBS volumes using tags
+Easily backup your Amazon EBS volumes
 
-**This project is under active development; implementation is incomplete**
+**This project is in alpha.** Implementation is complete, however breaking changes are likely. Nevertheless, it is being used in production in some organisations, deal with it.
 
 [![Build Status](https://travis-ci.org/Trioxis/aws-backup-manager.svg?branch=master)](https://travis-ci.org/Trioxis/aws-backup-manager) [![codecov.io](https://codecov.io/github/Trioxis/aws-backup-manager/coverage.svg?branch=master)](https://codecov.io/github/Trioxis/aws-backup-manager?branch=master) [![Code Climate](https://codeclimate.com/github/Trioxis/aws-backup-manager/badges/gpa.svg)](https://codeclimate.com/github/Trioxis/aws-backup-manager)
 
