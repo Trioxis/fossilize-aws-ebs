@@ -10,7 +10,7 @@ let deleteSnapshot = (action) => {
 			if (err) {
 				resolve(err);
 			} else {
-				resolve({outcome: `Deleted snapshot ${action.SnapshotId}`});
+				resolve({outcome: `DELETE_SUCCESSFUL`, SnapshotId: action.SnapshotId});
 			}
 		});
 	});

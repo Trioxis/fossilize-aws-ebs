@@ -106,3 +106,32 @@ The function exported by [`src/index.js`](src/index.js) should run the entire ba
 ### Backup Tag API
 
 See the [Backup Tag API doc](docs/BackupTagAPI.md).
+
+### Logging
+
+This branch sends a metric JSON object to a CloudWatch Log group named `fossilize`, log stream `fossilize-aws-ebs-metrics`. This object can be interpreted by CloudWatch and converted in to metrics. This branch also dumps raw log output to the `fossilize` group in a log stream named `fossilize-aws-ebs-logs`. Make sure the `fossilize` log group exists and the script will create the streams for you.
+
+The metric object looks like the following and can be filtered for information
+
+```JSON
+{
+    "ec2Objects": {
+        "snapshots": 12,
+        "volumes": 3
+    },
+    "backups": {
+        "backupTypes": 4,
+        "expiredSnaps": 1,
+        "orphanedSnaps": 2
+    },
+    "actions": {
+        "create": 1,
+        "delete": 1,
+        "created": [ "vol-4629578c - Hourly" ],
+        "deleted": [ "snap-5732505b" ]
+    },
+    "warnings": 0,
+    "warningMessages": [],
+    "timestamp": 1460689503445
+}
+```

@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import expect from 'expect.js';
 import moment from 'moment';
+import * as logger from '../src/CloudWatchLogger';
 
 import * as printer from '../src/printing';
 
@@ -11,6 +12,7 @@ describe('Printer', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 		mocks = {};
+		mocks.logger = sandbox.stub(logger, 'logToCloudWatch').returns(Promise.resolve());
 	});
 
 	afterEach(() => {
@@ -166,7 +168,21 @@ describe('Printer', () => {
 	describe('printStatistics', () => {
 		it('prints from a statistics object the properties `snapshots`, `volumes` and `backupTypes`', () => {
 			mocks.log = sandbox.stub(console, 'log');
-			printer.printStatistics({snapshots: 984752987, volumes: 82634862, backupTypes: 289174});
+			printer.printStatistics({
+				ec2Objects: {
+					snapshots: 984752987,
+					volumes: 82634862
+				},
+				backups: {
+					backupTypes: 289174,
+					expiredSnaps: 12,
+					orphanedSnaps: 120
+				},
+				actions: {
+					create: 30,
+					delete: 38756
+				}
+			});
 
 			let output = '';
 			mocks.log.args.map(call => {
@@ -182,8 +198,8 @@ describe('Printer', () => {
 	});
 
 	describe('printWarnings', () => {
-		it('prints out the given array to the warn console line by line', () => {
-			mocks.log = sandbox.stub(console, 'warn');
+		it('prints out the given array to the console line by line', () => {
+			mocks.log = sandbox.stub(console, 'log');
 			printer.printWarnings(['Help!', 'A message!', 'hello!']);
 
 			let output = '';
@@ -202,7 +218,7 @@ describe('Printer', () => {
 
 	describe('printError', () => {
 		it('prints the error stack to console', () => {
-			mocks.log = sandbox.stub(console, 'error');
+			mocks.log = sandbox.stub(console, 'log');
 			printer.printError(new Error('something wrong'));
 
 			let output = '';
