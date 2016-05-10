@@ -1,6 +1,6 @@
 {
   "name": "fossilize-aws-ebs",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Automatically back up EBS volumes using tags",
   "main": "index.js",
   "directories": {
